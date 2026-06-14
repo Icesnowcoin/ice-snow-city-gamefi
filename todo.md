@@ -29,10 +29,38 @@
 - [x] Monitoring and troubleshooting guide
 - [x] Future integration roadmap
 
-## Future Integration Points (Placeholder)
-- [ ] On-chain contract calls via Web3.js/Ethers.js (callPayUtilityFee, callProcessLuxuryGiftRebate, callMintLand, callMintHouse)
-- [ ] RPC queries for CityTreasury balance and ISC Staking metrics
-- [ ] Transaction monitoring and event indexing from BSC
+## Phase 1: Testing & Verification Infrastructure (In Progress)
+- [ ] Integration test framework (frontend + backend + database)
+- [ ] Contract interaction mock tests
+- [ ] CI/CD pipeline setup (GitHub Actions / Manus)
+- [ ] Test coverage reporting
+
+## Phase 2: On-Chain Interaction Integration (Completed)
+- [x] Ethers.js integration (v6.16.0)
+- [x] Contract call implementation (payUtilityFee, processLuxuryGiftRebate, mintLand, mintHouse)
+- [x] Transaction signing and broadcasting
+- [x] Transaction status tracking
+- [x] Error handling and retry logic (3 retries with exponential backoff)
+- [x] BlockchainService class with production-grade error handling
+- [x] 18 unit tests for blockchain integration
+
+## Phase 3: Event Listening & Data Sync (Planned)
+- [ ] BSC event listener implementation
+- [ ] Automatic contract_events table updates
+- [ ] Real-time data synchronization
+- [ ] Event indexing and filtering
+
+## Phase 4: Monitoring, Alerting & Operations (Planned)
+- [ ] Transaction status monitoring dashboard
+- [ ] Error alerting mechanism
+- [ ] Operations monitoring panel
+- [ ] Downtime protection
+
+## Phase 5: Performance Optimization & Security Audit (Planned)
+- [ ] Database query optimization
+- [ ] Caching strategy implementation
+- [ ] Security code audit
+- [ ] Performance benchmarking
 
 ## Project Status
 ✅ All core features completed and production-hardened
