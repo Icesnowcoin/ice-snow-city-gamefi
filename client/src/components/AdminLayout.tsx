@@ -15,6 +15,7 @@ import {
   LogOut,
   Loader2,
   ShieldAlert,
+  Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -83,6 +84,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { path: "/agent-console", icon: Terminal, label: t("nav.agentConsole") },
     { path: "/treasury", icon: Landmark, label: t("nav.treasury") },
     { path: "/staking", icon: PiggyBank, label: t("nav.staking") },
+    { path: "/monitoring", icon: Activity, label: t("nav.monitoring") },
   ];
 
   return (

@@ -12,6 +12,7 @@ import EventLogsPage from "./pages/EventLogsPage";
 import AgentConsolePage from "./pages/AgentConsolePage";
 import TreasuryPage from "./pages/TreasuryPage";
 import StakingPage from "./pages/StakingPage";
+import MonitoringDashboard from "./pages/MonitoringDashboard";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/agent-console" component={AgentConsolePage} />
       <Route path="/treasury" component={TreasuryPage} />
       <Route path="/staking" component={StakingPage} />
+      <Route path="/monitoring" component={MonitoringDashboard} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
