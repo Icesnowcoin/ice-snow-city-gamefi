@@ -113,9 +113,9 @@
 - [x] db.audit.ts database helpers (insert, query, count, delete, statistics)
 - [x] audit_logs table schema created in database
 
-## Phase 9: Integration & Deployment Preparation (Next)
-- [ ] Integrate audit logging into secret key mutations
-- [ ] Integrate audit logging into contract parameter updates
+## Phase 9: Integration & Deployment Preparation (In Progress)
+- [x] Integrate audit logging into secret key mutations (generate, setCustom)
+- [x] Integrate audit logging into contract parameter updates
 - [ ] Implement real EventListenerService health checks and restart logic
 - [ ] Add blockchain failover support (alternate RPC endpoints)
 - [ ] Persist recovery events and metrics

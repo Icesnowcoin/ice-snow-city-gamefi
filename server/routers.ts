@@ -19,6 +19,7 @@ import {
   getTreasuryTransactions,
   insertTreasuryTransaction,
 } from "./db";
+import { auditLogService } from "./_core/auditLog";
 
 export const appRouter = router({
   system: systemRouter,
@@ -48,6 +49,20 @@ export const appRouter = router({
       // Hash it using keccak256 (production-grade, contract-compatible)
       const keyHash = hashSecretKey(rawKey);
       await createSecretKey(keyHash, ctx.user.openId);
+
+      // Log to audit trail
+      try {
+        await auditLogService.logAction({
+          userId: ctx.user.openId,
+          action: "SECRET_KEY_GENERATED",
+          resource: "secret_keys",
+          status: "success",
+          details: { keyHashPrefix: keyHash.substring(0, 16) },
+        });
+      } catch (error) {
+        console.error("Failed to log secret key generation:", error);
+      }
+
       return { rawKey, keyHash };
     }),
 
@@ -57,6 +72,20 @@ export const appRouter = router({
         // Hash using keccak256 (production-grade, contract-compatible)
         const keyHash = hashSecretKey(input.rawKey);
         await createSecretKey(keyHash, ctx.user.openId);
+
+        // Log to audit trail
+        try {
+          await auditLogService.logAction({
+            userId: ctx.user.openId,
+            action: "SECRET_KEY_SET_CUSTOM",
+            resource: "secret_keys",
+            status: "success",
+            details: { keyHashPrefix: keyHash.substring(0, 16) },
+          });
+        } catch (error) {
+          console.error("Failed to log secret key update:", error);
+        }
+
         return { keyHash };
       }),
   }),
@@ -83,6 +112,21 @@ export const appRouter = router({
           params: JSON.stringify({ paramName: input.paramName, newValue: input.paramValue }),
           status: "success",
         });
+
+        // Log to audit trail
+        try {
+          await auditLogService.logAction({
+            userId: ctx.user.openId,
+            action: "UPDATE_PARAM",
+            resource: "contract_params",
+            resourceId: input.paramName,
+            status: "success",
+            details: { paramName: input.paramName, newValue: input.paramValue },
+          });
+        } catch (error) {
+          console.error("Failed to log parameter update:", error);
+        }
+
         return { success: true };
       }),
   }),
