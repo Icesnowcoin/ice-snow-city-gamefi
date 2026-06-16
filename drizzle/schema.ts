@@ -82,3 +82,24 @@ export const treasuryTransactions = mysqlTable("treasury_transactions", {
 
 export type TreasuryTransaction = typeof treasuryTransactions.$inferSelect;
 export type InsertTreasuryTransaction = typeof treasuryTransactions.$inferInsert;
+
+/**
+ * Audit logs table - stores all administrative actions and security events.
+ */
+export const auditLogs = mysqlTable("audit_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  userId: varchar("userId", { length: 64 }).notNull(),
+  action: varchar("action", { length: 128 }).notNull(),
+  resource: varchar("resource", { length: 128 }).notNull(),
+  resourceId: varchar("resourceId", { length: 256 }),
+  status: mysqlEnum("status", ["success", "failure"]).notNull(),
+  details: text("details"), // JSON string
+  ipAddress: varchar("ipAddress", { length: 45 }),
+  userAgent: text("userAgent"),
+  errorMessage: text("errorMessage"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AuditLog = typeof auditLogs.$inferSelect;
+export type InsertAuditLog = typeof auditLogs.$inferInsert;

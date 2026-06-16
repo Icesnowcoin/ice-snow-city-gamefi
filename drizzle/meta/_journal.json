@@ -15,6 +15,13 @@
       "when": 1781287278045,
       "tag": "0001_flowery_rage",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1781598130851,
+      "tag": "0002_damp_spirit",
+      "breakpoints": true
     }
   ]
 }
