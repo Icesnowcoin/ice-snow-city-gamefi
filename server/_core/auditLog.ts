@@ -251,6 +251,22 @@ export class AuditLogService {
   }
 
   /**
+   * Cleanup old audit logs (alias for cleanupOldLogs)
+   */
+  async cleanup(retentionDays: number = 90): Promise<number> {
+    try {
+      const deletedCount = await deleteOldAuditLogs(retentionDays);
+      console.log(
+        `[AuditLog] Cleaned up ${deletedCount} logs older than ${retentionDays} days`
+      );
+      return deletedCount || 0;
+    } catch (error) {
+      console.error("[AuditLog] Failed to cleanup old logs:", error);
+      return 0;
+    }
+  }
+
+  /**
    * Cleanup old audit logs
    */
   async cleanupOldLogs(retentionDays: number = 90): Promise<void> {
