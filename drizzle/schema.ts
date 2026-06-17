@@ -103,3 +103,43 @@ export const auditLogs = mysqlTable("audit_logs", {
 
 export type AuditLog = typeof auditLogs.$inferSelect;
 export type InsertAuditLog = typeof auditLogs.$inferInsert;
+
+
+/**
+ * Recovery events table - stores automatic recovery events and metrics.
+ */
+export const recoveryEvents = mysqlTable("recovery_events", {
+  id: int("id").autoincrement().primaryKey(),
+  serviceType: varchar("serviceType", { length: 64 }).notNull(), // "blockchain", "eventListener", "monitoring", etc.
+  eventType: varchar("eventType", { length: 64 }).notNull(), // "health_check", "restart", "failover", "recovery"
+  status: mysqlEnum("status", ["success", "failed", "pending"]).default("pending").notNull(),
+  errorMessage: text("errorMessage"),
+  details: text("details"), // JSON stringified details
+  recoveryAttempts: int("recoveryAttempts").default(0).notNull(),
+  duration: int("duration"), // milliseconds
+  triggeredBy: varchar("triggeredBy", { length: 64 }), // "automatic", "manual", "scheduled"
+  resolvedAt: timestamp("resolvedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type RecoveryEvent = typeof recoveryEvents.$inferSelect;
+export type InsertRecoveryEvent = typeof recoveryEvents.$inferInsert;
+
+/**
+ * Recovery metrics table - stores recovery service metrics and statistics.
+ */
+export const recoveryMetrics = mysqlTable("recovery_metrics", {
+  id: int("id").autoincrement().primaryKey(),
+  serviceType: varchar("serviceType", { length: 64 }).notNull(),
+  metricType: varchar("metricType", { length: 64 }).notNull(), // "uptime", "recovery_time", "error_rate", "success_rate"
+  metricValue: varchar("metricValue", { length: 256 }).notNull(),
+  unit: varchar("unit", { length: 32 }), // "ms", "percent", "count"
+  period: varchar("period", { length: 32 }), // "1h", "1d", "1w", "1m"
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  details: text("details"), // JSON stringified details
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type RecoveryMetric = typeof recoveryMetrics.$inferSelect;
+export type InsertRecoveryMetric = typeof recoveryMetrics.$inferInsert;

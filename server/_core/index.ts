@@ -1,4 +1,3 @@
-import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
@@ -8,6 +7,10 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { EventListenerService } from "./eventListener";
+import { RecoveryService } from "./recovery";
+import { getMonitoringService } from "./monitoring";
+import { BlockchainService } from "./blockchain";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -36,6 +39,43 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
+
+  // Initialize blockchain service
+  console.log("[Startup] Initializing blockchain service...");
+  const blockchainService = new BlockchainService();
+  try {
+    await blockchainService.initialize();
+    console.log("[Startup] Blockchain service initialized successfully");
+  } catch (error) {
+    console.error("[Startup] Failed to initialize blockchain service:", error);
+  }
+
+  // Initialize event listener service
+  console.log("[Startup] Initializing event listener service...");
+  const eventListenerService = new EventListenerService();
+  try {
+    await eventListenerService.start();
+    console.log("[Startup] Event listener service started successfully");
+  } catch (error) {
+    console.error("[Startup] Failed to start event listener service:", error);
+  }
+
+  // Initialize monitoring service
+  console.log("[Startup] Initializing monitoring service...");
+  const monitoringService = getMonitoringService();
+  console.log("[Startup] Monitoring service initialized successfully");
+
+  // Initialize recovery service
+  console.log("[Startup] Initializing recovery service...");
+  const recoveryService = new RecoveryService();
+  console.log("[Startup] Recovery service initialized successfully");
+
+  // Store services in app locals for access in routes
+  app.locals.blockchainService = blockchainService;
+  app.locals.eventListenerService = eventListenerService;
+  app.locals.monitoringService = monitoringService;
+  app.locals.recoveryService = recoveryService;
+
   // tRPC API
   app.use(
     "/api/trpc",
@@ -60,6 +100,22 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
+    console.log("[Startup] All services initialized and running");
+  });
+
+  // Graceful shutdown
+  process.on("SIGTERM", async () => {
+    console.log("[Shutdown] Received SIGTERM, shutting down gracefully...");
+    try {
+      await eventListenerService.stop();
+      console.log("[Shutdown] Event listener stopped");
+    } catch (error) {
+      console.error("[Shutdown] Error stopping event listener:", error);
+    }
+    server.close(() => {
+      console.log("[Shutdown] Server closed");
+      process.exit(0);
+    });
   });
 }
 
