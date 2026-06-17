@@ -9,6 +9,7 @@
 
 import { ethers } from "ethers";
 import type { Contract, TransactionResponse, EventLog } from "ethers";
+import { rpcFailoverManager } from "./blockchain.rpc";
 
 // Environment variables for blockchain configuration
 const BSC_RPC_URL = process.env.BSC_RPC_URL || "https://bsc-dataseed1.binance.org:443";
@@ -54,6 +55,7 @@ export class BlockchainService {
   private iscManagerContract: Contract | null = null;
   private cityTreasuryContract: Contract | null = null;
   private iscStakingContract: Contract | null = null;
+  private rpcFailoverManager = rpcFailoverManager;
 
   /**
    * Initialize blockchain service
@@ -61,12 +63,15 @@ export class BlockchainService {
    */
   async initialize(): Promise<void> {
     try {
-      // Initialize provider
-      this.provider = new ethers.JsonRpcProvider(BSC_RPC_URL);
+      // Initialize provider with RPC failover
+      const rpcUrl = this.rpcFailoverManager.getNextEndpoint();
+      console.log(`[Blockchain] Using RPC endpoint: ${rpcUrl}`);
+      this.provider = new ethers.JsonRpcProvider(rpcUrl);
 
       // Verify provider connectivity
       const network = await this.provider.getNetwork();
       console.log(`[Blockchain] Connected to network: ${network.name} (chainId: ${network.chainId})`);
+      this.rpcFailoverManager.recordSuccess();
 
       // Initialize signer if private key is available
       if (PRIVATE_KEY) {
@@ -105,6 +110,16 @@ export class BlockchainService {
       }
     } catch (error) {
       console.error("[Blockchain] Initialization failed:", error);
+      this.rpcFailoverManager.recordFailure(error as Error);
+      
+      // Try next RPC endpoint
+      const nextRpc = this.rpcFailoverManager.getNextEndpoint();
+      if (nextRpc !== BSC_RPC_URL) {
+        console.log(`[Blockchain] Retrying with next RPC endpoint: ${nextRpc}`);
+        this.provider = new ethers.JsonRpcProvider(nextRpc);
+        return this.initialize();
+      }
+      
       throw error;
     }
   }
