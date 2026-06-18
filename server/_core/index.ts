@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { EventListenerService } from "./eventListener";
+import { EnhancedEventListener } from "./eventListener.enhanced";
 import { RecoveryService } from "./recovery";
 import { getMonitoringService } from "./monitoring";
 import { BlockchainService } from "./blockchain";
@@ -50,14 +51,28 @@ async function startServer() {
     console.error("[Startup] Failed to initialize blockchain service:", error);
   }
 
-  // Initialize event listener service
-  console.log("[Startup] Initializing event listener service...");
-  const eventListenerService = new EventListenerService();
+  // Initialize event listener service with EnhancedEventListener
+  console.log("[Startup] Initializing enhanced event listener service...");
+  let eventListenerService: any;
   try {
+    // First initialize base EventListenerService
+    const baseListener = new EventListenerService();
+    await baseListener.start();
+    
+    // Wrap with EnhancedEventListener for health checks and recovery
+    eventListenerService = new EnhancedEventListener(baseListener);
     await eventListenerService.start();
-    console.log("[Startup] Event listener service started successfully");
+    console.log("[Startup] Enhanced event listener service started successfully");
   } catch (error) {
-    console.error("[Startup] Failed to start event listener service:", error);
+    console.error("[Startup] Failed to start enhanced event listener service:", error);
+    // Initialize fallback service
+    try {
+      eventListenerService = new EventListenerService();
+      await eventListenerService.start();
+      console.log("[Startup] Event listener service started successfully (error recovery)");
+    } catch (fallbackError) {
+      console.error("[Startup] Failed to start fallback event listener service:", fallbackError);
+    }
   }
 
   // Initialize monitoring service

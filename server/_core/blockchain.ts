@@ -58,6 +58,13 @@ export class BlockchainService {
   private rpcFailoverManager = rpcFailoverManager;
 
   /**
+   * Get the provider instance
+   */
+  getProvider(): ethers.JsonRpcProvider | null {
+    return this.provider;
+  }
+
+  /**
    * Initialize blockchain service
    * Must be called before using any blockchain methods
    */
