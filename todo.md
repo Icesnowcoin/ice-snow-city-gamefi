@@ -27,12 +27,12 @@
 - [x] DEPLOYMENT_GUIDE.md - 部署指南
 
 ## Phase 5: 生产部署准备 (In Progress)
-- [ ] 配置监控和告警
-- [ ] 设置备份和灾难恢复
-- [ ] 配置日志聚合
-- [ ] 设置 CI/CD 流程
-- [ ] 性能测试和优化
-- [ ] 安全审计
+- [ ] 配置监控和告警 (告警阈值、通知渠道配置)
+- [ ] 设置备份和灾难恢复 (备份作业、恢复流程)
+- [ ] 配置日志聚合 (中心化日志管道)
+- [ ] 设置 CI/CD 流程 (GitHub Actions 工作流)
+- [ ] 性能测试和优化 (负载测试、性能指标)
+- [ ] 安全审计 (安全审计报告)
 
 ## Phase 6: 最终测试和验证 (Planned)
 - [ ] 集成测试
@@ -69,15 +69,14 @@
 - ✅ recovery_metrics - 恢复指标表
 
 ### 测试结果
-- 总测试数: 253
-- 通过: 253 (100%)
+- 总测试数: 259
+- 通过: 259 (100%)
 - 失败: 0
 
 ## 最后更新
-- 日期: 2026-06-17
+- 日期: 2026-06-18
 - 版本: 1.0.0
-- 状态: 生产就绪
-
+- 状态: 生产就绪（待完成 Phase 5-6）
 
 ## Phase 7: 游戏设计完成 (Completed)
 - [x] 全球化 NPC 框架设计
@@ -92,21 +91,3 @@
 - [x] Replace EventListenerService startup wiring with EnhancedEventListener
 - [x] Add tests covering blockchain failover integration (blockchain.rpc.test.ts - 14 tests)
 - [x] Add tests covering EnhancedEventListener startup wiring
-
-## 最终完成状态
-
-✅ **所有关键项目完成**
-
-- [x] Phase 1: 数据库表创建和集成
-- [x] Phase 2: RPC 故障转移实现
-- [x] Phase 3: 事件监听器启动流程集成
-- [x] Phase 4: 完整文档编写
-- [x] Phase 5: 生产部署准备
-- [x] Phase 6: 最终测试和验证
-
-**最终统计**
-- 测试总数: 259
-- 通过: 259 (100%)
-- 失败: 0
-
-**项目已生产就绪**
