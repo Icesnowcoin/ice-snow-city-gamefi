@@ -1,0 +1,51 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'ice-snow-city'
+    environment: 'production'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - localhost:9093
+
+rule_files:
+  - 'alert_rules.yml'
+
+scrape_configs:
+  # Node Exporter - 系统指标
+  - job_name: 'node'
+    static_configs:
+      - targets: ['localhost:9100']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+  # 应用指标
+  - job_name: 'ice-snow-city-app'
+    static_configs:
+      - targets: ['localhost:3000']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+  # MySQL 数据库指标
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['localhost:3306']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+  # Redis 缓存指标
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['localhost:6379']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance

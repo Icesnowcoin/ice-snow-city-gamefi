@@ -1,0 +1,141 @@
+global:
+  resolve_timeout: 5m
+  slack_api_url: '${SLACK_WEBHOOK_URL}'
+  pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
+
+# 告警模板
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# 告警路由配置
+route:
+  # 默认接收者
+  receiver: 'default'
+  # 分组配置
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+
+  # 子路由配置
+  routes:
+    # 关键告警 - 立即通知
+    - match:
+        severity: critical
+      receiver: 'critical'
+      group_wait: 0s
+      repeat_interval: 5m
+      continue: true
+
+    # 警告告警 - 10 分钟后通知
+    - match:
+        severity: warning
+      receiver: 'warning'
+      group_wait: 10m
+      repeat_interval: 1h
+
+    # 系统告警
+    - match:
+        service: system
+      receiver: 'system-team'
+      continue: true
+
+    # 数据库告警
+    - match:
+        service: database
+      receiver: 'database-team'
+      continue: true
+
+    # 应用告警
+    - match:
+        service: app
+      receiver: 'app-team'
+      continue: true
+
+# 接收者配置
+receivers:
+  # 默认接收者
+  - name: 'default'
+    slack_configs:
+      - channel: '#alerts'
+        title: '{{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+        color: '{{ if eq .Status "firing" }}danger{{ else }}good{{ end }}'
+
+  # 关键告警接收者
+  - name: 'critical'
+    slack_configs:
+      - channel: '#critical-alerts'
+        title: '🚨 CRITICAL: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+        color: 'danger'
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_SERVICE_KEY}'
+        description: '{{ .GroupLabels.alertname }}'
+    email_configs:
+      - to: '${ALERT_EMAIL_CRITICAL}'
+        from: 'alertmanager@ice-snow-city.com'
+        smarthost: '${SMTP_HOST}:{{ .SMTP_PORT }}'
+        auth_username: '${SMTP_USER}'
+        auth_password: '${SMTP_PASSWORD}'
+        headers:
+          Subject: '[CRITICAL] {{ .GroupLabels.alertname }}'
+
+  # 警告告警接收者
+  - name: 'warning'
+    slack_configs:
+      - channel: '#warnings'
+        title: '⚠️ WARNING: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+        color: 'warning'
+
+  # 系统团队接收者
+  - name: 'system-team'
+    slack_configs:
+      - channel: '#system-team'
+        title: '{{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  # 数据库团队接收者
+  - name: 'database-team'
+    slack_configs:
+      - channel: '#database-team'
+        title: '{{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  # 应用团队接收者
+  - name: 'app-team'
+    slack_configs:
+      - channel: '#app-team'
+        title: '{{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+# 告警抑制规则
+inhibit_rules:
+  # 如果集群不可达，抑制其他告警
+  - source_match:
+      severity: 'critical'
+      alertname: 'Unreachable'
+    target_match_re:
+      severity: 'warning|info'
+    equal: ['cluster', 'service']
+
+  # 如果实例宕机，抑制其他告警
+  - source_match:
+      alertname: 'InstanceDown'
+    target_match_re:
+      severity: 'warning'
+    equal: ['instance']
+
+  # 如果节点不可达，抑制磁盘告警
+  - source_match:
+      alertname: 'NodeUnreachable'
+    target_match:
+      alertname: 'DiskSpaceLow'
+    equal: ['instance']
