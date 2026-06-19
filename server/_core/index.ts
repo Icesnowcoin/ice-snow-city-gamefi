@@ -57,6 +57,13 @@ async function startServer() {
   try {
     // First initialize base EventListenerService
     const baseListener = new EventListenerService();
+    // Initialize with contract addresses before starting
+    await baseListener.initialize({
+      iscManagerAddress: process.env.ISC_MANAGER_ADDRESS || "",
+      cityTreasuryAddress: process.env.CITY_TREASURY_ADDRESS || "",
+      iscStakingAddress: process.env.ISC_STAKING_ADDRESS || "",
+      startBlock: parseInt(process.env.START_BLOCK || "0"),
+    });
     await baseListener.start();
     
     // Wrap with EnhancedEventListener for health checks and recovery
@@ -68,6 +75,13 @@ async function startServer() {
     // Initialize fallback service
     try {
       eventListenerService = new EventListenerService();
+      // Initialize with contract addresses
+      await eventListenerService.initialize({
+        iscManagerAddress: process.env.ISC_MANAGER_ADDRESS || "",
+        cityTreasuryAddress: process.env.CITY_TREASURY_ADDRESS || "",
+        iscStakingAddress: process.env.ISC_STAKING_ADDRESS || "",
+        startBlock: parseInt(process.env.START_BLOCK || "0"),
+      });
       await eventListenerService.start();
       console.log("[Startup] Event listener service started successfully (error recovery)");
     } catch (fallbackError) {
