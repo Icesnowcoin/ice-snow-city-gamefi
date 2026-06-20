@@ -13,6 +13,7 @@ import {
   getAuditStatistics,
 } from "../db.audit";
 import { type InsertAuditLog } from "../../drizzle/schema";
+import { encryptAuditLog, isEncryptionConfigured } from "./encryption";
 
 export interface AuditLogEntry {
   id: number;
@@ -68,13 +69,26 @@ export class AuditLogService {
     errorMessage?: string;
   }): Promise<void> {
     try {
+      // Encrypt sensitive details if encryption is configured
+      let encryptedDetails: string | null = null;
+      if (entry.details && isEncryptionConfigured()) {
+        try {
+          encryptedDetails = encryptAuditLog(entry.details);
+        } catch (error) {
+          console.warn('[AuditLog] Failed to encrypt audit log details, storing unencrypted:', error);
+          encryptedDetails = JSON.stringify(entry.details);
+        }
+      } else if (entry.details) {
+        encryptedDetails = JSON.stringify(entry.details);
+      }
+
       const dbEntry: InsertAuditLog = {
         userId: entry.userId,
         action: entry.action,
         resource: entry.resource,
         resourceId: entry.resourceId || null,
         status: entry.status,
-        details: entry.details ? JSON.stringify(entry.details) : null,
+        details: encryptedDetails,
         ipAddress: entry.ipAddress || null,
         userAgent: entry.userAgent || null,
         errorMessage: entry.errorMessage || null,

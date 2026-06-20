@@ -12,6 +12,7 @@ import { EnhancedEventListener } from "./eventListener.enhanced";
 import { RecoveryService } from "./recovery";
 import { getMonitoringService } from "./monitoring";
 import { BlockchainService } from "./blockchain";
+import { createGlobalRateLimiter, createIpRateLimiter, createUserRateLimiter, createApiRateLimiter, closeRedisClient } from "./rateLimiter";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -35,6 +36,21 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  
+  // Initialize rate limiters
+  console.log("[Startup] Initializing rate limiters...");
+  const globalLimiter = createGlobalRateLimiter();
+  const ipLimiter = await createIpRateLimiter();
+  const userLimiter = await createUserRateLimiter();
+  const apiLimiter = await createApiRateLimiter();
+  
+  // Apply rate limiters
+  app.use(globalLimiter); // Global rate limit
+  app.use(ipLimiter); // IP-based rate limit
+  app.use(userLimiter); // User-based rate limit
+  app.use("/api/", apiLimiter); // API-specific rate limit
+  console.log("[Startup] Rate limiters initialized successfully");
+  
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
