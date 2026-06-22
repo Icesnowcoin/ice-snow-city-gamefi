@@ -22,23 +22,37 @@ let redisClient: ReturnType<typeof createClient> | null = null;
  * Initialize Redis client for rate limiting
  */
 async function initializeRedisClient() {
-  if (redisClient) {
+  if (redisClient !== undefined) {
     return redisClient;
   }
 
+  // Only attempt Redis connection if explicitly configured
+  const redisUrl = process.env.REDIS_URL;
+  if (!redisUrl) {
+    console.log('[RateLimiter] Redis not configured, using memory store');
+    redisClient = null;
+    return null;
+  }
+
   try {
-    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
     redisClient = createClient({ url: redisUrl });
     
     redisClient.on('error', (err) => {
       console.error('[RateLimiter] Redis error:', err);
     });
 
-    await redisClient.connect();
+    // Set a timeout for connection attempt
+    const connectPromise = redisClient.connect();
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Redis connection timeout')), 5000)
+    );
+
+    await Promise.race([connectPromise, timeoutPromise]);
     console.log('[RateLimiter] Redis client connected');
     return redisClient;
   } catch (error) {
     console.warn('[RateLimiter] Failed to connect to Redis, using memory store:', error);
+    redisClient = null;
     return null;
   }
 }
@@ -64,7 +78,13 @@ export function createGlobalRateLimiter() {
  * IP-based rate limiter (100 requests/minute)
  */
 export async function createIpRateLimiter() {
-  const client = await initializeRedisClient();
+  let client = null;
+  try {
+    client = await initializeRedisClient();
+  } catch (error) {
+    console.warn('[RateLimiter] Redis initialization failed, using memory store');
+    client = null;
+  }
 
   const store = client
     ? new RedisStore({
@@ -96,7 +116,13 @@ export async function createIpRateLimiter() {
  * User-based rate limiter (50 requests/minute)
  */
 export async function createUserRateLimiter() {
-  const client = await initializeRedisClient();
+  let client = null;
+  try {
+    client = await initializeRedisClient();
+  } catch (error) {
+    console.warn('[RateLimiter] Redis initialization failed, using memory store');
+    client = null;
+  }
 
   const store = client
     ? new RedisStore({
@@ -132,7 +158,13 @@ export async function createUserRateLimiter() {
  * API endpoint rate limiter (stricter for sensitive endpoints)
  */
 export async function createApiRateLimiter() {
-  const client = await initializeRedisClient();
+  let client = null;
+  try {
+    client = await initializeRedisClient();
+  } catch (error) {
+    console.warn('[RateLimiter] Redis initialization failed, using memory store');
+    client = null;
+  }
 
   const store = client
     ? new RedisStore({
