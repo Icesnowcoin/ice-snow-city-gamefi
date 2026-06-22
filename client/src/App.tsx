@@ -9,6 +9,9 @@ import GameLayout from "./components/layout/GameLayout";
 
 // Game Pages
 import GameDashboard from "./pages/GameDashboard";
+import PlayerProfile from "./pages/PlayerProfile";
+import WalletPage from "./pages/WalletPage";
+import NPCInteraction from "./pages/NPCInteraction";
 
 // Admin Pages (kept for backward compatibility)
 import Dashboard from "./pages/Dashboard";
@@ -25,14 +28,15 @@ function GameRouter() {
     <GameLayout>
       <Switch>
         <Route path="/" component={GameDashboard} />
+        <Route path="/profile" component={PlayerProfile} />
+        <Route path="/wallet" component={WalletPage} />
+        <Route path="/npc" component={NPCInteraction} />
         {/* Game routes will be added here */}
-        <Route path="/npc" component={() => <div>NPC System (Coming Soon)</div>} />
         <Route path="/tasks" component={() => <div>Task System (Coming Soon)</div>} />
         <Route path="/shop" component={() => <div>Shop System (Coming Soon)</div>} />
         <Route path="/real-estate" component={() => <div>Real Estate System (Coming Soon)</div>} />
         <Route path="/agriculture" component={() => <div>Agriculture System (Coming Soon)</div>} />
         <Route path="/banking" component={() => <div>Banking System (Coming Soon)</div>} />
-        <Route path="/wallet" component={() => <div>Wallet Management (Coming Soon)</div>} />
         <Route path="/settings" component={() => <div>Settings (Coming Soon)</div>} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
