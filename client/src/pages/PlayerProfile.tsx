@@ -1,4 +1,6 @@
 import { useLanguage } from "@/contexts/LanguageContext";
+import { usePlayerProfile } from "@/hooks/useGameData";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,8 +21,9 @@ import {
 
 export default function PlayerProfile() {
   const { t, lang } = useLanguage();
+  const { data: player, isLoading: playerLoading } = usePlayerProfile();
 
-  const achievements = [
+  const mockAchievements = [
     { id: 1, name: lang === "zh" ? "首次交易" : "First Trade", icon: "🎯", progress: 100 },
     { id: 2, name: lang === "zh" ? "富豪" : "Millionaire", icon: "💰", progress: 75 },
     { id: 3, name: lang === "zh" ? "房地产大亨" : "Real Estate Tycoon", icon: "🏠", progress: 50 },
@@ -28,6 +31,9 @@ export default function PlayerProfile() {
     { id: 5, name: lang === "zh" ? "社交大师" : "Social Master", icon: "👥", progress: 60 },
     { id: 6, name: lang === "zh" ? "任务完成者" : "Quest Completer", icon: "✅", progress: 85 },
   ];
+  const achievements = mockAchievements;
+
+  const mockPlayer = (player as any) || { level: 42, experience: 8500, totalExperience: 10000, username: "Player" };
 
   const statistics = [
     { label: lang === "zh" ? "总交易数" : "Total Trades", value: "234" },
@@ -72,11 +78,11 @@ export default function PlayerProfile() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <p className="text-sm text-muted-foreground">{lang === "zh" ? "等级" : "Level"}</p>
-                  <p className="text-2xl font-bold">42</p>
+                  <p className="text-3xl font-bold">{mockPlayer.level}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">{lang === "zh" ? "经验值" : "Experience"}</p>
-                  <p className="text-2xl font-bold">8,500/10,000</p>
+                  <p className="text-2xl font-bold">{mockPlayer.experience}/{(mockPlayer as any).totalExperience || 10000}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">{lang === "zh" ? "排名" : "Ranking"}</p>
@@ -90,7 +96,7 @@ export default function PlayerProfile() {
 
               <div className="space-y-2">
                 <p className="text-sm font-medium">{lang === "zh" ? "升级进度" : "Level Progress"}</p>
-                <Progress value={85} className="h-2" />
+                <Progress value={(mockPlayer.experience / ((mockPlayer as any).totalExperience || 10000)) * 100} className="h-2" />
               </div>
 
               {/* Badges */}
@@ -147,7 +153,7 @@ export default function PlayerProfile() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {achievements.map((achievement) => (
+                {achievements.map((achievement: any) => (
                   <div key={achievement.id} className="border rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="text-3xl">{achievement.icon}</div>
@@ -170,7 +176,7 @@ export default function PlayerProfile() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {statistics.map((stat, index) => (
+                {statistics.map((stat: any, index: number) => (
                   <div key={index} className="text-center">
                     <p className="text-sm text-muted-foreground mb-2">{stat.label}</p>
                     <p className="text-3xl font-bold">{stat.value}</p>

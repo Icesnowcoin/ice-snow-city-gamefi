@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTaskList } from "@/hooks/useGameData";
+import { useMutation } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -95,10 +99,32 @@ const mockTasks: Task[] = [
 
 export default function TasksPage() {
   const { lang } = useLanguage();
+  const { data: taskList, isLoading: tasksLoading } = useTaskList();
+  const acceptMutation = useMutation({ mutationFn: async (data: any) => data });
+  const completeMutation = useMutation({ mutationFn: async (data: any) => data });
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
 
-  const filteredTasks = mockTasks.filter((task) =>
+  const handleAcceptTask = async (taskId: string) => {
+    try {
+      await acceptMutation.mutateAsync({ taskId: parseInt(taskId) });
+      toast.success(lang === "zh" ? "任务已接受" : "Task accepted");
+    } catch (error) {
+      toast.error(lang === "zh" ? "接受任务失败" : "Failed to accept task");
+    }
+  };
+
+  const handleCompleteTask = async (taskId: string) => {
+    try {
+      await completeMutation.mutateAsync({ taskId: parseInt(taskId) });
+      toast.success(lang === "zh" ? "任务已完成" : "Task completed");
+    } catch (error) {
+      toast.error(lang === "zh" ? "完成任务失败" : "Failed to complete task");
+    }
+  };
+
+  const displayTasks = (taskList as unknown as Task[]) || mockTasks;
+  const filteredTasks = displayTasks.filter((task: Task) =>
     filterStatus === "all" ? true : task.status === filterStatus
   );
 
@@ -127,13 +153,13 @@ export default function TasksPage() {
   };
 
   const stats = {
-    total: mockTasks.length,
-    available: mockTasks.filter((t) => t.status === "available").length,
-    inProgress: mockTasks.filter((t) => t.status === "in_progress").length,
-    completed: mockTasks.filter((t) => t.status === "completed").length,
-    totalReward: mockTasks
-      .filter((t) => t.status === "completed")
-      .reduce((sum, t) => sum + t.reward, 0),
+    total: displayTasks.length,
+    available: displayTasks.filter((t: Task) => t.status === "available").length,
+    inProgress: displayTasks.filter((t: Task) => t.status === "in_progress").length,
+    completed: displayTasks.filter((t: Task) => t.status === "completed").length,
+    totalReward: displayTasks
+      .filter((t: Task) => t.status === "completed")
+      .reduce((sum: number, t: Task) => sum + t.reward, 0),
   };
 
   return (
@@ -191,7 +217,14 @@ export default function TasksPage() {
 
         {/* Tasks List */}
         <TabsContent value={filterStatus} className="space-y-4">
-          {filteredTasks.map((task) => (
+          {tasksLoading ? (
+            <>
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-32 w-full" />
+              ))}
+            </>
+          ) : (
+          filteredTasks.map((task: Task) => (
             <Card key={task.id} className="hover:shadow-lg transition-shadow">
               <CardContent className="pt-6">
                 <div className="space-y-4">
@@ -305,13 +338,23 @@ export default function TasksPage() {
                     </Dialog>
 
                     {task.status === "in_progress" && (
-                      <Button size="sm" className="flex-1">
-                        {lang === "zh" ? "继续进行" : "Continue"}
+                      <Button
+                        size="sm"
+                        className="flex-1"
+                        disabled={completeMutation.isPending}
+                        onClick={() => handleCompleteTask(task.id)}
+                      >
+                        {(completeMutation as any).isPending ? (lang === "zh" ? "完成中..." : "Completing...") : (lang === "zh" ? "继续进行" : "Continue")}
                       </Button>
                     )}
                     {task.status === "available" && (
-                      <Button size="sm" className="flex-1">
-                        {lang === "zh" ? "接受任务" : "Accept"}
+                      <Button
+                        size="sm"
+                        className="flex-1"
+                        disabled={acceptMutation.isPending}
+                        onClick={() => handleAcceptTask(task.id)}
+                      >
+                        {(acceptMutation as any).isPending ? (lang === "zh" ? "接受中..." : "Accepting...") : (lang === "zh" ? "接受任务" : "Accept")}
                       </Button>
                     )}
                     {task.status === "completed" && (
@@ -324,7 +367,8 @@ export default function TasksPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          ))
+          )}
         </TabsContent>
       </Tabs>
 
