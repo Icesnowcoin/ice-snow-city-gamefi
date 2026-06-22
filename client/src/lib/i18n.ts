@@ -11,6 +11,16 @@ const translations = {
     "nav.treasury": "城市国库",
     "nav.staking": "银行系统",
     "nav.monitoring": "监控仪表板",
+    "nav.npc": "NPC",
+    "nav.tasks": "任务",
+    "nav.shop": "商城",
+    "nav.realEstate": "房地产",
+    "nav.banking": "银行",
+    "nav.wallet": "钱包",
+    "nav.settings": "设置",
+    "nav.logout": "退出",
+    "nav.toggleTheme": "切换主题",
+    "nav.toggleLanguage": "切换语言",
 
     // Common
     "common.loading": "加载中...",
@@ -141,6 +151,16 @@ const translations = {
     "nav.treasury": "Treasury",
     "nav.staking": "Staking",
     "nav.monitoring": "Monitoring Dashboard",
+    "nav.npc": "NPC",
+    "nav.tasks": "Tasks",
+    "nav.shop": "Shop",
+    "nav.realEstate": "Real Estate",
+    "nav.banking": "Banking",
+    "nav.wallet": "Wallet",
+    "nav.settings": "Settings",
+    "nav.logout": "Logout",
+    "nav.toggleTheme": "Toggle Theme",
+    "nav.toggleLanguage": "Toggle Language",
 
     // Common
     "common.loading": "Loading...",

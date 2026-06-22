@@ -139,10 +139,66 @@
 
 
 ## Phase 11: NPC 原型设计 (Completed)
-- [x] NPC 视觉设计规范
-- [x] NPC 属性模板与名字系统
-- [x] 200 个 NPC 原型详细设计
-- [x] 18 个代表性 NPC 完整视觉形象
+- [x] NPC 视觉设计规范 (NPC_VISUAL_DESIGN_AND_CLASSIFICATION.md)
+- [x] NPC 属性模板与名字系统 (NPC_ATTRIBUTES_AND_NAMING_SYSTEM.md)
+- [x] 200 个 NPC 原型详细设计 (200_NPC_PROTOTYPES_DETAILED_DESIGN.md)
+- [x] 18 个代表性 NPC 完整视觉形象 (NPC_CHARACTER_GALLERY_COMPLETE.md)
 - [x] 生成剩余 122 个 NPC 的快速模板 (NPC_QUICK_TEMPLATE_LIBRARY.md)
-- [x] NPC 关系网络和经济系统集成 (NPC_ECONOMY_REDESIGN_DATA_ONLY.md)
-- [x] NPC 原型库最终交付
+- [x] NPC 关系网络设计 (NPC_RELATIONSHIP_NETWORK_DESIGN.md)
+- [x] NPC 经济系统集成 (NPC_ECONOMY_REDESIGN_DATA_ONLY.md)
+- [x] NPC 原型库索引与集成指南 (NPC_PROTOTYPE_LIBRARY_INDEX.md)
+
+
+## Phase 12: 前端架构设计与基础设施搭建 (Completed)
+- [x] 设计前端整体架构 (GAME_FRONTEND_ARCHITECTURE.md)
+- [x] 配置 React 19 + Tailwind 4 主题系统
+- [x] 实现基础导航和布局框架 (GameLayout.tsx)
+- [x] 设置国际化系统 (i18n.ts 更新)
+- [x] 创建 UI 组件库基础 (shadcn/ui)
+- [x] 配置前端路由和页面 (App.tsx 更新)
+
+## Phase 13: 玩家仪表板与钱包管理界面开发
+- [ ] 玩家仪表板主界面（资产概览、ISC 余额、排名等）
+- [ ] 钱包管理界面（充值、提现、交易历史）
+- [ ] 玩家资料页面（个人信息、成就、社交）
+- [ ] ISC 交易记录和统计
+- [ ] 银行系统界面（存入、取出、利息计算）
+- [ ] 资产管理和投资界面
+
+## Phase 14: NPC 交互界面与关系网络可视化
+- [ ] NPC 列表和搜索界面
+- [ ] NPC 详情页面（信息、任务、交易）
+- [ ] NPC 关系网络可视化（图形展示）
+- [ ] NPC 交互对话系统
+- [ ] NPC 任务发布和完成界面
+- [ ] NPC 商业交易界面
+
+## Phase 15: 游戏逻辑集成：任务系统与经济循环
+- [ ] 实现任务系统前端（任务列表、详情、完成）
+- [ ] 实现商城系统（商品列表、购买、库存）
+- [ ] 实现房地产系统（土地购买、建筑、出租）
+- [ ] 实现农业系统（种植、收获、销售）
+- [ ] 实现经济数据展示（价格、供需、指数）
+- [ ] 实现玩家间交易系统
+
+## Phase 16: 智能合约开发与 BSC 集成
+- [ ] 设计 ISC 代币合约（ERC-20 标准）
+- [ ] 实现 ISC 代币合约
+- [ ] 设计 APY 利息合约
+- [ ] 实现 APY 利息合约
+- [ ] 实现合约与后端的交互
+- [ ] 进行合约审计和安全测试
+
+## Phase 17: 集成测试与性能优化
+- [ ] 前后端集成测试
+- [ ] 用户流程端到端测试
+- [ ] 性能测试和优化
+- [ ] 安全性测试
+- [ ] 压力测试
+
+## Phase 18: 生产部署与上线准备
+- [ ] 部署到生产环境
+- [ ] 配置 CDN 和缓存
+- [ ] 监控和告警配置
+- [ ] 用户验收测试
+- [ ] 上线前最终检查

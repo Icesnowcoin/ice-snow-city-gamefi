@@ -5,6 +5,12 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import GameLayout from "./components/layout/GameLayout";
+
+// Game Pages
+import GameDashboard from "./pages/GameDashboard";
+
+// Admin Pages (kept for backward compatibility)
 import Dashboard from "./pages/Dashboard";
 import SecretKeyPage from "./pages/SecretKeyPage";
 import ContractParamsPage from "./pages/ContractParamsPage";
@@ -14,19 +20,49 @@ import TreasuryPage from "./pages/TreasuryPage";
 import StakingPage from "./pages/StakingPage";
 import MonitoringDashboard from "./pages/MonitoringDashboard";
 
+function GameRouter() {
+  return (
+    <GameLayout>
+      <Switch>
+        <Route path="/" component={GameDashboard} />
+        {/* Game routes will be added here */}
+        <Route path="/npc" component={() => <div>NPC System (Coming Soon)</div>} />
+        <Route path="/tasks" component={() => <div>Task System (Coming Soon)</div>} />
+        <Route path="/shop" component={() => <div>Shop System (Coming Soon)</div>} />
+        <Route path="/real-estate" component={() => <div>Real Estate System (Coming Soon)</div>} />
+        <Route path="/agriculture" component={() => <div>Agriculture System (Coming Soon)</div>} />
+        <Route path="/banking" component={() => <div>Banking System (Coming Soon)</div>} />
+        <Route path="/wallet" component={() => <div>Wallet Management (Coming Soon)</div>} />
+        <Route path="/settings" component={() => <div>Settings (Coming Soon)</div>} />
+        <Route path="/404" component={NotFound} />
+        <Route component={NotFound} />
+      </Switch>
+    </GameLayout>
+  );
+}
+
+function AdminRouter() {
+  return (
+    <Switch>
+      <Route path="/admin" component={Dashboard} />
+      <Route path="/admin/secret-key" component={SecretKeyPage} />
+      <Route path="/admin/contract-params" component={ContractParamsPage} />
+      <Route path="/admin/event-logs" component={EventLogsPage} />
+      <Route path="/admin/agent-console" component={AgentConsolePage} />
+      <Route path="/admin/treasury" component={TreasuryPage} />
+      <Route path="/admin/staking" component={StakingPage} />
+      <Route path="/admin/monitoring" component={MonitoringDashboard} />
+      <Route path="/404" component={NotFound} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/secret-key" component={SecretKeyPage} />
-      <Route path="/contract-params" component={ContractParamsPage} />
-      <Route path="/event-logs" component={EventLogsPage} />
-      <Route path="/agent-console" component={AgentConsolePage} />
-      <Route path="/treasury" component={TreasuryPage} />
-      <Route path="/staking" component={StakingPage} />
-      <Route path="/monitoring" component={MonitoringDashboard} />
-      <Route path="/404" component={NotFound} />
-      <Route component={NotFound} />
+      <Route path="/admin/*" nest component={AdminRouter} />
+      <Route path="/*" nest component={GameRouter} />
     </Switch>
   );
 }
