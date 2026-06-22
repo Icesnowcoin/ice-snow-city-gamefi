@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useWalletBalance, useWalletTransactions, useDeposit, useWithdraw, useTransfer } from "@/hooks/useGameData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 import {
   Wallet,
   Send,
@@ -22,17 +25,27 @@ import {
 } from "lucide-react";
 
 export default function WalletPage() {
-  const { t, lang } = useLanguage();
+  const { lang } = useLanguage();
+  const { data: wallet, isLoading: walletLoading } = useWalletBalance();
+  const { data: transactions, isLoading: transactionsLoading } = useWalletTransactions();
+  const depositMutation = useDeposit();
+  const withdrawMutation = useWithdraw();
+  const transferMutation = useTransfer();
+
   const [copied, setCopied] = useState(false);
   const [depositAmount, setDepositAmount] = useState("");
+  const [depositAddress, setDepositAddress] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [withdrawAddress, setWithdrawAddress] = useState("");
+  const [transferAmount, setTransferAmount] = useState("");
+  const [transferPlayer, setTransferPlayer] = useState("");
 
   const handleCopy = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const transactions = [
+  const mockTransactions = [
     {
       id: 1,
       type: "deposit",
@@ -49,31 +62,63 @@ export default function WalletPage() {
       date: "2026-06-21 15:45:00",
       txHash: "0xabcdef1234567890abcdef1234567890abcdef12",
     },
-    {
-      id: 3,
-      type: "deposit",
-      amount: "2000.00",
-      status: "pending",
-      date: "2026-06-22 12:00:00",
-      txHash: "0x9876543210fedcba9876543210fedcba98765432",
-    },
-    {
-      id: 4,
-      type: "withdraw",
-      amount: "750.00",
-      status: "completed",
-      date: "2026-06-20 08:15:00",
-      txHash: "0xfedcba9876543210fedcba9876543210fedcba98",
-    },
-    {
-      id: 5,
-      type: "deposit",
-      amount: "1500.00",
-      status: "completed",
-      date: "2026-06-19 14:20:00",
-      txHash: "0x5555555555555555555555555555555555555555",
-    },
   ];
+
+  const handleDeposit = async () => {
+    if (!depositAmount || !depositAddress) {
+      toast.error(lang === "zh" ? "请填写所有字段" : "Please fill all fields");
+      return;
+    }
+    try {
+      await depositMutation.mutateAsync({
+        amount: BigInt(depositAmount),
+        address: depositAddress,
+      });
+      toast.success(lang === "zh" ? "充值成功" : "Deposit successful");
+      setDepositAmount("");
+      setDepositAddress("");
+    } catch (error) {
+      toast.error(lang === "zh" ? "充值失败" : "Deposit failed");
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (!withdrawAmount || !withdrawAddress) {
+      toast.error(lang === "zh" ? "请填写所有字段" : "Please fill all fields");
+      return;
+    }
+    try {
+      await withdrawMutation.mutateAsync({
+        amount: BigInt(withdrawAmount),
+        address: withdrawAddress,
+      });
+      toast.success(lang === "zh" ? "提现成功" : "Withdrawal successful");
+      setWithdrawAmount("");
+      setWithdrawAddress("");
+    } catch (error) {
+      toast.error(lang === "zh" ? "提现失败" : "Withdrawal failed");
+    }
+  };
+
+  const handleTransfer = async () => {
+    if (!transferAmount || !transferPlayer) {
+      toast.error(lang === "zh" ? "请填写所有字段" : "Please fill all fields");
+      return;
+    }
+    try {
+      await transferMutation.mutateAsync({
+        amount: BigInt(transferAmount),
+        toPlayer: transferPlayer,
+      });
+      toast.success(lang === "zh" ? "转账成功" : "Transfer successful");
+      setTransferAmount("");
+      setTransferPlayer("");
+    } catch (error) {
+      toast.error(lang === "zh" ? "转账失败" : "Transfer failed");
+    }
+  };
+
+
 
   const getStatusIcon = (status: string) => {
     if (status === "completed") return <CheckCircle className="w-5 h-5 text-green-500" />;
@@ -96,7 +141,11 @@ export default function WalletPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-blue-100">{lang === "zh" ? "ISC 余额" : "ISC Balance"}</p>
-                <p className="text-4xl font-bold">1,234.56</p>
+                {walletLoading ? (
+                  <Skeleton className="h-10 w-32 mt-1" />
+                ) : (
+                  <p className="text-4xl font-bold">{wallet?.iscBalance.toString() || "0"}</p>
+                )}
               </div>
               <Wallet className="w-12 h-12 opacity-50" />
             </div>
@@ -145,14 +194,18 @@ export default function WalletPage() {
                   onChange={(e) => setDepositAmount(e.target.value)}
                 />
               </div>
-              <div className="bg-blue-50 p-3 rounded text-sm">
-                <p className="text-muted-foreground">
-                  {lang === "zh"
-                    ? "Gas 费用: 0.5 USDT (由系统承担)"
-                    : "Gas Fee: 0.5 USDT (covered by system)"}
-                </p>
+              <div>
+                <Label htmlFor="deposit-address">{lang === "zh" ? "钱包地址" : "Wallet Address"}</Label>
+                <Input
+                  id="deposit-address"
+                  placeholder="0x..."
+                  value={depositAddress}
+                  onChange={(e) => setDepositAddress(e.target.value)}
+                />
               </div>
-              <Button className="w-full">{lang === "zh" ? "确认充值" : "Confirm Deposit"}</Button>
+              <Button onClick={handleDeposit} disabled={depositMutation.isPending} className="w-full">
+                {depositMutation.isPending ? (lang === "zh" ? "处理中..." : "Processing...") : (lang === "zh" ? "确认充值" : "Confirm Deposit")}
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -180,17 +233,18 @@ export default function WalletPage() {
                   onChange={(e) => setWithdrawAmount(e.target.value)}
                 />
               </div>
-              <div className="bg-yellow-50 p-3 rounded text-sm space-y-1">
-                <p className="text-muted-foreground">
-                  {lang === "zh" ? "Gas 费用: 0.5 USDT (由玩家承担)" : "Gas Fee: 0.5 USDT (paid by player)"}
-                </p>
-                <p className="text-muted-foreground">
-                  {lang === "zh"
-                    ? "实际到账: " + (withdrawAmount ? (parseFloat(withdrawAmount) - 0.5).toFixed(2) : "0.00") + " ISC"
-                    : "Actual amount: " + (withdrawAmount ? (parseFloat(withdrawAmount) - 0.5).toFixed(2) : "0.00") + " ISC"}
-                </p>
+              <div>
+                <Label htmlFor="withdraw-address">{lang === "zh" ? "提现地址" : "Withdrawal Address"}</Label>
+                <Input
+                  id="withdraw-address"
+                  placeholder="0x..."
+                  value={withdrawAddress}
+                  onChange={(e) => setWithdrawAddress(e.target.value)}
+                />
               </div>
-              <Button className="w-full">{lang === "zh" ? "确认提现" : "Confirm Withdraw"}</Button>
+              <Button onClick={handleWithdraw} disabled={withdrawMutation.isPending} className="w-full" variant="destructive">
+                {withdrawMutation.isPending ? (lang === "zh" ? "处理中..." : "Processing...") : (lang === "zh" ? "确认提现" : "Confirm Withdraw")}
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -209,14 +263,27 @@ export default function WalletPage() {
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="recipient">{lang === "zh" ? "收款人地址" : "Recipient Address"}</Label>
-                <Input id="recipient" placeholder="0x..." />
+                <Label htmlFor="recipient">{lang === "zh" ? "玩家名称" : "Player Name"}</Label>
+                <Input
+                  id="recipient"
+                  placeholder="Player123"
+                  value={transferPlayer}
+                  onChange={(e) => setTransferPlayer(e.target.value)}
+                />
               </div>
               <div>
                 <Label htmlFor="transfer-amount">{lang === "zh" ? "转账金额" : "Amount"}</Label>
-                <Input id="transfer-amount" type="number" placeholder="0.00" />
+                <Input
+                  id="transfer-amount"
+                  type="number"
+                  placeholder="0.00"
+                  value={transferAmount}
+                  onChange={(e) => setTransferAmount(e.target.value)}
+                />
               </div>
-              <Button className="w-full">{lang === "zh" ? "确认转账" : "Confirm Transfer"}</Button>
+              <Button onClick={handleTransfer} disabled={transferMutation.isPending} className="w-full">
+                {transferMutation.isPending ? (lang === "zh" ? "处理中..." : "Processing...") : (lang === "zh" ? "确认转账" : "Confirm Transfer")}
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -236,8 +303,15 @@ export default function WalletPage() {
               <CardTitle>{lang === "zh" ? "交易历史" : "Transaction History"}</CardTitle>
             </CardHeader>
             <CardContent>
+              {transactionsLoading ? (
+                <div className="space-y-2">
+                  {[1, 2, 3].map((i) => (
+                    <Skeleton key={i} className="h-12 w-full" />
+                  ))}
+                </div>
+              ) : (
               <div className="space-y-3">
-                {transactions.map((tx) => (
+                {(transactions || mockTransactions)?.map((tx: any) => (
                   <div key={tx.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="flex-shrink-0">
@@ -258,14 +332,14 @@ export default function WalletPage() {
                             : "Withdraw"}
                         </p>
                         <p className="text-xs text-muted-foreground truncate">{tx.txHash}</p>
-                        <p className="text-xs text-muted-foreground">{tx.date}</p>
+                        <p className="text-xs text-muted-foreground">{tx.date || new Date().toLocaleString()}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 flex-shrink-0">
                       <div className="text-right">
                         <p className={`font-medium ${tx.type === "deposit" ? "text-green-600" : "text-red-600"}`}>
                           {tx.type === "deposit" ? "+" : "-"}
-                          {tx.amount}
+                          {tx.amount || tx.amount?.toString()}
                         </p>
                         <Badge className={getStatusColor(tx.status)} variant="outline">
                           {tx.status === "completed"
@@ -282,6 +356,7 @@ export default function WalletPage() {
                   </div>
                 ))}
               </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

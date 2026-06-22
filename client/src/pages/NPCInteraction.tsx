@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useNPCList, useNPCInteract } from "@/hooks/useGameData";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -87,18 +90,30 @@ const mockNPCs: NPC[] = [
 
 export default function NPCInteraction() {
   const { lang } = useLanguage();
+  const { data: npcListData, isLoading: npcLoading } = useNPCList();
+  const interactMutation = useNPCInteract();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedNPC, setSelectedNPC] = useState<NPC | null>(null);
   const [filterProfession, setFilterProfession] = useState<string>("all");
 
-  const filteredNPCs = mockNPCs.filter((npc) => {
+  const handleInteract = async (npcId: string) => {
+    try {
+      await interactMutation.mutateAsync({ npcId: parseInt(npcId), action: "chat" });
+      toast.success(lang === "zh" ? "与 NPC 互动成功" : "NPC interaction successful");
+    } catch (error) {
+      toast.error(lang === "zh" ? "与 NPC 互动失败" : "NPC interaction failed");
+    }
+  };
+
+  const displayNPCs = (npcListData as unknown as typeof mockNPCs) || mockNPCs;
+  const filteredNPCs = displayNPCs.filter((npc: NPC) => {
     const matchesSearch = npc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       npc.profession.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesProfession = filterProfession === "all" || npc.profession === filterProfession;
     return matchesSearch && matchesProfession;
   });
 
-  const professions = ["all", ...Array.from(new Set(mockNPCs.map((npc) => npc.profession)))];
+  const professions = ["all", ...Array.from(new Set(displayNPCs.map((npc: NPC) => npc.profession)))];
 
   const getStatusColor = (status: string) => {
     if (status === "available") return "bg-green-100 text-green-800";
@@ -146,7 +161,14 @@ export default function NPCInteraction() {
 
       {/* NPC Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredNPCs.map((npc) => (
+        {npcLoading ? (
+          <>
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-64 w-full" />
+            ))}
+          </>
+        ) : (
+        filteredNPCs.map((npc: NPC) => (
           <Card key={npc.id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <CardContent className="pt-6">
               <div className="space-y-4">
@@ -246,7 +268,8 @@ export default function NPCInteraction() {
                     size="sm"
                     variant="outline"
                     className="gap-1"
-                    disabled={npc.dailyTasks === 0}
+                    disabled={npc.dailyTasks === 0 || interactMutation.isPending}
+                    onClick={() => handleInteract(npc.id)}
                   >
                     <Briefcase className="w-4 h-4" />
                     <span className="hidden sm:inline">{lang === "zh" ? "任务" : "Task"}</span>
@@ -256,7 +279,7 @@ export default function NPCInteraction() {
                     size="sm"
                     variant="outline"
                     className="gap-1"
-                    disabled={npc.tradingGoods.length === 0}
+                    disabled={!npc.tradingGoods || npc.tradingGoods.length === 0}
                   >
                     <ShoppingCart className="w-4 h-4" />
                     <span className="hidden sm:inline">{lang === "zh" ? "交易" : "Trade"}</span>
@@ -265,7 +288,8 @@ export default function NPCInteraction() {
               </div>
             </CardContent>
           </Card>
-        ))}
+        ))
+        )}
       </div>
 
       {/* Empty State */}
@@ -288,24 +312,24 @@ export default function NPCInteraction() {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">{mockNPCs.length}</p>
+              <p className="text-2xl font-bold text-blue-600">{displayNPCs.length}</p>
               <p className="text-sm text-muted-foreground">{lang === "zh" ? "总 NPC 数" : "Total NPCs"}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-green-600">
-                {mockNPCs.filter((n) => n.status === "available").length}
+                {displayNPCs.filter((n: NPC) => n.status === "available").length}
               </p>
               <p className="text-sm text-muted-foreground">{lang === "zh" ? "可交互" : "Available"}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-purple-600">
-                {Array.from(new Set(mockNPCs.map((n) => n.profession))).length}
+                {Array.from(new Set(displayNPCs.map((n: NPC) => n.profession))).length}
               </p>
               <p className="text-sm text-muted-foreground">{lang === "zh" ? "职业类型" : "Professions"}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-orange-600">
-                {mockNPCs.reduce((sum, n) => sum + n.dailyTasks, 0)}
+                {displayNPCs.reduce((sum, n: NPC) => sum + (n.dailyTasks || 0), 0)}
               </p>
               <p className="text-sm text-muted-foreground">{lang === "zh" ? "总任务数" : "Total Tasks"}</p>
             </div>
