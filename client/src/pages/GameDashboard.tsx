@@ -1,7 +1,8 @@
 import { useLanguage } from "@/contexts/LanguageContext";
+import { usePlayerProfile, usePlayerAssets, useWalletBalance } from "@/hooks/useGameData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import {
   Wallet,
@@ -34,7 +35,12 @@ const npcActivityData = [
 ];
 
 export default function GameDashboard() {
-  const { t, lang } = useLanguage();
+  const { lang } = useLanguage();
+  const { data: player, isLoading: playerLoading } = usePlayerProfile();
+  const { data: assets, isLoading: assetsLoading } = usePlayerAssets();
+  const { data: wallet, isLoading: walletLoading } = useWalletBalance();
+
+  const isLoading = playerLoading || assetsLoading || walletLoading;
 
   return (
     <div className="space-y-6">
@@ -61,10 +67,16 @@ export default function GameDashboard() {
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,234.56</div>
-            <p className="text-xs text-muted-foreground">
-              {lang === "zh" ? "+2.5% 较上周" : "+2.5% from last week"}
-            </p>
+            {isLoading ? (
+              <Skeleton className="h-8 w-24" />
+            ) : (
+              <>
+                <div className="text-2xl font-bold">{wallet?.iscBalance.toString() || "0"}</div>
+                <p className="text-xs text-muted-foreground">
+                  {lang === "zh" ? "可用余额" : "Available balance"}
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -77,10 +89,16 @@ export default function GameDashboard() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5,678.90</div>
-            <p className="text-xs text-muted-foreground">
-              {lang === "zh" ? "+5.2% 较上月" : "+5.2% from last month"}
-            </p>
+            {isLoading ? (
+              <Skeleton className="h-8 w-24" />
+            ) : (
+              <>
+                <div className="text-2xl font-bold">{player?.totalAssets.toString() || "0"}</div>
+                <p className="text-xs text-muted-foreground">
+                  {lang === "zh" ? "总资产" : "Total assets"}
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -93,10 +111,16 @@ export default function GameDashboard() {
             <Home className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">
-              {lang === "zh" ? "总收入: 234.56 ISC/天" : "Income: 234.56 ISC/day"}
-            </p>
+            {isLoading ? (
+              <Skeleton className="h-8 w-24" />
+            ) : (
+              <>
+                <div className="text-2xl font-bold">{assets?.properties?.length || 0}</div>
+                <p className="text-xs text-muted-foreground">
+                  {lang === "zh" ? "拥有房产" : "Properties owned"}
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -109,10 +133,16 @@ export default function GameDashboard() {
             <Award className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">8</div>
-            <p className="text-xs text-muted-foreground">
-              {lang === "zh" ? "预期奖励: 456.78 ISC" : "Expected reward: 456.78 ISC"}
-            </p>
+            {isLoading ? (
+              <Skeleton className="h-8 w-24" />
+            ) : (
+              <>
+                <div className="text-2xl font-bold">{player?.level || 0}</div>
+                <p className="text-xs text-muted-foreground">
+                  {lang === "zh" ? "当前等级" : "Current level"}
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>

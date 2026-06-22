@@ -20,9 +20,11 @@ import {
   insertTreasuryTransaction,
 } from "./db";
 import { auditLogService } from "./_core/auditLog";
+import { gameRouter } from "./routers/game";
 
 export const appRouter = router({
   system: systemRouter,
+  game: gameRouter,
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
