@@ -12,6 +12,8 @@ import GameDashboard from "./pages/GameDashboard";
 import PlayerProfile from "./pages/PlayerProfile";
 import WalletPage from "./pages/WalletPage";
 import NPCInteraction from "./pages/NPCInteraction";
+import TasksPage from "./pages/TasksPage";
+import ShopPage from "./pages/ShopPage";
 
 // Admin Pages (kept for backward compatibility)
 import Dashboard from "./pages/Dashboard";
@@ -31,9 +33,9 @@ function GameRouter() {
         <Route path="/profile" component={PlayerProfile} />
         <Route path="/wallet" component={WalletPage} />
         <Route path="/npc" component={NPCInteraction} />
+        <Route path="/tasks" component={TasksPage} />
+        <Route path="/shop" component={ShopPage} />
         {/* Game routes will be added here */}
-        <Route path="/tasks" component={() => <div>Task System (Coming Soon)</div>} />
-        <Route path="/shop" component={() => <div>Shop System (Coming Soon)</div>} />
         <Route path="/real-estate" component={() => <div>Real Estate System (Coming Soon)</div>} />
         <Route path="/agriculture" component={() => <div>Agriculture System (Coming Soon)</div>} />
         <Route path="/banking" component={() => <div>Banking System (Coming Soon)</div>} />

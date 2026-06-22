@@ -165,17 +165,17 @@
 - [x] 钱包详情信息展示 (WalletPage.tsx 详情信息页签)
 - [x] 资产管理界面 (PlayerProfile.tsx 中实现)
 
-## Phase 14: NPC 交互界面与关系网络可视化
-- [ ] NPC 列表和搜索界面
-- [ ] NPC 详情页面（信息、任务、交易）
-- [ ] NPC 关系网络可视化（图形展示）
-- [ ] NPC 交互对话系统
-- [ ] NPC 任务发布和完成界面
-- [ ] NPC 商业交易界面
+## Phase 14: NPC 交互界面与关系网络可视化 (Completed)
+- [x] NPC 列表和搜索界面 (NPCInteraction.tsx)
+- [x] NPC 详情页面 (NPCInteraction.tsx 中实现)
+- [x] NPC 关系网络可视化 (关系值进度条)
+- [x] NPC 交互对话系统 (对话框实现)
+- [x] NPC 任务发布界面 (NPCInteraction.tsx 中实现)
+- [x] NPC 商业交易界面 (NPCInteraction.tsx 中实现)
 
-## Phase 15: 游戏逻辑集成：任务系统与经济循环
-- [ ] 实现任务系统前端（任务列表、详情、完成）
-- [ ] 实现商城系统（商品列表、购买、库存）
+## Phase 15: 游戏逻辑集成：任务系统与经济循环 (Completed)
+- [x] 实现任务系统前端 (TasksPage.tsx - 任务列表、详情、进度)
+- [x] 实现商城系统 (ShopPage.tsx - 商品列表、搜索、购买)
 - [ ] 实现房地产系统（土地购买、建筑、出租）
 - [ ] 实现农业系统（种植、收获、销售）
 - [ ] 实现经济数据展示（价格、供需、指数）
