@@ -97,8 +97,8 @@ export async function createIpRateLimiter() {
   return rateLimit({
     store: store as unknown as Store,
     windowMs: 1 * 60 * 1000, // 1 minute
-    max: 100, // 100 requests per minute per IP
-    message: 'Too many requests from this IP, please try again after an hour.',
+    max: 300, // 300 requests per minute per IP (increased for better UX)
+    message: 'Too many requests from this IP, please try again after a minute.',
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req: Request) => {
@@ -135,7 +135,7 @@ export async function createUserRateLimiter() {
   return rateLimit({
     store: store as unknown as Store,
     windowMs: 1 * 60 * 1000, // 1 minute
-    max: 50, // 50 requests per minute per user
+    max: 200, // 200 requests per minute per user (increased for better UX)
     message: 'Too many requests from this user, please try again after a minute.',
     standardHeaders: true,
     legacyHeaders: false,
