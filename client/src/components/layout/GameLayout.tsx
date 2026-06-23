@@ -18,6 +18,7 @@ import {
   Sun,
   Moon,
   Globe,
+  Gamepad2,
 } from "lucide-react";
 
 interface GameLayoutProps {
@@ -33,6 +34,7 @@ export default function GameLayout({ children }: GameLayoutProps) {
 
   const navigationItems = [
     { label: t("nav.dashboard") || "Dashboard", icon: Home, path: "/" },
+    { label: t("nav.gameWorld") || "Game World", icon: Gamepad2, path: "/world" },
     { label: t("nav.npc") || "NPC", icon: Users, path: "/npc" },
     { label: t("nav.tasks") || "Tasks", icon: Briefcase, path: "/tasks" },
     { label: t("nav.shop") || "Shop", icon: ShoppingCart, path: "/shop" },

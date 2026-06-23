@@ -4,6 +4,7 @@ const translations = {
   zh: {
     // Navigation
     "nav.dashboard": "仪表盘",
+    "nav.gameWorld": "游戏世界",
     "nav.secretKey": "密令管理",
     "nav.contractParams": "合约参数",
     "nav.eventLogs": "交互日志",
@@ -144,6 +145,7 @@ const translations = {
   en: {
     // Navigation
     "nav.dashboard": "Dashboard",
+    "nav.gameWorld": "Game World",
     "nav.secretKey": "Secret Key",
     "nav.contractParams": "Contract Params",
     "nav.eventLogs": "Event Logs",
