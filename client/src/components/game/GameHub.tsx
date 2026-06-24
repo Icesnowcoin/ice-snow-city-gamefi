@@ -20,11 +20,12 @@ import GameProperty from "./GameProperty";
 import GameFarm from "./GameFarm";
 import GameShop from "./GameShop";
 import GameSocial from "./GameSocial";
+import { GameSceneSystem } from "./GameSceneSystem";
 
-type GameTab = "scene" | "economy" | "tasks" | "property" | "farm" | "shop" | "social";
+type GameTab = "scenes" | "scene" | "economy" | "tasks" | "property" | "farm" | "shop" | "social";
 
 export const GameHub: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<GameTab>("scene");
+  const [activeTab, setActiveTab] = useState<GameTab>("scenes");
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [gameTime, setGameTime] = useState(0);
 
@@ -39,7 +40,8 @@ export const GameHub: React.FC = () => {
   const displayTime = `${String(Math.floor(gameTime / 100)).padStart(2, "0")}:${String((gameTime % 100) * 0.6).padStart(2, "0")}`;
 
   const tabs: { id: GameTab; label: string; icon: React.ReactNode }[] = [
-    { id: "scene", label: "场景", icon: <MapPin className="w-4 h-4" /> },
+    { id: "scenes", label: "🏙️ 城市", icon: <MapPin className="w-4 h-4" /> },
+    { id: "scene", label: "游戏", icon: <MapPin className="w-4 h-4" /> },
     { id: "economy", label: "经济", icon: <Zap className="w-4 h-4" /> },
     { id: "tasks", label: "任务", icon: <Clock className="w-4 h-4" /> },
     { id: "property", label: "房产", icon: <Home className="w-4 h-4" /> },
@@ -50,6 +52,8 @@ export const GameHub: React.FC = () => {
 
   const renderContent = () => {
     switch (activeTab) {
+      case "scenes":
+        return <GameSceneSystem />;
       case "scene":
         return <PlayableGameScene />;
       case "economy":
@@ -103,7 +107,7 @@ export const GameHub: React.FC = () => {
 
       {/* 底部标签栏 */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900 border-t border-blue-500 p-2">
-        <div className="grid grid-cols-7 gap-1 max-w-full">
+        <div className="grid grid-cols-8 gap-1 max-w-full">
           {tabs.map((tab) => (
             <Button
               key={tab.id}
