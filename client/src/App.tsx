@@ -17,6 +17,7 @@ import ShopPage from "./pages/ShopPage";
 import RealEstatePage from "./pages/RealEstatePage";
 import AgriculturePage from "./pages/AgriculturePage";
 import RTSGameEngine from "./components/game/RTSGameEngine";
+import GameHub from "./components/game/GameHub";
 
 // Admin Pages (kept for backward compatibility)
 import Dashboard from "./pages/Dashboard";
@@ -41,6 +42,7 @@ function GameRouter() {
         <Route path="/real-estate" component={RealEstatePage} />
         <Route path="/agriculture" component={AgriculturePage} />
         <Route path="/world" component={RTSGameEngine} />
+        <Route path="/game" component={GameHub} />
         {/* Game routes will be added here */}
         <Route path="/banking" component={() => <div>Banking System (Coming Soon)</div>} />
         <Route path="/settings" component={() => <div>Settings (Coming Soon)</div>} />

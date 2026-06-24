@@ -34,6 +34,7 @@ export default function GameLayout({ children }: GameLayoutProps) {
 
   const navigationItems = [
     { label: t("nav.dashboard") || "Dashboard", icon: Home, path: "/" },
+    { label: "Game Hub", icon: Gamepad2, path: "/game" },
     { label: t("nav.gameWorld") || "Game World", icon: Gamepad2, path: "/world" },
     { label: t("nav.npc") || "NPC", icon: Users, path: "/npc" },
     { label: t("nav.tasks") || "Tasks", icon: Briefcase, path: "/tasks" },
