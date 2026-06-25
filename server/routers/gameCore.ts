@@ -584,9 +584,9 @@ function dispatchAction(playerId: string, action: GameAction): GameState {
 
 export const gameCoreRouter = router({
   // Game state queries
-  getState: protectedProcedure.query(({ ctx }) => getGameState(ctx.user.id)),
+  getState: protectedProcedure.query(({ ctx }) => getGameState(String(ctx.user.id))),
   getPlayerStats: protectedProcedure.query(({ ctx }) => {
-    const state = getGameState(ctx.user.id);
+    const state = getGameState(String(ctx.user.id));
     return {
       level: state.player.level,
       experience: state.player.experience,
@@ -598,7 +598,7 @@ export const gameCoreRouter = router({
     };
   }),
   getWalletBalance: protectedProcedure.query(({ ctx }) => {
-    const state = getGameState(ctx.user.id);
+    const state = getGameState(String(ctx.user.id));
     return {
       money: state.wallet.money,
       isc: state.wallet.isc,
@@ -611,64 +611,78 @@ export const gameCoreRouter = router({
   gainExperience: protectedProcedure
     .input(z.object({ amount: z.number().positive() }))
     .mutation(({ ctx, input }) => {
-      const action = PlayerService.gainExperience(getGameState(ctx.user.id), input.amount);
-      return dispatchAction(ctx.user.id, action);
+      const userId = String(ctx.user.id);
+      const action = PlayerService.gainExperience(getGameState(userId), input.amount);
+      return dispatchAction(userId, action);
     }),
 
   // NPC actions
   interactWithNPC: protectedProcedure
     .input(z.object({ npcId: z.string(), type: z.enum(["greet", "talk", "trade"]).default("greet") }))
     .mutation(({ ctx, input }) => {
-      const action = NPCService.interactWithNPC(getGameState(ctx.user.id), input.npcId, input.type);
-      return dispatchAction(ctx.user.id, action);
+      const userId = String(ctx.user.id);
+      const action = NPCService.interactWithNPC(getGameState(userId), input.npcId, input.type);
+      return dispatchAction(userId, action);
     }),
 
   // Economy actions
   bankDeposit: protectedProcedure
     .input(z.object({ amount: z.number().positive() }))
     .mutation(({ ctx, input }) => {
-      const action = EconomyService.bankDeposit(getGameState(ctx.user.id), input.amount);
-      return dispatchAction(ctx.user.id, action);
+      const userId = String(ctx.user.id);
+      const action = EconomyService.bankDeposit(getGameState(userId), input.amount);
+      return dispatchAction(userId, action);
     }),
   bankWithdraw: protectedProcedure
     .input(z.object({ amount: z.number().positive() }))
     .mutation(({ ctx, input }) => {
-      const action = EconomyService.bankWithdraw(getGameState(ctx.user.id), input.amount);
-      return dispatchAction(ctx.user.id, action);
+      const userId = String(ctx.user.id);
+      const action = EconomyService.bankWithdraw(getGameState(userId), input.amount);
+      return dispatchAction(userId, action);
     }),
   claimInterest: protectedProcedure.mutation(({ ctx }) => {
-    const action = EconomyService.claimInterest(getGameState(ctx.user.id));
-    return dispatchAction(ctx.user.id, action);
+    const userId = String(ctx.user.id);
+    const state = getGameState(userId);
+    const interest = Math.max(1, Math.floor(state.bankAccount.balance * (state.bankAccount.interestRate / 100) / 12));
+    const action = {
+      type: 'BANK_CLAIM_INTEREST' as const,
+      payload: { amount: interest },
+    };
+    return dispatchAction(userId, action);
   }),
 
   // Task actions
   acceptTask: protectedProcedure
     .input(z.object({ taskId: z.string() }))
     .mutation(({ ctx, input }) => {
-      const action = TaskService.acceptTask(getGameState(ctx.user.id), input.taskId);
-      return dispatchAction(ctx.user.id, action);
+      const userId = String(ctx.user.id);
+      const action = TaskService.acceptTask(getGameState(userId), input.taskId);
+      return dispatchAction(userId, action);
     }),
   completeTask: protectedProcedure
     .input(z.object({ taskId: z.string() }))
     .mutation(({ ctx, input }) => {
-      const state = getGameState(ctx.user.id);
+      const userId = String(ctx.user.id);
+      const state = getGameState(userId);
       const task = state.tasks.find((t) => t.id === input.taskId);
       if (!task) throw new TRPCError({ code: "NOT_FOUND", message: "Task not found" });
       const reward = TaskService.calculateTaskReward(task, 50);
       const action = TaskService.completeTask(state, input.taskId, reward);
-      return dispatchAction(ctx.user.id, action);
+      return dispatchAction(userId, action);
     }),
 
   // Game time
   advanceTime: protectedProcedure
     .input(z.object({ minutes: z.number().positive() }))
     .mutation(({ ctx, input }) => {
-      const action = GameTimeService.advanceTime(getGameState(ctx.user.id), input.minutes);
-      return dispatchAction(ctx.user.id, action);
+      const userId = String(ctx.user.id);
+      const action = GameTimeService.advanceTime(getGameState(userId), input.minutes);
+      return dispatchAction(userId, action);
     }),
   saveGame: protectedProcedure.mutation(({ ctx }) => {
+    const userId = String(ctx.user.id);
     const action = { type: "GAME_SAVE" as const, payload: { timestamp: new Date() } };
-    return dispatchAction(ctx.user.id, action);
+    return dispatchAction(userId, action);
   }),
 });
 
