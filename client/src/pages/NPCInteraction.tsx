@@ -3,6 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useNPCList, useNPCInteract } from "@/hooks/useGameData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -91,22 +92,41 @@ const mockNPCs: NPC[] = [
 export default function NPCInteraction() {
   const { lang } = useLanguage();
   const { data: npcListData, isLoading: npcLoading } = useNPCList();
-  const interactMutation = useNPCInteract();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedNPC, setSelectedNPC] = useState<NPC | null>(null);
   const [filterProfession, setFilterProfession] = useState<string>("all");
 
+  const interactMutation = trpc.game.core.interactWithNPC.useMutation({
+    onSuccess: () => {
+      toast.success(lang === "zh" ? "与 NPC 互动成功" : "NPC interaction successful");
+    },
+    onError: () => {
+      toast.error(lang === "zh" ? "与 NPC 互动失败" : "NPC interaction failed");
+    },
+  });
+
   const handleInteract = async (npcId: string) => {
     try {
-      await interactMutation.mutateAsync({ npcId: parseInt(npcId), action: "chat" });
-      toast.success(lang === "zh" ? "与 NPC 互动成功" : "NPC interaction successful");
+      await interactMutation.mutateAsync({ npcId: String(npcId), type: "greet" });
     } catch (error) {
-      toast.error(lang === "zh" ? "与 NPC 互动失败" : "NPC interaction failed");
+      console.error("Interaction error:", error);
     }
   };
 
+  // Get game state to show real NPC relationships
+  const { data: gameState } = trpc.game.core.getState.useQuery();
+  
   const displayNPCs = (npcListData as unknown as typeof mockNPCs) || mockNPCs;
-  const filteredNPCs = displayNPCs.filter((npc: NPC) => {
+  
+  // Update NPC relationships from game state
+  const updatedNPCs = displayNPCs.map((npc: NPC) => {
+    const npcRelationship = gameState?.npcRelationships.find((r: any) => r.npcId === npc.id);
+    return {
+      ...npc,
+      relationship: npcRelationship?.favorability || npc.relationship,
+    };
+  });
+  const filteredNPCs = updatedNPCs.filter((npc: NPC) => {
     const matchesSearch = npc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       npc.profession.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesProfession = filterProfession === "all" || npc.profession === filterProfession;

@@ -253,9 +253,11 @@
 - [x] 创建 React Hook useGameEngine (client/src/hooks/useGameEngine.ts)
 - [x] 编写完整的架构文档 (GAME_LOGIC_ARCHITECTURE.md)
 - [x] 完成所有缺失的 Reducer Cases (WALLET_TRANSFER, PROPERTY_SELL/RENT, FARM_PLANT/WATER/FERTILIZE, TASK_FAIL/ABANDON, SHOP_PURCHASE, INVENTORY_ADD/REMOVE)
+- [x] 创建 tRPC 路由整合游戏逻辑 (gameCoreRouter - 15+ 流程)
+- [x] 修复所有 TypeScript 类型错误
 - [ ] 将 NPCSystem 按钮连接到真实游戏逻辑
 - [ ] 将其他游戏系统按钮连接到真实游戏逻辑
-- [ ] 实现游戏状态持久化
+- [ ] 实现游戏状态持久化到数据库
 - [ ] 实现游戏状态自动保存
 
 ## Phase 19: 完整游戏流程集成

@@ -20,13 +20,12 @@ import {
   insertTreasuryTransaction,
 } from "./db";
 import { auditLogService } from "./_core/auditLog";
-import { gameRouter } from "./routers/game";
-import { gameRouter as gameCoreRouter } from "./routers/gameCore";
+import { gameRouter as gameRouterFromGame } from "./routers/game";
+import { gameRouter as gameRouterFromCore, gameCoreRouter } from "./routers/gameCore";
 
 export const appRouter = router({
   system: systemRouter,
-  game: gameRouter,
-  gameCore: gameCoreRouter,
+  game: gameRouterFromCore,
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
