@@ -545,6 +545,134 @@ export const sceneRouter = router({
 });
 
 // ============================================================================
+// GAME CORE ROUTER - Complete Game Logic Integration
+// ============================================================================
+
+import { createInitialGameState, gameReducer } from "../game-logic/reducer";
+import {
+  PlayerService,
+  NPCService,
+  EconomyService,
+  TaskService,
+  PropertyService,
+  FarmService,
+  ShopService,
+  GameTimeService,
+} from "../game-logic/services";
+import type { GameState, GameAction } from "../game-logic/types";
+
+// Game state storage (in production, persisted to database)
+const gameStates = new Map<string, GameState>();
+
+function getGameState(playerId: string): GameState {
+  if (!gameStates.has(playerId)) {
+    gameStates.set(playerId, createInitialGameState(playerId, `Player ${playerId}`));
+  }
+  return gameStates.get(playerId)!;
+}
+
+function saveGameState(playerId: string, state: GameState): void {
+  gameStates.set(playerId, state);
+}
+
+function dispatchAction(playerId: string, action: GameAction): GameState {
+  const currentState = getGameState(playerId);
+  const newState = gameReducer(currentState, action);
+  saveGameState(playerId, newState);
+  return newState;
+}
+
+export const gameCoreRouter = router({
+  // Game state queries
+  getState: protectedProcedure.query(({ ctx }) => getGameState(ctx.user.id)),
+  getPlayerStats: protectedProcedure.query(({ ctx }) => {
+    const state = getGameState(ctx.user.id);
+    return {
+      level: state.player.level,
+      experience: state.player.experience,
+      totalExperience: state.player.totalExperience,
+      tasksCompleted: state.progress.tasksCompleted,
+      npcsFriended: state.progress.npcsFriended,
+      propertiesOwned: state.progress.propertiesOwned,
+      farmsCreated: state.progress.farmsCreated,
+    };
+  }),
+  getWalletBalance: protectedProcedure.query(({ ctx }) => {
+    const state = getGameState(ctx.user.id);
+    return {
+      money: state.wallet.money,
+      isc: state.wallet.isc,
+      bankBalance: state.bankAccount.balance,
+      totalAssets: state.wallet.money + state.wallet.isc + state.bankAccount.balance,
+    };
+  }),
+
+  // Player actions
+  gainExperience: protectedProcedure
+    .input(z.object({ amount: z.number().positive() }))
+    .mutation(({ ctx, input }) => {
+      const action = PlayerService.gainExperience(getGameState(ctx.user.id), input.amount);
+      return dispatchAction(ctx.user.id, action);
+    }),
+
+  // NPC actions
+  interactWithNPC: protectedProcedure
+    .input(z.object({ npcId: z.string(), type: z.enum(["greet", "talk", "trade"]).default("greet") }))
+    .mutation(({ ctx, input }) => {
+      const action = NPCService.interactWithNPC(getGameState(ctx.user.id), input.npcId, input.type);
+      return dispatchAction(ctx.user.id, action);
+    }),
+
+  // Economy actions
+  bankDeposit: protectedProcedure
+    .input(z.object({ amount: z.number().positive() }))
+    .mutation(({ ctx, input }) => {
+      const action = EconomyService.bankDeposit(getGameState(ctx.user.id), input.amount);
+      return dispatchAction(ctx.user.id, action);
+    }),
+  bankWithdraw: protectedProcedure
+    .input(z.object({ amount: z.number().positive() }))
+    .mutation(({ ctx, input }) => {
+      const action = EconomyService.bankWithdraw(getGameState(ctx.user.id), input.amount);
+      return dispatchAction(ctx.user.id, action);
+    }),
+  claimInterest: protectedProcedure.mutation(({ ctx }) => {
+    const action = EconomyService.claimInterest(getGameState(ctx.user.id));
+    return dispatchAction(ctx.user.id, action);
+  }),
+
+  // Task actions
+  acceptTask: protectedProcedure
+    .input(z.object({ taskId: z.string() }))
+    .mutation(({ ctx, input }) => {
+      const action = TaskService.acceptTask(getGameState(ctx.user.id), input.taskId);
+      return dispatchAction(ctx.user.id, action);
+    }),
+  completeTask: protectedProcedure
+    .input(z.object({ taskId: z.string() }))
+    .mutation(({ ctx, input }) => {
+      const state = getGameState(ctx.user.id);
+      const task = state.tasks.find((t) => t.id === input.taskId);
+      if (!task) throw new TRPCError({ code: "NOT_FOUND", message: "Task not found" });
+      const reward = TaskService.calculateTaskReward(task, 50);
+      const action = TaskService.completeTask(state, input.taskId, reward);
+      return dispatchAction(ctx.user.id, action);
+    }),
+
+  // Game time
+  advanceTime: protectedProcedure
+    .input(z.object({ minutes: z.number().positive() }))
+    .mutation(({ ctx, input }) => {
+      const action = GameTimeService.advanceTime(getGameState(ctx.user.id), input.minutes);
+      return dispatchAction(ctx.user.id, action);
+    }),
+  saveGame: protectedProcedure.mutation(({ ctx }) => {
+    const action = { type: "GAME_SAVE" as const, payload: { timestamp: new Date() } };
+    return dispatchAction(ctx.user.id, action);
+  }),
+});
+
+// ============================================================================
 // MAIN GAME ROUTER
 // ============================================================================
 
@@ -554,6 +682,7 @@ export const gameRouter = router({
   economy: economyRouter,
   task: taskRouter,
   scene: sceneRouter,
+  core: gameCoreRouter,
 
   /**
    * 获取游戏全局状态
