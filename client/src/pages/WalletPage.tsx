@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useWalletBalance, useWalletTransactions, useDeposit, useWithdraw, useTransfer } from "@/hooks/useGameData";
+import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,19 +26,51 @@ import {
 
 export default function WalletPage() {
   const { lang } = useLanguage();
-  const { data: wallet, isLoading: walletLoading } = useWalletBalance();
-  const { data: transactions, isLoading: transactionsLoading } = useWalletTransactions();
-  const depositMutation = useDeposit();
-  const withdrawMutation = useWithdraw();
-  const transferMutation = useTransfer();
+  
+  // Get wallet balance from game state
+  const { data: gameState, isLoading: walletLoading } = trpc.game.core.getState.useQuery();
+  const wallet = gameState ? {
+    balance: gameState.wallet.money,
+    iscBalance: gameState.wallet.isc,
+    bankBalance: gameState.bankAccount?.balance || 0,
+    totalAssets: gameState.wallet.money + gameState.wallet.isc + (gameState.bankAccount?.balance || 0),
+  } : null;
+  
+  // Bank operations
+  const depositMutation = trpc.game.core.bankDeposit.useMutation({
+    onSuccess: () => {
+      toast.success(lang === "zh" ? "存款成功" : "Deposit successful");
+      setDepositAmount("");
+    },
+    onError: () => {
+      toast.error(lang === "zh" ? "存款失败" : "Deposit failed");
+    },
+  });
+  
+  const withdrawMutation = trpc.game.core.bankWithdraw.useMutation({
+    onSuccess: () => {
+      toast.success(lang === "zh" ? "取款成功" : "Withdrawal successful");
+      setWithdrawAmount("");
+    },
+    onError: () => {
+      toast.error(lang === "zh" ? "取款失败" : "Withdrawal failed");
+    },
+  });
+  
+  const claimInterestMutation = trpc.game.core.claimInterest.useMutation({
+    onSuccess: () => {
+      toast.success(lang === "zh" ? "领取利息成功" : "Interest claimed successfully");
+    },
+    onError: () => {
+      toast.error(lang === "zh" ? "领取利息失败" : "Interest claim failed");
+    },
+  });
+  
+  const transactionsLoading = walletLoading;
 
   const [copied, setCopied] = useState(false);
   const [depositAmount, setDepositAmount] = useState("");
-  const [depositAddress, setDepositAddress] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
-  const [withdrawAddress, setWithdrawAddress] = useState("");
-  const [transferAmount, setTransferAmount] = useState("");
-  const [transferPlayer, setTransferPlayer] = useState("");
 
   const handleCopy = () => {
     setCopied(true);
@@ -65,54 +97,36 @@ export default function WalletPage() {
   ];
 
   const handleDeposit = async () => {
-    if (!depositAmount || !depositAddress) {
-      toast.error(lang === "zh" ? "请填写所有字段" : "Please fill all fields");
+    if (!depositAmount) {
+      toast.error(lang === "zh" ? "请输入金额" : "Please enter amount");
       return;
     }
     try {
       await depositMutation.mutateAsync({
-        amount: BigInt(depositAmount),
-        address: depositAddress,
+        amount: parseInt(depositAmount),
       });
-      toast.success(lang === "zh" ? "充值成功" : "Deposit successful");
-      setDepositAmount("");
-      setDepositAddress("");
     } catch (error) {
       toast.error(lang === "zh" ? "充值失败" : "Deposit failed");
     }
   };
 
   const handleWithdraw = async () => {
-    if (!withdrawAmount || !withdrawAddress) {
-      toast.error(lang === "zh" ? "请填写所有字段" : "Please fill all fields");
+    if (!withdrawAmount) {
+      toast.error(lang === "zh" ? "请输入金额" : "Please enter amount");
       return;
     }
     try {
       await withdrawMutation.mutateAsync({
-        amount: BigInt(withdrawAmount),
-        address: withdrawAddress,
+        amount: parseInt(withdrawAmount),
       });
-      toast.success(lang === "zh" ? "提现成功" : "Withdrawal successful");
-      setWithdrawAmount("");
-      setWithdrawAddress("");
     } catch (error) {
       toast.error(lang === "zh" ? "提现失败" : "Withdrawal failed");
     }
   };
 
-  const handleTransfer = async () => {
-    if (!transferAmount || !transferPlayer) {
-      toast.error(lang === "zh" ? "请填写所有字段" : "Please fill all fields");
-      return;
-    }
+  const handleClaimInterest = async () => {
     try {
-      await transferMutation.mutateAsync({
-        amount: BigInt(transferAmount),
-        toPlayer: transferPlayer,
-      });
-      toast.success(lang === "zh" ? "转账成功" : "Transfer successful");
-      setTransferAmount("");
-      setTransferPlayer("");
+      await claimInterestMutation.mutateAsync();
     } catch (error) {
       toast.error(lang === "zh" ? "转账失败" : "Transfer failed");
     }
@@ -185,22 +199,13 @@ export default function WalletPage() {
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="deposit-amount">{lang === "zh" ? "充值金额" : "Amount"}</Label>
+                <Label htmlFor="deposit-amount">{lang === "zh" ? "存款金额" : "Deposit Amount"}</Label>
                 <Input
                   id="deposit-amount"
                   type="number"
                   placeholder="0.00"
                   value={depositAmount}
                   onChange={(e) => setDepositAmount(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="deposit-address">{lang === "zh" ? "钱包地址" : "Wallet Address"}</Label>
-                <Input
-                  id="deposit-address"
-                  placeholder="0x..."
-                  value={depositAddress}
-                  onChange={(e) => setDepositAddress(e.target.value)}
                 />
               </div>
               <Button onClick={handleDeposit} disabled={depositMutation.isPending} className="w-full">
@@ -233,15 +238,7 @@ export default function WalletPage() {
                   onChange={(e) => setWithdrawAmount(e.target.value)}
                 />
               </div>
-              <div>
-                <Label htmlFor="withdraw-address">{lang === "zh" ? "提现地址" : "Withdrawal Address"}</Label>
-                <Input
-                  id="withdraw-address"
-                  placeholder="0x..."
-                  value={withdrawAddress}
-                  onChange={(e) => setWithdrawAddress(e.target.value)}
-                />
-              </div>
+
               <Button onClick={handleWithdraw} disabled={withdrawMutation.isPending} className="w-full" variant="destructive">
                 {withdrawMutation.isPending ? (lang === "zh" ? "处理中..." : "Processing...") : (lang === "zh" ? "确认提现" : "Confirm Withdraw")}
               </Button>
@@ -249,44 +246,7 @@ export default function WalletPage() {
           </DialogContent>
         </Dialog>
 
-        {/* Transfer */}
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="h-auto py-4 flex flex-col items-center gap-2" variant="outline">
-              <Send className="w-6 h-6" />
-              <span>{lang === "zh" ? "转账" : "Transfer"}</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{lang === "zh" ? "转账 ISC" : "Transfer ISC"}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="recipient">{lang === "zh" ? "玩家名称" : "Player Name"}</Label>
-                <Input
-                  id="recipient"
-                  placeholder="Player123"
-                  value={transferPlayer}
-                  onChange={(e) => setTransferPlayer(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="transfer-amount">{lang === "zh" ? "转账金额" : "Amount"}</Label>
-                <Input
-                  id="transfer-amount"
-                  type="number"
-                  placeholder="0.00"
-                  value={transferAmount}
-                  onChange={(e) => setTransferAmount(e.target.value)}
-                />
-              </div>
-              <Button onClick={handleTransfer} disabled={transferMutation.isPending} className="w-full">
-                {transferMutation.isPending ? (lang === "zh" ? "处理中..." : "Processing...") : (lang === "zh" ? "确认转账" : "Confirm Transfer")}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+
       </div>
 
       {/* Tabs */}
@@ -311,7 +271,7 @@ export default function WalletPage() {
                 </div>
               ) : (
               <div className="space-y-3">
-                {(transactions || mockTransactions)?.map((tx: any) => (
+                {mockTransactions?.map((tx: any) => (
                   <div key={tx.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="flex-shrink-0">

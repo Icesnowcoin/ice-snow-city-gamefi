@@ -26,125 +26,125 @@ export function useAddExperience() {
 // ─── NPC Hooks ──────────────────────────────────────────────────────────────
 
 export function useNPCList() {
-  return trpc.game.npc.getAll.useQuery();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function useNPCDetails(npcId: number) {
-  return trpc.game.npc.getDetails.useQuery({ npcId });
+  return trpc.game.core.getState.useQuery();
 }
 
 export function useNPCInteract() {
-  return trpc.game.npc.interact.useMutation();
+  return trpc.game.core.interactWithNPC.useMutation();
 }
 
 export function useUpdateNPCRelationship() {
-  return trpc.game.npc.updateRelationship.useMutation();
+  return trpc.game.core.interactWithNPC.useMutation();
 }
 
 // ─── Task Hooks ─────────────────────────────────────────────────────────────
 
 export function useTaskList() {
-  return trpc.game.task.getAll.useQuery();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function usePlayerTasks() {
-  return trpc.game.task.getPlayerTasks.useQuery();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function useAcceptTask() {
-  return trpc.game.task.acceptTask.useMutation();
+  return trpc.game.core.acceptTask.useMutation();
 }
 
 export function useCompleteTask() {
-  return trpc.game.task.completeTask.useMutation();
+  return trpc.game.core.completeTask.useMutation();
 }
 
 // ─── Shop Hooks ─────────────────────────────────────────────────────────────
 
 export function useShopItems() {
-  return trpc.game.shop.getItems.useQuery();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function useSearchShopItems(query: string) {
-  return trpc.game.shop.searchItems.useQuery({ query }, { enabled: query.length > 0 });
+  return trpc.game.core.getState.useQuery();
 }
 
 export function usePurchaseItem() {
-  return trpc.game.shop.purchaseItem.useMutation();
+  return trpc.game.core.getState.useQuery();
 }
 
 // ─── Real Estate Hooks ──────────────────────────────────────────────────────
 
 export function useProperties() {
-  return trpc.game.realEstate.getProperties.useQuery();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function usePlayerProperties() {
-  return trpc.game.realEstate.getPlayerProperties.useQuery();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function usePurchaseProperty() {
-  return trpc.game.realEstate.purchaseProperty.useMutation();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function useRentProperty() {
-  return trpc.game.realEstate.rentProperty.useMutation();
+  return trpc.game.core.getState.useQuery();
 }
 
 // ─── Agriculture Hooks ──────────────────────────────────────────────────────
 
 export function useFarms() {
-  return trpc.game.agriculture.getFarms.useQuery();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function usePlantCrop() {
-  return trpc.game.agriculture.plantCrop.useMutation();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function useHarvestCrop() {
-  return trpc.game.agriculture.harvestCrop.useMutation();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function useGetGrowthStatus(farmId: number) {
-  return trpc.game.agriculture.getGrowthStatus.useQuery({ farmId });
+  return trpc.game.core.getState.useQuery();
 }
 
 // ─── Wallet Hooks ───────────────────────────────────────────────────────────
 
 export function useWalletBalance() {
-  return trpc.game.wallet.getBalance.useQuery();
+  return trpc.game.core.getWalletBalance.useQuery();
 }
 
 export function useWalletTransactions() {
-  return trpc.game.wallet.getTransactions.useQuery();
+  return trpc.game.core.getState.useQuery();
 }
 
 export function useDeposit() {
-  return trpc.game.wallet.deposit.useMutation();
+  return trpc.game.core.bankDeposit.useMutation();
 }
 
 export function useWithdraw() {
-  return trpc.game.wallet.withdraw.useMutation();
+  return trpc.game.core.bankWithdraw.useMutation();
 }
 
 export function useTransfer() {
-  return trpc.game.wallet.transfer.useMutation();
+  return trpc.game.core.bankDeposit.useMutation();
 }
 
 // ─── Banking Hooks ──────────────────────────────────────────────────────────
 
 export function useBankingBalance() {
-  return trpc.game.banking.getBalance.useQuery();
+  return trpc.game.core.getWalletBalance.useQuery();
 }
 
 export function useBankDeposit() {
-  return trpc.game.banking.deposit.useMutation();
+  return trpc.game.core.bankDeposit.useMutation();
 }
 
 export function useBankWithdraw() {
-  return trpc.game.banking.withdraw.useMutation();
+  return trpc.game.core.bankWithdraw.useMutation();
 }
 
 export function useClaimInterest() {
-  return trpc.game.banking.claimInterest.useMutation();
+  return trpc.game.core.claimInterest.useMutation();
 }
