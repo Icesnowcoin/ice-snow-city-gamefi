@@ -235,3 +235,35 @@
 - [x] 建筑和单位的健康条显示
 - [x] 选择反馈和悬停效果
 - [x] 完整的 UI 和快速操作菜单
+
+
+## Phase 18: 游戏逻辑架构重构 (Completed)
+- [x] 研究 Farmhand 项目架构 (✅ 完成 - GITHUB_RESEARCH_FINDINGS.md)
+- [x] 创建中央 GameState 接口和类型定义 (server/game-logic/types.ts)
+- [x] 实现 GameReducer（处理所有游戏操作）(server/game-logic/reducer.ts)
+- [x] 创建 PlayerService 类（玩家系统）(server/game-logic/services.ts)
+- [x] 创建 NPCService 类（NPC 系统）(server/game-logic/services.ts)
+- [x] 创建 EconomyService 类（经济系统）(server/game-logic/services.ts)
+- [x] 创建 FarmService 类（农业系统）(server/game-logic/services.ts)
+- [x] 创建 PropertyService 类（房地产系统）(server/game-logic/services.ts)
+- [x] 创建 TaskService 类（任务系统）(server/game-logic/services.ts)
+- [x] 创建 ShopService 类（商城系统）(server/game-logic/services.ts)
+- [x] 为所有 Service 编写单元测试 (72 个测试全部通过)
+- [x] 添加完整的集成测试 (13 个集成测试全部通过 - 85 个测试总计)
+- [x] 创建 React Hook useGameEngine (client/src/hooks/useGameEngine.ts)
+- [x] 编写完整的架构文档 (GAME_LOGIC_ARCHITECTURE.md)
+- [x] 完成所有缺失的 Reducer Cases (WALLET_TRANSFER, PROPERTY_SELL/RENT, FARM_PLANT/WATER/FERTILIZE, TASK_FAIL/ABANDON, SHOP_PURCHASE, INVENTORY_ADD/REMOVE)
+- [ ] 将 NPCSystem 按钮连接到真实游戏逻辑
+- [ ] 将其他游戏系统按钮连接到真实游戏逻辑
+- [ ] 实现游戏状态持久化
+- [ ] 实现游戏状态自动保存
+
+## Phase 19: 完整游戏流程集成
+- [ ] 测试所有游戏系统的交互
+- [ ] 实现玩家进度保存和加载
+- [ ] 添加游戏时间系统（日/月/年）
+- [ ] 实现 NPC 日程和活动系统
+- [ ] 实现经济循环和市场价格变化
+- [ ] 添加游戏事件和随机事件
+- [ ] 实现成就和排行榜系统
+- [ ] 性能测试和优化
