@@ -16,14 +16,14 @@ export const GameEconomy: React.FC = () => {
 
   // 获取玩家经济数据
   const { data: economy, isLoading: economyLoading, refetch: refetchEconomy } = 
-    trpc.gameCore.economy.getWallet.useQuery(undefined, { staleTime: 10000 });
+    trpc.game.economy.getWallet.useQuery(undefined, { staleTime: 10000 });
 
   // 获取交易历史
   const { data: transactions, isLoading: transactionsLoading } = 
-    trpc.gameCore.economy.getPriceHistory.useQuery(undefined, { staleTime: 30000 });
+    trpc.game.economy.getPriceHistory.useQuery(undefined, { staleTime: 30000 });
 
   // 充值 mutation
-  const depositMutation = trpc.gameCore.economy.deposit.useMutation({
+  const depositMutation = trpc.game.economy.deposit.useMutation({
     onSuccess: () => {
       setAmount("");
       refetchEconomy();
@@ -35,7 +35,7 @@ export const GameEconomy: React.FC = () => {
   });
 
   // 提现 mutation
-  const withdrawMutation = trpc.gameCore.economy.deposit.useMutation({
+  const withdrawMutation = trpc.game.economy.deposit.useMutation({
     onSuccess: () => {
       setAmount("");
       refetchEconomy();
@@ -47,7 +47,7 @@ export const GameEconomy: React.FC = () => {
   });
 
   // 投资 mutation
-  const investMutation = trpc.gameCore.economy.deposit.useMutation({
+  const investMutation = trpc.game.economy.deposit.useMutation({
     onSuccess: () => {
       setAmount("");
       refetchEconomy();

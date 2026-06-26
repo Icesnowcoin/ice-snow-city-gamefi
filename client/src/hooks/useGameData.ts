@@ -12,7 +12,7 @@ export function usePlayerProfile() {
 }
 
 export function usePlayerAssets() {
-  return trpc.game.player.getAssets.useQuery();
+  return trpc.game.core.getWalletBalance.useQuery();
 }
 
 export function useUpdateProfile() {

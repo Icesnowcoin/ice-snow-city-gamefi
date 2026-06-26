@@ -10,10 +10,10 @@ export const GameShop: React.FC = () => {
 
   // 获取商品列表
   const { data: items, isLoading: itemsLoading, refetch: refetchItems } = 
-    trpc.gameCore.npc.getNpcsByScene.useQuery({ scene: "shop" }, { staleTime: 30000 });
+    trpc.game.npc.getNpcsByScene.useQuery({ scene: "shop" }, { staleTime: 30000 });
 
   // 购买 mutation
-  const buyMutation = trpc.gameCore.npc.interactWithNpc.useMutation({
+  const buyMutation = trpc.game.npc.interactWithNpc.useMutation({
     onSuccess: () => {
       refetchItems();
       setQuantity(1);

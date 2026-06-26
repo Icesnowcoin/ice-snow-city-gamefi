@@ -71,7 +71,7 @@ export default function GameDashboard() {
               <Skeleton className="h-8 w-24" />
             ) : (
               <>
-                <div className="text-2xl font-bold">{wallet?.iscBalance.toString() || "0"}</div>
+                <div className="text-2xl font-bold">{wallet?.isc.toString() || "0"}</div>
                 <p className="text-xs text-muted-foreground">
                   {lang === "zh" ? "可用余额" : "Available balance"}
                 </p>
@@ -93,7 +93,7 @@ export default function GameDashboard() {
               <Skeleton className="h-8 w-24" />
             ) : (
               <>
-                <div className="text-2xl font-bold">{player?.totalAssets.toString() || "0"}</div>
+                <div className="text-2xl font-bold">{wallet?.totalAssets.toString() || "0"}</div>
                 <p className="text-xs text-muted-foreground">
                   {lang === "zh" ? "总资产" : "Total assets"}
                 </p>
@@ -115,7 +115,7 @@ export default function GameDashboard() {
               <Skeleton className="h-8 w-24" />
             ) : (
               <>
-                <div className="text-2xl font-bold">{assets?.properties?.length || 0}</div>
+                <div className="text-2xl font-bold">0</div>
                 <p className="text-xs text-muted-foreground">
                   {lang === "zh" ? "拥有房产" : "Properties owned"}
                 </p>

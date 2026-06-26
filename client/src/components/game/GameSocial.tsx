@@ -9,10 +9,10 @@ export const GameSocial: React.FC = () => {
 
   // 获取 NPC 列表
   const { data: npcs, isLoading: npcsLoading, refetch: refetchNpcs } = 
-    trpc.gameCore.npc.getNpcsByScene.useQuery({ scene: "social" }, { staleTime: 30000 });
+    trpc.game.npc.getNpcsByScene.useQuery({ scene: "social" }, { staleTime: 30000 });
 
   // 互动 mutation
-  const interactMutation = trpc.gameCore.npc.interactWithNpc.useMutation({
+  const interactMutation = trpc.game.npc.interactWithNpc.useMutation({
     onSuccess: () => {
       refetchNpcs();
       console.log("互动成功");
