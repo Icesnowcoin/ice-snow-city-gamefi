@@ -18,6 +18,7 @@ import RealEstatePage from "./pages/RealEstatePage";
 import AgriculturePage from "./pages/AgriculturePage";
 import RTSGameEngine from "./components/game/RTSGameEngine";
 import GameHub from "./components/game/GameHub";
+import { SplashScreen } from "./components/SplashScreen";
 
 // Admin Pages (kept for backward compatibility)
 import Dashboard from "./pages/Dashboard";
@@ -85,6 +86,7 @@ function App() {
       <ThemeProvider defaultTheme="dark">
         <LanguageProvider>
           <TooltipProvider>
+            <SplashScreen />
             <Toaster />
             <Router />
           </TooltipProvider>
