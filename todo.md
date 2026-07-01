@@ -308,3 +308,34 @@
 - [x] 实现 CharacterNFT ERC721 合约
 - [ ] 部署到 BSC 测试网
 - [ ] 端到端测试
+
+## Phase 24: 前端 TypeScript 错误修复 (In Progress)
+- [x] 分析 23 个 TypeScript 错误
+- [x] 修复 GameSocial 组件
+- [x] 修复 GameScene 组件
+- [ ] 修复剩余 11 个 TypeScript 错误
+- [ ] 将消费系统集成到 tRPC
+- [ ] 将升级系统集成到 tRPC
+- [ ] 配置 Hardhat 与 Solidity 工具链
+- [ ] 编译满正合约
+- [ ] 编写合约测试
+- [ ] 部署到 BSC 测试网
+- [ ] 端到端测试
+
+## 剩余 11 个 TypeScript 错误详情
+1. GameEconomy - getWallet 不存在 (1 个)
+2. GameEconomy - getPriceHistory 不存在 (1 个)
+3. GameScene - useQuery 类型不匹配 (1 个)
+4. GameScene - dialogue 属性不存在 (1 个)
+5. GameScene - displayName 属性不存在 (1 个)
+6. GameScene - description 属性不存在 (1 个)
+7. GameScene - features 属性不存在 (3 个)
+8. 其他 (2 个)
+
+## 下一步计划
+1. 添加 getWallet 和 getPriceHistory 到 economy router
+2. 修复 GameScene useQuery 调用
+3. 修复 NPC 数据结构
+4. 集成消费和升级系统
+5. 配置 Solidity 工具链
+6. 部署到 BSC 测试网
