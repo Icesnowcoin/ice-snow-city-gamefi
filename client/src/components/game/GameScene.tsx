@@ -18,19 +18,19 @@ export const GameScene: React.FC<GameSceneProps> = ({ sceneName }) => {
   const [isInteracting, setIsInteracting] = useState(false);
 
   // 获取场景信息
-  const { data: scene, isLoading: sceneLoading } = trpc.game.scene.getScene.useQuery(
+  const { data: scene, isLoading: sceneLoading } = trpc.game.scene.getSceneList.useQuery(
     { sceneName },
     { staleTime: 30000 }
   );
 
   // 获取场景 NPC
   const { data: npcs, isLoading: npcsLoading } = trpc.game.npc.getNpcsByScene.useQuery(
-    { scene: sceneName },
+    { sceneId: sceneName },
     { staleTime: 30000 }
   );
 
   // NPC 交互 mutation
-  const interactMutation = trpc.game.npc.interactWithNpc.useMutation({
+  const interactMutation = trpc.game.npc.interactWithNPC.useMutation({
     onSuccess: (data) => {
       console.log("NPC 对话:", data.dialogue);
       setIsInteracting(false);

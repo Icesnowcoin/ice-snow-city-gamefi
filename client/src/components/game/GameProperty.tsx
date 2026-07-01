@@ -9,10 +9,10 @@ export const GameProperty: React.FC = () => {
 
   // 获取玩家房产
   const { data: properties, isLoading: propertiesLoading, refetch: refetchProperties } = 
-    trpc.game.npc.getNpcsByScene.useQuery({ scene: "real_estate" }, { staleTime: 30000 });
+    trpc.game.npc.getNpcsByScene.useQuery({ sceneId: "real_estate" }, { staleTime: 30000 });
 
   // 购买房产 mutation
-  const buyMutation = trpc.game.npc.interactWithNpc.useMutation({
+  const buyMutation = trpc.game.npc.interactWithNPC.useMutation({
     onSuccess: () => {
       refetchProperties();
       console.log("房产购买成功");
