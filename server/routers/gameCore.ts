@@ -12,6 +12,8 @@ import { TRPCError } from "@trpc/server";
 
 import { router, protectedProcedure } from "../_core/trpc";
 
+
+
 export const playerRouter = router({
   /**
    * 获取玩家信息
@@ -551,6 +553,95 @@ export const gameCoreRouter = router({
 });
 
 // ============================================================================
+// WORK SYSTEM
+// ============================================================================
+
+import { WORK_TYPES, getAvailableProfessions, calculateWorkSalary, calculateWorkExperience } from "../game-logic/workSystem";
+
+export const workRouter = router({
+  /**
+   * Get available jobs for player
+   */
+  getAvailableJobs: protectedProcedure.query(async ({ ctx }) => {
+    // TODO: Get actual player level from database
+    const playerLevel = 5;
+    const jobs = getAvailableProfessions(playerLevel);
+    return jobs;
+  }),
+
+  /**
+   * Get all jobs
+   */
+  getAllJobs: protectedProcedure.query(async () => {
+    return Object.values(WORK_TYPES);
+  }),
+
+  /**
+   * Start work session
+   */
+  startWork: protectedProcedure
+    .input(z.object({ jobId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const job = WORK_TYPES[input.jobId];
+      if (!job) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Job not found",
+        });
+      }
+
+      // TODO: Save work session to database
+      return {
+        success: true,
+        job,
+        startTime: Date.now(),
+        endTime: Date.now() + 3600000, // 1 hour
+      };
+    }),
+
+  /**
+   * Complete work session
+   */
+  completeWork: protectedProcedure
+    .input(z.object({ jobId: z.string(), professionLevel: z.number().default(0) }))
+    .mutation(async ({ ctx, input }) => {
+      const job = WORK_TYPES[input.jobId];
+      if (!job) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Job not found",
+        });
+      }
+
+      const salary = calculateWorkSalary(input.jobId, input.professionLevel);
+      const experience = calculateWorkExperience(input.jobId, input.professionLevel);
+
+      // TODO: Update player stats in database
+      return {
+        success: true,
+        salary,
+        experience,
+      };
+    }),
+
+  /**
+   * Get job details
+   */
+  getJobDetails: protectedProcedure
+    .input(z.object({ jobId: z.string() }))
+    .query(async ({ input }) => {
+      const job = WORK_TYPES[input.jobId];
+      if (!job) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Job not found",
+        });
+      }
+      return job;
+    }),
+});
+
+// ============================================================================
 // MAIN GAME ROUTER
 // ============================================================================
 
@@ -561,4 +652,5 @@ export const gameRouter = router({
   task: taskRouter,
   scene: sceneRouter,
   core: gameCoreRouter,
+  work: workRouter,
 });

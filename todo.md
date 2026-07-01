@@ -295,16 +295,16 @@
 - [x] 实现重试机制
 - [x] 实现保存统计信息
 
-## Phase 22: Phase 1 MVP 开发 (In Progress)
+## Phase 22: 游戏系统与合约实现 (Completed)
 - [x] 修复 30 个 TypeScript 错误
 - [x] 统一 tRPC 路径
 - [x] 实现游戏状态持久化
 - [x] 修复前端 TypeScript 错误
 - [x] 实现自动保存机制
-- [ ] 实现工作系统
-- [ ] 实现消费系统
-- [ ] 实现升级系统
-- [ ] 实现 GameCoin 合约
-- [ ] 实现 CharacterNFT 合约
+- [x] 实现工作系统 (workSystem.ts)
+- [x] 实现消费系统 (consumptionSystem.ts)
+- [x] 实现升级系统 (upgradeSystem.ts)
+- [x] 实现 GameCoin ERC20 合约
+- [x] 实现 CharacterNFT ERC721 合约
 - [ ] 部署到 BSC 测试网
 - [ ] 端到端测试
