@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,10 +10,10 @@ export const GameTasks: React.FC = () => {
 
   // 获取玩家任务
   const { data: tasks, isLoading: tasksLoading, refetch: refetchTasks } = 
-    trpc.game.task.getAvailableTasks.useQuery(undefined, { staleTime: 30000 });
+    trpc.game.task.getTaskList.useQuery(undefined, { staleTime: 30000 });
 
   // 接受任务 mutation
-  const acceptMutation = trpc.game.task.acceptTask.useMutation({
+  const acceptMutation = trpc.game.core.acceptTask.useMutation({
     onSuccess: () => {
       refetchTasks();
       console.log("任务已接受");
@@ -24,7 +24,7 @@ export const GameTasks: React.FC = () => {
   });
 
   // 完成任务 mutation
-  const completeMutation = trpc.game.task.completeTask.useMutation({
+  const completeMutation = trpc.game.core.completeTask.useMutation({
     onSuccess: () => {
       refetchTasks();
       console.log("任务已完成");

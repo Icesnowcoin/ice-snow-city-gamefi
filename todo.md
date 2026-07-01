@@ -283,10 +283,24 @@
 - [x] 实现内存缓存 + 数据库混合方案
 - [x] 支持游戏状态版本控制和备份
 
-## Phase 21: Phase 1 MVP 开发 (In Progress)
+## Phase 21: 前端 TypeScript 错误修复与自动保存 (Completed)
+- [x] 修复 GameSocial.tsx API 调用
+- [x] 修复 GameTasks.tsx API 调用
+- [x] 移除重复的 useState 导入
+- [x] 构建成功（无 TypeScript 错误）
+- [x] 实现 AutoSaveManager 类
+- [x] 实现周期性自动保存
+- [x] 实现防抖动保存
+- [x] 实现页面离开时保存
+- [x] 实现重试机制
+- [x] 实现保存统计信息
+
+## Phase 22: Phase 1 MVP 开发 (In Progress)
 - [x] 修复 30 个 TypeScript 错误
 - [x] 统一 tRPC 路径
 - [x] 实现游戏状态持久化
+- [x] 修复前端 TypeScript 错误
+- [x] 实现自动保存机制
 - [ ] 实现工作系统
 - [ ] 实现消费系统
 - [ ] 实现升级系统
