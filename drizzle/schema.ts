@@ -143,3 +143,33 @@ export const recoveryMetrics = mysqlTable("recovery_metrics", {
 
 export type RecoveryMetric = typeof recoveryMetrics.$inferSelect;
 export type InsertRecoveryMetric = typeof recoveryMetrics.$inferInsert;
+
+/**
+ * Game states table - stores player game state snapshots for persistence.
+ */
+export const gameStates = mysqlTable("game_states", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  stateJson: text("stateJson").notNull(), // Serialized GameState object
+  version: int("version").default(1).notNull(), // Version number for optimistic locking
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type GameState = typeof gameStates.$inferSelect;
+export type InsertGameState = typeof gameStates.$inferInsert;
+
+/**
+ * Game states backup table - stores versioned backups of game states.
+ */
+export const gameStatesBackup = mysqlTable("game_states_backup", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  stateJson: text("stateJson").notNull(), // Serialized GameState object
+  version: int("version").notNull(), // Version number from game_states
+  backupAt: timestamp("backupAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type GameStateBackup = typeof gameStatesBackup.$inferSelect;
+export type InsertGameStateBackup = typeof gameStatesBackup.$inferInsert;

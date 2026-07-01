@@ -257,8 +257,8 @@
 - [x] 修复所有 TypeScript 类型错误
 - [ ] 将 NPCSystem 按钮连接到真实游戏逻辑
 - [ ] 将其他游戏系统按钮连接到真实游戏逻辑
-- [ ] 实现游戏状态持久化到数据库
-- [ ] 实现游戏状态自动保存
+- [x] 实现游戏状态持久化到数据库
+- [x] 实现游戏状态自动保存（通过 saveGameStateToDb）
 
 ## Phase 19: 完整游戏流程集成
 - [ ] 测试所有游戏系统的交互
@@ -271,9 +271,22 @@
 - [ ] 性能测试和优化
 
 
-## Phase 20: Phase 1 MVP 开发 (In Progress)
+## Phase 20: 游戏状态数据库持久化 (Completed)
+- [x] 创建 game_states 表 (Drizzle schema)
+- [x] 创建 game_states_backup 表 (版本控制)
+- [x] 生成并执行 SQL 迁移
+- [x] 实现 Drizzle 持久化函数 (db.ts)
+- [x] 集成数据库持久化到 gameCore router
+- [x] 实现游戏状态序列化/反序列化
+- [x] 编写 20+ 持久化层测试
+- [x] 所有 377 个测试通过
+- [x] 实现内存缓存 + 数据库混合方案
+- [x] 支持游戏状态版本控制和备份
+
+## Phase 21: Phase 1 MVP 开发 (In Progress)
 - [x] 修复 30 个 TypeScript 错误
 - [x] 统一 tRPC 路径
+- [x] 实现游戏状态持久化
 - [ ] 实现工作系统
 - [ ] 实现消费系统
 - [ ] 实现升级系统

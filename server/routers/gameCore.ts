@@ -1,4 +1,3 @@
-import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
@@ -11,6 +10,8 @@ import { TRPCError } from "@trpc/server";
 // PLAYER SYSTEM
 // ============================================================================
 
+import { router, protectedProcedure } from "../_core/trpc";
+
 export const playerRouter = router({
   /**
    * 获取玩家信息
@@ -18,8 +19,8 @@ export const playerRouter = router({
   getProfile: protectedProcedure.query(async ({ ctx }) => {
     // 模拟玩家数据（后续连接数据库）
     return {
-      id: ctx.user.id,
-      username: ctx.user.email?.split("@")[0] || "Player",
+      id: ctx.user!.id,
+      username: ctx.user!.email?.split("@")[0] || "Player",
       level: 5,
       experience: 1250,
       stamina: 85,
@@ -98,136 +99,66 @@ export const npcRouter = router({
    * 获取当前场景的 NPC 列表
    */
   getNpcsByScene: protectedProcedure
-    .input(z.object({ scene: z.string() }))
+    .input(z.object({ sceneId: z.string() }))
     .query(async ({ input }) => {
-      // 模拟 NPC 数据
-      const npcsByScene: Record<string, any[]> = {
-        bank: [
-          {
-            id: "npc_001",
-            name: "李行长",
-            title: "Bank Manager",
-            profession: "banker",
-            avatar: "https://via.placeholder.com/100?text=李行长",
-            currentScene: "bank",
-            affinity: 50,
-            status: "acquaintance",
-          },
-          {
-            id: "npc_002",
-            name: "王柜员",
-            title: "Bank Teller",
-            profession: "banker",
-            avatar: "https://via.placeholder.com/100?text=王柜员",
-            currentScene: "bank",
-            affinity: 30,
-            status: "stranger",
-          },
-        ],
-        plaza: [
-          {
-            id: "npc_003",
-            name: "陈广场管理员",
-            title: "Plaza Manager",
-            profession: "manager",
-            avatar: "https://via.placeholder.com/100?text=陈管理员",
-            currentScene: "plaza",
-            affinity: 40,
-            status: "acquaintance",
-          },
-          {
-            id: "npc_004",
-            name: "刘商人",
-            title: "Merchant",
-            profession: "merchant",
-            avatar: "https://via.placeholder.com/100?text=刘商人",
-            currentScene: "plaza",
-            affinity: 60,
-            status: "friend",
-          },
-        ],
-        cafe: [
-          {
-            id: "npc_005",
-            name: "李咖啡师",
-            title: "Barista",
-            profession: "barista",
-            avatar: "https://via.placeholder.com/100?text=李咖啡师",
-            currentScene: "cafe",
-            affinity: 45,
-            status: "acquaintance",
-          },
+      return [
+        {
+          id: "npc_001",
+          name: "Alice",
+          scene: input.sceneId,
+          relationship: 50,
+          favorability: 75,
+        },
+        {
+          id: "npc_002",
+          name: "Bob",
+          scene: input.sceneId,
+          relationship: 30,
+          favorability: 50,
+        },
+      ];
+    }),
+
+  /**
+   * 获取 NPC 详情
+   */
+  getNpcDetail: protectedProcedure
+    .input(z.object({ npcId: z.string() }))
+    .query(async ({ input }) => {
+      return {
+        id: input.npcId,
+        name: "Alice",
+        age: 28,
+        profession: "商人",
+        personality: "热情",
+        favorability: 75,
+        relationship: 50,
+        schedule: [
+          { time: "09:00", activity: "工作" },
+          { time: "12:00", activity: "午餐" },
+          { time: "18:00", activity: "休息" },
         ],
       };
-
-      return npcsByScene[input.scene] || [];
     }),
 
   /**
    * 与 NPC 交互
    */
-  interactWithNpc: protectedProcedure
+  interact: protectedProcedure
     .input(
       z.object({
         npcId: z.string(),
-        action: z.enum(["greet", "talk", "trade", "gift", "romance"]),
+        type: z.enum(["greet", "gift", "date", "trade"]),
       })
     )
-    .mutation(async ({ ctx, input }) => {
-      // 模拟 NPC 交互
-      const dialogues: Record<string, string> = {
-        greet: "你好！很高兴见到你！",
-        talk: "最近怎么样？有什么我可以帮助你的吗？",
-        trade: "你想交易什么？",
-        gift: "谢谢你的礼物！我很喜欢！",
-        romance: "你对我很特别...",
-      };
-
+    .mutation(async ({ input }) => {
       return {
         success: true,
         npcId: input.npcId,
-        action: input.action,
-        dialogue: dialogues[input.action],
-        affinityChange: input.action === "gift" ? 10 : 5,
-        newAffinity: 55,
+        type: input.type,
+        favorabilityChange: 5,
       };
     }),
-
-  /**
-   * 获取 NPC 关系
-   */
-  getNpcRelationship: protectedProcedure
-    .input(z.object({ npcId: z.string() }))
-    .query(async ({ input }) => {
-      return {
-        npcId: input.npcId,
-        affinity: 55,
-        intimacy: 30,
-        status: "friend",
-        interactionCount: 12,
-        lastInteraction: Date.now() - 3600000,
-      };
-    }),
-
-  /**
-   * 获取所有 NPC 列表
-   */
-  getAllNpcs: protectedProcedure.query(async () => {
-    // 返回 50+ NPC 的基础数据
-    const npcs = [];
-    for (let i = 1; i <= 50; i++) {
-      npcs.push({
-        id: `npc_${String(i).padStart(3, "0")}`,
-        name: `NPC ${i}`,
-        profession: ["banker", "merchant", "farmer", "barista", "doctor"][
-          i % 5
-        ],
-        affinity: Math.floor(Math.random() * 100),
-        status: ["stranger", "acquaintance", "friend"][i % 3],
-      });
-    }
-    return npcs;
-  }),
 });
 
 // ============================================================================
@@ -236,118 +167,54 @@ export const npcRouter = router({
 
 export const economyRouter = router({
   /**
-   * 获取玩家钱包信息
+   * 获取经济数据
    */
-  getWallet: protectedProcedure.query(async ({ ctx }) => {
+  getEconomyData: protectedProcedure.query(async ({ ctx }) => {
     return {
-      playerId: ctx.user.id,
-      balance: 50000, // ISC
-      bankBalance: 25000, // ISC in bank
-      totalAssets: 75000, // ISC
-      apy: 0.05, // 5% annual percentage yield
-      monthlyInterest: (25000 * 0.05) / 12,
-      lastInterestDate: Date.now() - 86400000,
+      totalMoney: 50000,
+      totalISC: 25000,
+      bankBalance: 10000,
+      dailyIncome: 500,
+      dailyExpense: 300,
+      netIncome: 200,
     };
   }),
 
   /**
-   * 充值
+   * 存款
    */
   deposit: protectedProcedure
     .input(z.object({ amount: z.number().positive() }))
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       return {
         success: true,
         amount: input.amount,
-        newBalance: 50000 - input.amount,
-        newBankBalance: 25000 + input.amount,
-        transactionId: `txn_${Date.now()}`,
+        newBalance: 10000 + input.amount,
       };
     }),
 
   /**
-   * 提现
+   * 取款
    */
   withdraw: protectedProcedure
     .input(z.object({ amount: z.number().positive() }))
-    .mutation(async ({ ctx, input }) => {
-      if (input.amount > 25000) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Insufficient bank balance",
-        });
-      }
-
+    .mutation(async ({ input }) => {
       return {
         success: true,
         amount: input.amount,
-        newBalance: 50000 + input.amount,
-        newBankBalance: 25000 - input.amount,
-        transactionId: `txn_${Date.now()}`,
+        newBalance: 10000 - input.amount,
       };
     }),
 
   /**
-   * 转账给 NPC
+   * 领取利息
    */
-  transferToNpc: protectedProcedure
-    .input(
-      z.object({
-        npcId: z.string(),
-        amount: z.number().positive(),
-        reason: z.string().optional(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      if (input.amount > 50000) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Insufficient balance",
-        });
-      }
-
-      return {
-        success: true,
-        npcId: input.npcId,
-        amount: input.amount,
-        newBalance: 50000 - input.amount,
-        transactionId: `txn_${Date.now()}`,
-        affinityBonus: 5,
-      };
-    }),
-
-  /**
-   * 获取交易历史
-   */
-  getTransactionHistory: protectedProcedure
-    .input(z.object({ limit: z.number().default(10) }))
-    .query(async ({ input }) => {
-      const transactions = [];
-      for (let i = 0; i < input.limit; i++) {
-        transactions.push({
-          id: `txn_${i}`,
-          type: ["deposit", "withdraw", "transfer", "payment"][i % 4],
-          amount: Math.floor(Math.random() * 10000),
-          description: `Transaction ${i}`,
-          timestamp: Date.now() - i * 3600000,
-        });
-      }
-      return transactions;
-    }),
-
-  /**
-   * 获取 ISC 价格历史
-   */
-  getPriceHistory: publicProcedure.query(async () => {
-    const prices = [];
-    const basePrice = 1.0;
-    for (let i = 24; i >= 0; i--) {
-      prices.push({
-        time: new Date(Date.now() - i * 3600000).toISOString(),
-        price: basePrice + (Math.random() - 0.5) * 0.2,
-      });
-    }
-    return prices;
+  claimInterest: protectedProcedure.mutation(async ({ ctx }) => {
+    return {
+      success: true,
+      interest: 50,
+      newBalance: 10050,
+    };
   }),
 });
 
@@ -357,45 +224,23 @@ export const economyRouter = router({
 
 export const taskRouter = router({
   /**
-   * 获取可用任务列表
+   * 获取任务列表
    */
-  getAvailableTasks: protectedProcedure.query(async () => {
+  getTaskList: protectedProcedure.query(async ({ ctx }) => {
     return [
       {
         id: "task_001",
-        npcId: "npc_001",
-        npcName: "李行长",
-        title: "银行存款任务",
-        description: "在银行存入 10000 ISC",
-        taskType: "deposit",
-        reward_isc: 500,
-        reward_exp: 100,
-        difficulty: "easy",
+        title: "完成日常工作",
+        description: "完成今天的工作任务",
+        reward: 100,
         status: "available",
       },
       {
         id: "task_002",
-        npcId: "npc_004",
-        npcName: "刘商人",
-        title: "商业交易任务",
-        description: "与商人进行一次交易",
-        taskType: "trade",
-        reward_isc: 1000,
-        reward_exp: 200,
-        difficulty: "medium",
-        status: "available",
-      },
-      {
-        id: "task_003",
-        npcId: "npc_005",
-        npcName: "李咖啡师",
-        title: "咖啡店购物",
-        description: "在咖啡店购买 5 杯咖啡",
-        taskType: "purchase",
-        reward_isc: 300,
-        reward_exp: 50,
-        difficulty: "easy",
-        status: "available",
+        title: "拜访 NPC",
+        description: "拜访 Alice",
+        reward: 50,
+        status: "in_progress",
       },
     ];
   }),
@@ -405,12 +250,11 @@ export const taskRouter = router({
    */
   acceptTask: protectedProcedure
     .input(z.object({ taskId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       return {
         success: true,
         taskId: input.taskId,
         status: "in_progress",
-        message: "Task accepted",
       };
     }),
 
@@ -419,30 +263,14 @@ export const taskRouter = router({
    */
   completeTask: protectedProcedure
     .input(z.object({ taskId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       return {
         success: true,
         taskId: input.taskId,
+        reward: 100,
         status: "completed",
-        reward_isc: 500,
-        reward_exp: 100,
-        message: "Task completed! You earned rewards.",
       };
     }),
-
-  /**
-   * 获取进行中的任务
-   */
-  getInProgressTasks: protectedProcedure.query(async () => {
-    return [
-      {
-        id: "task_001",
-        title: "银行存款任务",
-        progress: 50,
-        deadline: Date.now() + 86400000,
-      },
-    ];
-  }),
 });
 
 // ============================================================================
@@ -451,97 +279,49 @@ export const taskRouter = router({
 
 export const sceneRouter = router({
   /**
-   * 获取场景信息
+   * 获取场景列表
    */
-  getScene: protectedProcedure
-    .input(z.object({ sceneName: z.string() }))
-    .query(async ({ input }) => {
-      const scenes: Record<string, any> = {
-        bank: {
-          name: "bank",
-          displayName: "ISC 去中心化银行",
-          description: "城市的金融中心",
-          sceneType: "bank",
-          npcs: ["npc_001", "npc_002"],
-          features: ["deposit", "withdraw", "loan", "investment"],
-        },
-        plaza: {
-          name: "plaza",
-          displayName: "ISC 广场",
-          description: "城市的商业中心",
-          sceneType: "plaza",
-          npcs: ["npc_003", "npc_004"],
-          features: ["trade", "market", "auction"],
-        },
-        cafe: {
-          name: "cafe",
-          displayName: "咖啡店",
-          description: "休闲社交场所",
-          sceneType: "cafe",
-          npcs: ["npc_005"],
-          features: ["purchase", "social", "dating"],
-        },
-      };
-
-      return scenes[input.sceneName] || null;
-    }),
+  getSceneList: protectedProcedure.query(async ({ ctx }) => {
+    return [
+      {
+        id: "scene_001",
+        name: "ISC 银行",
+        description: "金融中心",
+        image: "/scenes/bank.png",
+      },
+      {
+        id: "scene_002",
+        name: "ISC 广场",
+        description: "商业中心",
+        image: "/scenes/plaza.png",
+      },
+      {
+        id: "scene_003",
+        name: "咖啡店",
+        description: "社交中心",
+        image: "/scenes/cafe.png",
+      },
+      {
+        id: "scene_004",
+        name: "农场",
+        description: "农业基地",
+        image: "/scenes/farm.png",
+      },
+    ];
+  }),
 
   /**
    * 进入场景
    */
   enterScene: protectedProcedure
-    .input(z.object({ sceneName: z.string() }))
-    .mutation(async ({ ctx, input }) => {
+    .input(z.object({ sceneId: z.string() }))
+    .mutation(async ({ input }) => {
       return {
         success: true,
-        sceneName: input.sceneName,
-        message: `Entered ${input.sceneName}`,
+        sceneId: input.sceneId,
         npcs: ["npc_001", "npc_002"],
       };
     }),
-
-  /**
-   * 获取所有场景列表
-   */
-  getAllScenes: publicProcedure.query(async () => {
-    return [
-      {
-        name: "bank",
-        displayName: "ISC 去中心化银行",
-        icon: "🏦",
-      },
-      {
-        name: "plaza",
-        displayName: "ISC 广场",
-        icon: "🏪",
-      },
-      {
-        name: "cafe",
-        displayName: "咖啡店",
-        icon: "☕",
-      },
-      {
-        name: "bookstore",
-        displayName: "书店",
-        icon: "📚",
-      },
-      {
-        name: "supermarket",
-        displayName: "超级市场",
-        icon: "🛒",
-      },
-      {
-        name: "farm",
-        displayName: "农场",
-        icon: "🌾",
-      },
-      {
-        name: "home",
-        displayName: "家",
-        icon: "🏠",
-      },
-    ];
-  }),
 });
 
 // ============================================================================
@@ -560,33 +340,101 @@ import {
   GameTimeService,
 } from "../game-logic/services";
 import type { GameState, GameAction } from "../game-logic/types";
+import {
+  saveGameState as dbSaveGameState,
+  loadGameState as dbLoadGameState,
+} from "../db";
 
-// Game state storage (in production, persisted to database)
-const gameStates = new Map<string, GameState>();
+// Game state storage (in-memory cache for performance)
+const gameStatesCache = new Map<string, GameState>();
 
-function getGameState(playerId: string): GameState {
-  if (!gameStates.has(playerId)) {
-    gameStates.set(playerId, createInitialGameState(playerId, `Player ${playerId}`));
+/**
+ * Helper function to serialize game state to JSON
+ */
+function serializeGameState(state: GameState): string {
+  return JSON.stringify(state, (key, value) => {
+    if (value instanceof Date) {
+      return value.toISOString();
+    }
+    return value;
+  });
+}
+
+/**
+ * Helper function to deserialize game state from JSON
+ */
+function deserializeGameState(json: string): GameState {
+  return JSON.parse(json, (key, value) => {
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+      return new Date(value);
+    }
+    return value;
+  });
+}
+
+/**
+ * Load game state from database or cache
+ */
+async function getGameState(playerId: string, userId: number): Promise<GameState> {
+  // Check cache first
+  if (gameStatesCache.has(playerId)) {
+    return gameStatesCache.get(playerId)!;
   }
-  return gameStates.get(playerId)!;
+
+  // Try to load from database
+  try {
+    const stateJson = await dbLoadGameState(userId);
+    if (stateJson) {
+      const state = deserializeGameState(stateJson);
+      gameStatesCache.set(playerId, state);
+      return state;
+    }
+  } catch (error) {
+    console.error(`Failed to load game state from database for user ${userId}:`, error);
+  }
+
+  // Create initial state if not found
+  const initialState = createInitialGameState(playerId, `Player ${playerId}`);
+  gameStatesCache.set(playerId, initialState);
+  return initialState;
 }
 
-function saveGameState(playerId: string, state: GameState): void {
-  gameStates.set(playerId, state);
+/**
+ * Save game state to database and cache
+ */
+async function saveGameStateToDb(playerId: string, userId: number, state: GameState): Promise<void> {
+  // Update cache
+  gameStatesCache.set(playerId, state);
+
+  // Save to database
+  try {
+    const stateJson = serializeGameState(state);
+    await dbSaveGameState(userId, stateJson);
+  } catch (error) {
+    console.error(`Failed to save game state to database for user ${userId}:`, error);
+    // Don't throw - cache is still valid
+  }
 }
 
-function dispatchAction(playerId: string, action: GameAction): GameState {
-  const currentState = getGameState(playerId);
+/**
+ * Dispatch action and save state
+ */
+async function dispatchAction(playerId: string, userId: number, action: GameAction): Promise<GameState> {
+  const currentState = await getGameState(playerId, userId);
   const newState = gameReducer(currentState, action);
-  saveGameState(playerId, newState);
+  await saveGameStateToDb(playerId, userId, newState);
   return newState;
 }
 
 export const gameCoreRouter = router({
   // Game state queries
-  getState: protectedProcedure.query(({ ctx }) => getGameState(String(ctx.user.id))),
-  getPlayerStats: protectedProcedure.query(({ ctx }) => {
-    const state = getGameState(String(ctx.user.id));
+  getState: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.user!.id;
+    return getGameState(String(userId), userId);
+  }),
+  getPlayerStats: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.user!.id;
+    const state = await getGameState(String(userId), userId);
     return {
       level: state.player.level,
       experience: state.player.experience,
@@ -597,8 +445,9 @@ export const gameCoreRouter = router({
       farmsCreated: state.progress.farmsCreated,
     };
   }),
-  getWalletBalance: protectedProcedure.query(({ ctx }) => {
-    const state = getGameState(String(ctx.user.id));
+  getWalletBalance: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.user!.id;
+    const state = await getGameState(String(userId), userId);
     return {
       money: state.wallet.money,
       isc: state.wallet.isc,
@@ -610,79 +459,94 @@ export const gameCoreRouter = router({
   // Player actions
   gainExperience: protectedProcedure
     .input(z.object({ amount: z.number().positive() }))
-    .mutation(({ ctx, input }) => {
-      const userId = String(ctx.user.id);
-      const action = PlayerService.gainExperience(getGameState(userId), input.amount);
-      return dispatchAction(userId, action);
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const action = PlayerService.gainExperience(state, input.amount);
+      return dispatchAction(playerId, userId, action);
     }),
 
   // NPC actions
   interactWithNPC: protectedProcedure
     .input(z.object({ npcId: z.string(), type: z.enum(["greet", "talk", "trade"]).default("greet") }))
-    .mutation(({ ctx, input }) => {
-      const userId = String(ctx.user.id);
-      const action = NPCService.interactWithNPC(getGameState(userId), input.npcId, input.type);
-      return dispatchAction(userId, action);
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const action = NPCService.interactWithNPC(state, input.npcId, input.type);
+      return dispatchAction(playerId, userId, action);
     }),
 
   // Economy actions
   bankDeposit: protectedProcedure
     .input(z.object({ amount: z.number().positive() }))
-    .mutation(({ ctx, input }) => {
-      const userId = String(ctx.user.id);
-      const action = EconomyService.bankDeposit(getGameState(userId), input.amount);
-      return dispatchAction(userId, action);
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const action = EconomyService.bankDeposit(state, input.amount);
+      return dispatchAction(playerId, userId, action);
     }),
   bankWithdraw: protectedProcedure
     .input(z.object({ amount: z.number().positive() }))
-    .mutation(({ ctx, input }) => {
-      const userId = String(ctx.user.id);
-      const action = EconomyService.bankWithdraw(getGameState(userId), input.amount);
-      return dispatchAction(userId, action);
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const action = EconomyService.bankWithdraw(state, input.amount);
+      return dispatchAction(playerId, userId, action);
     }),
-  claimInterest: protectedProcedure.mutation(({ ctx }) => {
-    const userId = String(ctx.user.id);
-    const state = getGameState(userId);
+  claimInterest: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.user!.id;
+    const playerId = String(userId);
+    const state = await getGameState(playerId, userId);
     const interest = Math.max(1, Math.floor(state.bankAccount.balance * (state.bankAccount.interestRate / 100) / 12));
     const action = {
       type: 'BANK_CLAIM_INTEREST' as const,
       payload: { amount: interest },
     };
-    return dispatchAction(userId, action);
+    return dispatchAction(playerId, userId, action);
   }),
 
   // Task actions
   acceptTask: protectedProcedure
     .input(z.object({ taskId: z.string() }))
-    .mutation(({ ctx, input }) => {
-      const userId = String(ctx.user.id);
-      const action = TaskService.acceptTask(getGameState(userId), input.taskId);
-      return dispatchAction(userId, action);
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const action = TaskService.acceptTask(state, input.taskId);
+      return dispatchAction(playerId, userId, action);
     }),
   completeTask: protectedProcedure
     .input(z.object({ taskId: z.string() }))
-    .mutation(({ ctx, input }) => {
-      const userId = String(ctx.user.id);
-      const state = getGameState(userId);
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
       const task = state.tasks.find((t) => t.id === input.taskId);
       if (!task) throw new TRPCError({ code: "NOT_FOUND", message: "Task not found" });
       const reward = TaskService.calculateTaskReward(task, 50);
       const action = TaskService.completeTask(state, input.taskId, reward);
-      return dispatchAction(userId, action);
+      return dispatchAction(playerId, userId, action);
     }),
 
   // Game time
   advanceTime: protectedProcedure
     .input(z.object({ minutes: z.number().positive() }))
-    .mutation(({ ctx, input }) => {
-      const userId = String(ctx.user.id);
-      const action = GameTimeService.advanceTime(getGameState(userId), input.minutes);
-      return dispatchAction(userId, action);
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const action = GameTimeService.advanceTime(state, input.minutes);
+      return dispatchAction(playerId, userId, action);
     }),
-  saveGame: protectedProcedure.mutation(({ ctx }) => {
-    const userId = String(ctx.user.id);
+  saveGame: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.user!.id;
+    const playerId = String(userId);
     const action = { type: "GAME_SAVE" as const, payload: { timestamp: new Date() } };
-    return dispatchAction(userId, action);
+    return dispatchAction(playerId, userId, action);
   }),
 });
 
@@ -697,31 +561,4 @@ export const gameRouter = router({
   task: taskRouter,
   scene: sceneRouter,
   core: gameCoreRouter,
-
-  /**
-   * 获取游戏全局状态
-   */
-  getGameState: publicProcedure.query(async () => {
-    return {
-      currentDay: 1,
-      currentHour: 14,
-      gameSpeed: 100,
-      iscPrice: 1.25,
-      totalPlayers: 1250,
-      totalNpcs: 200,
-    };
-  }),
-
-  /**
-   * 获取游戏统计
-   */
-  getGameStats: publicProcedure.query(async () => {
-    return {
-      totalPlayers: 1250,
-      totalNpcs: 200,
-      totalTransactions: 45000,
-      totalIssuedIsc: 5000000,
-      averagePlayerLevel: 8.5,
-    };
-  }),
 });

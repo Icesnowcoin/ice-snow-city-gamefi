@@ -1,10 +1,12 @@
 /**
  * Game State Persistence Layer
- * Handles saving and loading game state from database
+ * Handles saving and loading game state from database using Drizzle ORM
  */
 
 import { GameState } from './types';
 import { getDb } from '../db';
+import { gameStates, gameStatesBackup, InsertGameState, InsertGameStateBackup } from '../../drizzle/schema';
+import { eq } from 'drizzle-orm';
 
 /**
  * Serialize game state to JSON string
@@ -35,64 +37,82 @@ export function deserializeGameState(json: string): GameState {
 /**
  * Save game state to database
  */
-export async function saveGameState(userId: string, state: GameState): Promise<void> {
+export async function saveGameState(userId: number, state: GameState): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
   const stateJson = serializeGameState(state);
   
-  // Use INSERT ... ON DUPLICATE KEY UPDATE for upsert
-  await db.execute(
-    `INSERT INTO game_states (user_id, state_json, version, updated_at)
-     VALUES (?, ?, 1, NOW())
-     ON DUPLICATE KEY UPDATE
-       state_json = VALUES(state_json),
-       version = version + 1,
-       updated_at = NOW()`,
-    [userId, stateJson]
-  );
+  // Check if state exists
+  const existing = await db
+    .select()
+    .from(gameStates)
+    .where(eq(gameStates.userId, userId))
+    .limit(1);
+
+  if (existing.length > 0) {
+    // Update existing state
+    await db
+      .update(gameStates)
+      .set({
+        stateJson,
+        version: existing[0].version + 1,
+        updatedAt: new Date(),
+      })
+      .where(eq(gameStates.userId, userId));
+  } else {
+    // Insert new state
+    const insertData: InsertGameState = {
+      userId,
+      stateJson,
+      version: 1,
+    };
+    await db.insert(gameStates).values(insertData);
+  }
 }
 
 /**
  * Load game state from database
  */
-export async function loadGameState(userId: string): Promise<GameState | null> {
+export async function loadGameState(userId: number): Promise<GameState | null> {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
-  const result = await db.query(
-    'SELECT state_json FROM game_states WHERE user_id = ? LIMIT 1',
-    [userId]
-  );
+  const result = await db
+    .select()
+    .from(gameStates)
+    .where(eq(gameStates.userId, userId))
+    .limit(1);
 
   if (!result || result.length === 0) {
     return null;
   }
 
-  return deserializeGameState(result[0].state_json);
+  return deserializeGameState(result[0].stateJson);
 }
 
 /**
  * Delete game state from database
  */
-export async function deleteGameState(userId: string): Promise<void> {
+export async function deleteGameState(userId: number): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
-  await db.execute('DELETE FROM game_states WHERE user_id = ?', [userId]);
+  await db.delete(gameStates).where(eq(gameStates.userId, userId));
 }
 
 /**
  * Get game state version
  */
-export async function getGameStateVersion(userId: string): Promise<number | null> {
+export async function getGameStateVersion(userId: number): Promise<number | null> {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
-  const result = await db.query(
-    'SELECT version FROM game_states WHERE user_id = ? LIMIT 1',
-    [userId]
-  );
+  const result = await db
+    .select()
+    .from(gameStates)
+    .where(eq(gameStates.userId, userId))
+    .limit(1);
 
   if (!result || result.length === 0) {
     return null;
@@ -104,15 +124,20 @@ export async function getGameStateVersion(userId: string): Promise<number | null
 /**
  * Get game state metadata (without full state)
  */
-export async function getGameStateMetadata(userId: string) {
+export async function getGameStateMetadata(userId: number) {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
-  const result = await db.query(
-    `SELECT user_id, version, created_at, updated_at 
-     FROM game_states WHERE user_id = ? LIMIT 1`,
-    [userId]
-  );
+  const result = await db
+    .select({
+      userId: gameStates.userId,
+      version: gameStates.version,
+      createdAt: gameStates.createdAt,
+      updatedAt: gameStates.updatedAt,
+    })
+    .from(gameStates)
+    .where(eq(gameStates.userId, userId))
+    .limit(1);
 
   if (!result || result.length === 0) {
     return null;
@@ -124,67 +149,81 @@ export async function getGameStateMetadata(userId: string) {
 /**
  * Backup game state (create a versioned copy)
  */
-export async function backupGameState(userId: string): Promise<void> {
+export async function backupGameState(userId: number): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
-  // Create a backup table entry
+  // Load current state
   const state = await loadGameState(userId);
   if (!state) return;
 
   const stateJson = serializeGameState(state);
-  const timestamp = new Date().toISOString();
+  
+  // Get current version
+  const metadata = await getGameStateMetadata(userId);
+  if (!metadata) return;
 
-  await db.execute(
-    `INSERT INTO game_states_backup (user_id, state_json, version, backup_at)
-     SELECT ?, ?, version, NOW()
-     FROM game_states WHERE user_id = ?`,
-    [userId, stateJson, userId]
-  );
+  const backupData: InsertGameStateBackup = {
+    userId,
+    stateJson,
+    version: metadata.version,
+  };
+
+  await db.insert(gameStatesBackup).values(backupData);
 }
 
 /**
  * Restore game state from backup
  */
-export async function restoreGameStateFromBackup(userId: string, backupId: number): Promise<void> {
+export async function restoreGameStateFromBackup(userId: number, backupId: number): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
-  const result = await db.query(
-    'SELECT state_json FROM game_states_backup WHERE id = ? AND user_id = ? LIMIT 1',
-    [backupId, userId]
-  );
+  const result = await db
+    .select()
+    .from(gameStatesBackup)
+    .where(eq(gameStatesBackup.userId, userId))
+    .limit(1);
 
   if (!result || result.length === 0) {
     throw new Error('Backup not found');
   }
 
-  const stateJson = result[0].state_json;
-  await db.execute(
-    `UPDATE game_states SET state_json = ?, version = version + 1, updated_at = NOW()
-     WHERE user_id = ?`,
-    [stateJson, userId]
-  );
+  const stateJson = result[0].stateJson;
+  
+  await db
+    .update(gameStates)
+    .set({
+      stateJson,
+      version: result[0].version + 1,
+      updatedAt: new Date(),
+    })
+    .where(eq(gameStates.userId, userId));
 }
 
 /**
  * Get all backups for a user
  */
-export async function getGameStateBackups(userId: string) {
+export async function getGameStateBackups(userId: number) {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
-  return await db.query(
-    `SELECT id, version, backup_at FROM game_states_backup 
-     WHERE user_id = ? ORDER BY backup_at DESC LIMIT 10`,
-    [userId]
-  );
+  return await db
+    .select({
+      id: gameStatesBackup.id,
+      version: gameStatesBackup.version,
+      backupAt: gameStatesBackup.backupAt,
+    })
+    .from(gameStatesBackup)
+    .where(eq(gameStatesBackup.userId, userId))
+    .orderBy(gameStatesBackup.backupAt)
+    .limit(10);
 }
 
 /**
  * Auto-save game state (called periodically)
  */
-export async function autoSaveGameState(userId: string, state: GameState): Promise<void> {
+export async function autoSaveGameState(userId: number, state: GameState): Promise<void> {
   try {
     await saveGameState(userId, state);
   } catch (error) {
@@ -196,15 +235,17 @@ export async function autoSaveGameState(userId: string, state: GameState): Promi
 /**
  * Initialize game state for new player
  */
-export async function initializeGameState(userId: string, initialState: GameState): Promise<void> {
+export async function initializeGameState(userId: number, initialState: GameState): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
   const stateJson = serializeGameState(initialState);
 
-  await db.execute(
-    `INSERT INTO game_states (user_id, state_json, version, created_at, updated_at)
-     VALUES (?, ?, 1, NOW(), NOW())`,
-    [userId, stateJson]
-  );
+  const insertData: InsertGameState = {
+    userId,
+    stateJson,
+    version: 1,
+  };
+
+  await db.insert(gameStates).values(insertData);
 }
