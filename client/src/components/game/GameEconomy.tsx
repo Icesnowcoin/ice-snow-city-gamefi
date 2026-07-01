@@ -271,8 +271,8 @@ export const GameEconomy: React.FC = () => {
                   <TrendingUp className="w-4 h-4 text-green-400" />
                   <span className="text-green-200 text-sm font-semibold">投资收益</span>
                 </div>
-                <p className="text-white font-bold text-lg">{economy.monthlyInterest} ISC</p>
-                <p className="text-green-300 text-xs mt-1">总资产: {economy.totalAssets} ISC</p>
+                <p className="text-white font-bold text-lg">{Math.round((economy?.bankBalance || 0) * 0.05 / 12)} ISC</p>
+                <p className="text-green-300 text-xs mt-1">总资产: {(economy?.totalMoney || 0) + (economy?.totalISC || 0) + (economy?.bankBalance || 0)} ISC</p>
               </div>
             </div>
           </Card>
