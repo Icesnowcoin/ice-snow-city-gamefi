@@ -18,10 +18,11 @@ export const GameScene: React.FC<GameSceneProps> = ({ sceneName }) => {
   const [isInteracting, setIsInteracting] = useState(false);
 
   // 获取场景信息
-  const { data: scene, isLoading: sceneLoading } = trpc.game.scene.getSceneList.useQuery(
-    { sceneName },
+  const { data: scenes, isLoading: sceneLoading } = trpc.game.scene.getSceneList.useQuery(
+    undefined,
     { staleTime: 30000 }
   );
+  const scene = scenes?.[0];
 
   // 获取场景 NPC
   const { data: npcs, isLoading: npcsLoading } = trpc.game.npc.getNpcsByScene.useQuery(
@@ -31,11 +32,11 @@ export const GameScene: React.FC<GameSceneProps> = ({ sceneName }) => {
 
   // NPC 交互 mutation
   const interactMutation = trpc.game.npc.interactWithNPC.useMutation({
-    onSuccess: (data) => {
-      console.log("NPC 对话:", data.dialogue);
+    onSuccess: (data: any) => {
+      console.log("NPC 对话:", data.message);
       setIsInteracting(false);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("交互错误:", error.message);
     },
   });
@@ -131,9 +132,9 @@ export const GameScene: React.FC<GameSceneProps> = ({ sceneName }) => {
                   {/* 状态标签 */}
                   <div className="flex-shrink-0">
                     <span className="inline-block bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                      {npc.status === "stranger" && "陌生人"}
-                      {npc.status === "acquaintance" && "熟人"}
-                      {npc.status === "friend" && "朋友"}
+                      {npc.favorability < 30 && "陡生人"}
+                      {npc.favorability >= 30 && npc.favorability < 70 && "熟人"}
+                      {npc.favorability >= 70 && "朋友"}
                     </span>
                   </div>
                 </div>
