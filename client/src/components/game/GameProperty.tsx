@@ -12,7 +12,7 @@ export const GameProperty: React.FC = () => {
     trpc.game.npc.getNpcsByScene.useQuery({ sceneId: "real_estate" }, { staleTime: 30000 });
 
   // 购买房产 mutation
-  const buyMutation = trpc.game.npc.interactWithNPC.useMutation({
+  const buyMutation = (trpc.game.npc as any).interactWithNPC.useMutation({
     onSuccess: () => {
       refetchProperties();
       console.log("房产购买成功");

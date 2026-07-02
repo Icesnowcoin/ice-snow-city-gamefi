@@ -13,7 +13,7 @@ export const GameShop: React.FC = () => {
     trpc.game.npc.getNpcsByScene.useQuery({ sceneId: "shop" }, { staleTime: 30000 });
 
   // 购买 mutation
-  const buyMutation = trpc.game.npc.interactWithNPC.useMutation({
+  const buyMutation = (trpc.game.npc as any).interactWithNPC.useMutation({
     onSuccess: () => {
       refetchItems();
       setQuantity(1);

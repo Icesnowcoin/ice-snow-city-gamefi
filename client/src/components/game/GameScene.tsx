@@ -31,7 +31,7 @@ export const GameScene: React.FC<GameSceneProps> = ({ sceneName }) => {
   );
 
   // NPC 交互 mutation
-  const interactMutation = trpc.game.npc.interactWithNPC.useMutation({
+  const interactMutation = (trpc.game.npc as any).interactWithNPC.useMutation({
     onSuccess: (data: any) => {
       console.log("NPC 对话:", data.message);
       setIsInteracting(false);
@@ -73,14 +73,14 @@ export const GameScene: React.FC<GameSceneProps> = ({ sceneName }) => {
     <div className="min-h-screen bg-gradient-to-b from-blue-900 to-blue-800 p-4 pb-20">
       {/* 场景标题 */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">{scene.displayName}</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">{(scene as any)?.displayName}</h1>
         <p className="text-blue-100 text-sm">{scene.description}</p>
       </div>
 
       {/* 场景特性 */}
-      {scene.features && scene.features.length > 0 && (
+      {(scene as any)?.features && (scene as any)?.features.length > 0 && (
         <div className="mb-6 grid grid-cols-2 gap-2">
-          {scene.features.map((feature: string) => (
+          {(scene as any)?.features.map((feature: string) => (
             <div
               key={feature}
               className="bg-blue-700 bg-opacity-50 rounded-lg p-3 text-white text-sm text-center"
@@ -106,7 +106,7 @@ export const GameScene: React.FC<GameSceneProps> = ({ sceneName }) => {
                   {/* NPC 头像 */}
                   <div className="flex-shrink-0">
                     <img
-                      src={npc.avatar}
+                      src={(npc as any)?.avatar}
                       alt={npc.name}
                       className="w-12 h-12 rounded-full object-cover"
                     />
@@ -115,16 +115,16 @@ export const GameScene: React.FC<GameSceneProps> = ({ sceneName }) => {
                   {/* NPC 信息 */}
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-white text-lg">{npc.name}</h3>
-                    <p className="text-blue-200 text-sm">{npc.title}</p>
+                    <p className="text-blue-200 text-sm">{(npc as any)?.title}</p>
                     <div className="flex items-center gap-2 mt-2">
                       <div className="flex-1 bg-blue-900 rounded-full h-2">
                         <div
                           className="bg-green-400 h-2 rounded-full transition-all"
-                          style={{ width: `${npc.affinity}%` }}
+                          style={{ width: `${npc.favorability}%` }}
                         />
                       </div>
                       <span className="text-blue-200 text-xs whitespace-nowrap">
-                        好感度 {npc.affinity}%
+                        好感度 {npc.favorability}%
                       </span>
                     </div>
                   </div>

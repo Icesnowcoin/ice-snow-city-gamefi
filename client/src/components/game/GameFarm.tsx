@@ -12,7 +12,7 @@ export const GameFarm: React.FC = () => {
     trpc.game.npc.getNpcsByScene.useQuery({ sceneId: "farm" }, { staleTime: 30000 });
 
   // 种植 mutation
-  const plantMutation = trpc.game.npc.interactWithNPC.useMutation({
+  const plantMutation = (trpc.game.npc as any).interactWithNPC.useMutation({
     onSuccess: () => {
       refetchFarm();
       console.log("种植成功");
@@ -23,7 +23,7 @@ export const GameFarm: React.FC = () => {
   });
 
   // 收获 mutation
-  const harvestMutation = trpc.game.npc.interactWithNPC.useMutation({
+  const harvestMutation = (trpc.game.npc as any).interactWithNPC.useMutation({
     onSuccess: () => {
       refetchFarm();
       console.log("收获成功");

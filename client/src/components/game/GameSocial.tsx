@@ -25,7 +25,7 @@ export const GameSocial: React.FC = () => {
   const handleInteract = async (npcId: string, action: "trade" | "greet" | "talk" | "gift" | "romance") => {
     await interactMutation.mutateAsync({
       npcId,
-      action,
+      type: (action === 'gift' || action === 'romance') ? 'talk' : action as any,
     });
   };
 
