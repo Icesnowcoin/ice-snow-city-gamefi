@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+'use client';
+
+import { useState } from 'react';
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Send, Download, TrendingUp, Wallet } from "lucide-react";
+import { Loader2, Send, Download, TrendingUp, Wallet, CheckCircle2, AlertCircle } from "lucide-react";
 
 /**
  * 游戏经济系统 - 移动优先设计
@@ -35,7 +37,7 @@ export const GameEconomy: React.FC = () => {
   });
 
   // 提现 mutation
-  const withdrawMutation = trpc.game.economy.deposit.useMutation({
+  const withdrawMutation = trpc.game.economy.withdraw.useMutation({
     onSuccess: () => {
       setAmount("");
       refetchEconomy();
@@ -46,8 +48,8 @@ export const GameEconomy: React.FC = () => {
     },
   });
 
-  // 投资 mutation
-  const investMutation = trpc.game.economy.deposit.useMutation({
+  // 领取利息 mutation
+  const claimInterestMutation = trpc.game.economy.claimInterest.useMutation({
     onSuccess: () => {
       setAmount("");
       refetchEconomy();
@@ -79,10 +81,9 @@ export const GameEconomy: React.FC = () => {
   };
 
   const handleInvest = async () => {
-    if (!amount || isNaN(Number(amount))) return;
     setIsProcessing(true);
     try {
-      await investMutation.mutateAsync({ amount: Number(amount) });
+      await claimInterestMutation.mutateAsync();
     } finally {
       setIsProcessing(false);
     }
