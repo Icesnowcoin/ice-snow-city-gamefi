@@ -642,6 +642,152 @@ export const workRouter = router({
 });
 
 // ============================================================================
+// CONSUMPTION SYSTEM
+// ============================================================================
+
+export const consumptionRouter = router({
+  /**
+   * Get available consumption items
+   */
+  getAvailableItems: protectedProcedure.query(async ({ ctx }) => {
+    return [
+      { id: "food_1", name: "面包", type: "food", cost: 50, happiness: 10, hunger: 30 },
+      { id: "food_2", name: "汉堡", type: "food", cost: 100, happiness: 15, hunger: 40 },
+      { id: "drink_1", name: "水", type: "drink", cost: 20, happiness: 5, thirst: 30 },
+      { id: "drink_2", name: "咖啡", type: "drink", cost: 80, happiness: 20, thirst: 40 },
+      { id: "entertainment_1", name: "电影票", type: "entertainment", cost: 200, happiness: 30 },
+      { id: "entertainment_2", name: "演唱会票", type: "entertainment", cost: 500, happiness: 50 },
+      { id: "medicine_1", name: "感冒药", type: "medicine", cost: 150, health: 20 },
+      { id: "medicine_2", name: "营养品", type: "medicine", cost: 300, health: 40 },
+    ];
+  }),
+
+  /**
+   * Consume an item
+   */
+  consumeItem: protectedProcedure
+    .input(
+      z.object({
+        itemId: z.string(),
+        quantity: z.number().min(1).default(1),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      // 模拟消费逻辑
+      const items = await consumptionRouter.createCaller(ctx).getAvailableItems() as any[];
+      const item = items.find((i: any) => i.id === input.itemId);
+      if (!item) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Item not found",
+        });
+      }
+
+      const totalCost = (item as any).cost * input.quantity;
+      return {
+        success: true,
+        itemId: input.itemId,
+        quantity: input.quantity,
+        totalCost,
+        effects: {
+          happiness: ((item as any).happiness || 0) * input.quantity,
+          hunger: ((item as any).hunger || 0) * input.quantity,
+          thirst: ((item as any).thirst || 0) * input.quantity,
+          health: ((item as any).health || 0) * input.quantity,
+        },
+      };
+    }),
+});
+
+// ============================================================================
+// UPGRADE SYSTEM
+// ============================================================================
+
+export const upgradeRouter = router({
+  /**
+   * Get available upgrades
+   */
+  getAvailableUpgrades: protectedProcedure.query(async ({ ctx }) => {
+    return [
+      {
+        id: "building_1",
+        name: "升级房间",
+        type: "building",
+        cost: 5000,
+        level: 1,
+        maxLevel: 5,
+        description: "升级你的房间，提升居住舒适度",
+      },
+      {
+        id: "skill_1",
+        name: "学习技能",
+        type: "skill",
+        cost: 2000,
+        level: 1,
+        maxLevel: 10,
+        description: "学习新技能，提升工作效率",
+      },
+      {
+        id: "equipment_1",
+        name: "购买装备",
+        type: "equipment",
+        cost: 3000,
+        level: 1,
+        maxLevel: 5,
+        description: "购买新装备，提升战斗力",
+      },
+      {
+        id: "facility_1",
+        name: "建造设施",
+        type: "facility",
+        cost: 10000,
+        level: 1,
+        maxLevel: 3,
+        description: "建造新设施，解锁新功能",
+      },
+    ];
+  }),
+
+  /**
+   * Perform an upgrade
+   */
+  performUpgrade: protectedProcedure
+    .input(
+      z.object({
+        upgradeId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      // 模拟升级逻辑
+      const upgrades = await upgradeRouter.createCaller(ctx).getAvailableUpgrades() as any[];
+      const upgrade = upgrades.find((u: any) => u.id === input.upgradeId);
+      if (!upgrade) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Upgrade not found",
+        });
+      }
+
+      if (upgrade.level >= upgrade.maxLevel) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Upgrade already at max level",
+        });
+      }
+
+      return {
+        success: true,
+        upgradeId: input.upgradeId,
+        newLevel: upgrade.level + 1,
+        cost: upgrade.cost,
+        effects: {
+          bonus: upgrade.level * 10,
+        },
+      };
+    }),
+});
+
+// ============================================================================
 // MAIN GAME ROUTER
 // ============================================================================
 
@@ -653,4 +799,6 @@ export const gameRouter = router({
   scene: sceneRouter,
   core: gameCoreRouter,
   work: workRouter,
+  consumption: consumptionRouter,
+  upgrade: upgradeRouter,
 });
