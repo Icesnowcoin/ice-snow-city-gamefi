@@ -412,3 +412,5 @@ export function NPCSystem() {
 }
 
 
+
+export default NPCSystem;
