@@ -339,13 +339,13 @@
 7. GameScene - features 属性不存在 (3 个)
 8. 其他 (2 个)
 
-## Phase 27: icesnowcoin 代币集成 (In Progress)
+## Phase 27: icesnowcoin 代币集成 (Completed)
 - [x] 配置 icesnowcoin 合约地址 (0x11229a3f976566FA8a3ba462C432122f3B8876f6)
 - [x] 实现后端代币查询逻辑 (ISCTokenService - 余额、代币信息、冷却时间)
 - [x] 实现前端代币查询逻辑 (useISCToken Hook, TokenDisplay 组件)
 - [x] 初步测试 (387 个测试通过)
-- [ ] 将 TokenDisplay 组件接入针布板或钱包页面
-- [ ] 实现代币转账功能
+- [x] 将 TokenDisplay 组件接入针布板或钱包页面
+- [ ] 实现代币转账功能 (需要签名)
 - [ ] 端到端测试
 
 ## 下一步计划

@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import TokenDisplay from "@/components/TokenDisplay";
 import {
   Wallet,
   Send,
@@ -148,6 +149,21 @@ export default function WalletPage() {
 
   return (
     <div className="space-y-6">
+      {/* Blockchain Token Balance */}
+      <Card className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white border-0">
+        <CardContent className="pt-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-cyan-100">{lang === "zh" ? "区块链 ISC 余额" : "Blockchain ISC Balance"}</p>
+                <TokenDisplay className="mt-2" showDetails={true} />
+              </div>
+              <Wallet className="w-12 h-12 opacity-50" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Wallet Balance */}
       <Card className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white border-0">
         <CardContent className="pt-6">
