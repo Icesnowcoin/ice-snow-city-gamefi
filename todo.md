@@ -255,7 +255,7 @@
 - [x] 完成所有缺失的 Reducer Cases (WALLET_TRANSFER, PROPERTY_SELL/RENT, FARM_PLANT/WATER/FERTILIZE, TASK_FAIL/ABANDON, SHOP_PURCHASE, INVENTORY_ADD/REMOVE)
 - [x] 创建 tRPC 路由整合游戏逻辑 (gameCoreRouter - 15+ 流程)
 - [x] 修复所有 TypeScript 类型错误
-- [ ] 将 NPCSystem 按钮连接到真实游戏逻辑
+- [x] 将 NPCSystem 按针连接到真实游戏逻辑 (greet, gift, date 功能)
 - [ ] 将其他游戏系统按钮连接到真实游戏逻辑
 - [x] 实现游戏状态持久化到数据库
 - [x] 实现游戏状态自动保存（通过 saveGameStateToDb）
