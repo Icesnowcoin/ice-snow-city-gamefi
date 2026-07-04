@@ -323,12 +323,11 @@
 - [x] 所有 TypeScript 错误修复 (0 错误)
 - [x] 构建成功
 
-## Phase 26: Solidity 工具链配置 (In Progress)
-- [ ] 配置 Hardhat 与 Solidity 工具链
-- [ ] 编译満正合约
-- [ ] 编写合约测试
-- [ ] 部署到 BSC 测试网
-- [ ] 端到端测试
+## Phase 26: Solidity 工具铣 (Completed)
+- [x] 移除不必要的合约 (GameCoin.sol, CharacterNFT.sol)
+- [x] 使用现有 icesnowcoin 代币
+- [x] 清理 Hardhat 配置文件
+- [x] 所有更改已提交到 GitHub
 
 ## 剩余 11 个 TypeScript 错误详情
 1. GameEconomy - getWallet 不存在 (1 个)
@@ -340,10 +339,18 @@
 7. GameScene - features 属性不存在 (3 个)
 8. 其他 (2 个)
 
+## Phase 27: icesnowcoin 代币集成 (In Progress)
+- [x] 配置 icesnowcoin 合约地址 (0x11229a3f976566FA8a3ba462C432122f3B8876f6)
+- [x] 实现后端代币查询逻辑 (ISCTokenService - 余额、代币信息、冷却时间)
+- [x] 实现前端代币查询逻辑 (useISCToken Hook, TokenDisplay 组件)
+- [x] 初步测试 (387 个测试通过)
+- [ ] 将 TokenDisplay 组件接入针布板或钱包页面
+- [ ] 实现代币转账功能
+- [ ] 端到端测试
+
 ## 下一步计划
-1. 添加 getWallet 和 getPriceHistory 到 economy router
-2. 修复 GameScene useQuery 调用
-3. 修复 NPC 数据结构
-4. 集成消费和升级系统
-5. 配置 Solidity 工具链
-6. 部署到 BSC 测试网
+1. 配置 icesnowcoin 代币地址和 ABI
+2. 实现代币转账和查询逻辑
+3. 集成到游戏经济系统
+4. 部署到 BSC 测试网
+5. 端到端测试

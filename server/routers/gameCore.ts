@@ -11,6 +11,7 @@ import { TRPCError } from "@trpc/server";
 // ============================================================================
 
 import { router, protectedProcedure } from "../_core/trpc";
+import { getISCTokenService } from "../blockchain/iscToken";
 
 
 
@@ -794,6 +795,88 @@ export const upgradeRouter = router({
 });
 
 // ============================================================================
+// TOKEN SYSTEM (ISC Token)
+// ============================================================================
+
+export const tokenRouter = router({
+  /**
+   * Get player's ISC token balance
+   */
+  getBalance: protectedProcedure
+    .input(z.object({ address: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
+      try {
+        const iscService = getISCTokenService();
+        const address = input.address || String(ctx.user!.id);
+        const balance = await iscService.getBalance(address);
+        return {
+          success: true,
+          balance,
+          address,
+        };
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Failed to get balance: ${error instanceof Error ? error.message : "Unknown error"}`,
+        });
+      }
+    }),
+
+  /**
+   * Get token info
+   */
+  getTokenInfo: protectedProcedure.query(async () => {
+    try {
+      const iscService = getISCTokenService();
+      const info = await iscService.getTokenInfo();
+      return {
+        success: true,
+        ...info,
+      };
+    } catch (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Failed to get token info: ${error instanceof Error ? error.message : "Unknown error"}`,
+      });
+    }
+  }),
+
+  /**
+   * Get cooldown remaining time
+   */
+  getCooldownRemaining: protectedProcedure
+    .input(z.object({ address: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
+      try {
+        const iscService = getISCTokenService();
+        const address = input.address || String(ctx.user!.id);
+        const remaining = await iscService.getCooldownRemaining(address);
+        return {
+          success: true,
+          remaining,
+          address,
+        };
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Failed to get cooldown: ${error instanceof Error ? error.message : "Unknown error"}`,
+        });
+      }
+    }),
+
+  /**
+   * Get contract address
+   */
+  getContractAddress: protectedProcedure.query(async () => {
+    const iscService = getISCTokenService();
+    return {
+      success: true,
+      contractAddress: iscService.getContractAddress(),
+    };
+  }),
+});
+
+// ============================================================================
 // MAIN GAME ROUTER
 // ============================================================================
 
@@ -807,4 +890,5 @@ export const gameRouter = router({
   work: workRouter,
   consumption: consumptionRouter,
   upgrade: upgradeRouter,
+  token: tokenRouter,
 });
