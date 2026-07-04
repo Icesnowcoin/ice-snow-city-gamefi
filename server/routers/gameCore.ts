@@ -645,22 +645,33 @@ export const workRouter = router({
 // CONSUMPTION SYSTEM
 // ============================================================================
 
+import { CONSUMABLE_ITEMS, getItemsByCategory } from "../game-logic/consumptionSystem";
+
 export const consumptionRouter = router({
   /**
    * Get available consumption items
    */
   getAvailableItems: protectedProcedure.query(async ({ ctx }) => {
-    return [
-      { id: "food_1", name: "面包", type: "food", cost: 50, happiness: 10, hunger: 30 },
-      { id: "food_2", name: "汉堡", type: "food", cost: 100, happiness: 15, hunger: 40 },
-      { id: "drink_1", name: "水", type: "drink", cost: 20, happiness: 5, thirst: 30 },
-      { id: "drink_2", name: "咖啡", type: "drink", cost: 80, happiness: 20, thirst: 40 },
-      { id: "entertainment_1", name: "电影票", type: "entertainment", cost: 200, happiness: 30 },
-      { id: "entertainment_2", name: "演唱会票", type: "entertainment", cost: 500, happiness: 50 },
-      { id: "medicine_1", name: "感冒药", type: "medicine", cost: 150, health: 20 },
-      { id: "medicine_2", name: "营养品", type: "medicine", cost: 300, health: 40 },
-    ];
+    return Object.values(CONSUMABLE_ITEMS).map((item) => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      effect: item.effect,
+      effectAmount: item.effectAmount,
+      category: item.category,
+      icon: item.icon,
+    }));
   }),
+
+  /**
+   * Get items by category
+   */
+  getItemsByCategory: protectedProcedure
+    .input(z.object({ category: z.enum(["food", "drink", "entertainment", "medicine"]) }))
+    .query(async ({ input }) => {
+      return getItemsByCategory(input.category);
+    }),
 
   /**
    * Consume an item
@@ -673,9 +684,7 @@ export const consumptionRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // 模拟消费逻辑
-      const items = await consumptionRouter.createCaller(ctx).getAvailableItems() as any[];
-      const item = items.find((i: any) => i.id === input.itemId);
+      const item = CONSUMABLE_ITEMS[input.itemId];
       if (!item) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -683,18 +692,15 @@ export const consumptionRouter = router({
         });
       }
 
-      const totalCost = (item as any).cost * input.quantity;
+      const totalCost = item.price * input.quantity;
       return {
         success: true,
         itemId: input.itemId,
+        itemName: item.name,
         quantity: input.quantity,
         totalCost,
-        effects: {
-          happiness: ((item as any).happiness || 0) * input.quantity,
-          hunger: ((item as any).hunger || 0) * input.quantity,
-          thirst: ((item as any).thirst || 0) * input.quantity,
-          health: ((item as any).health || 0) * input.quantity,
-        },
+        effect: item.effect,
+        effectAmount: item.effectAmount * input.quantity,
       };
     }),
 });

@@ -309,15 +309,23 @@
 - [ ] 部署到 BSC 测试网
 - [ ] 端到端测试
 
-## Phase 24: 前端 TypeScript 错误修复 (In Progress)
+## Phase 24: 前端 TypeScript 错误修复 (Completed)
 - [x] 分析 23 个 TypeScript 错误
 - [x] 修复 GameSocial 组件
 - [x] 修复 GameScene 组件
-- [ ] 修复剩余 11 个 TypeScript 错误
-- [ ] 将消费系统集成到 tRPC
-- [ ] 将升级系统集成到 tRPC
+- [x] 修复所有 23 个 TypeScript 错误
+- [x] 手机横屏开场动画重设计
+- [x] 创建 webdev-typescript-fix 技能
+
+## Phase 25: 消费和升级系统集成 (Completed)
+- [x] 将消费系统集成到 tRPC
+- [x] 将升级系统集成到 tRPC
+- [x] 所有 TypeScript 错误修复 (0 错误)
+- [x] 构建成功
+
+## Phase 26: Solidity 工具链配置 (In Progress)
 - [ ] 配置 Hardhat 与 Solidity 工具链
-- [ ] 编译满正合约
+- [ ] 编译満正合约
 - [ ] 编写合约测试
 - [ ] 部署到 BSC 测试网
 - [ ] 端到端测试
