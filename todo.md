@@ -257,7 +257,12 @@
 - [x] 修复所有 TypeScript 类型错误
 - [x] 将 NPCSystem 按针连接到真实游戏逻辑 (greet, gift, date 功能)
 - [x] 将 NPCSystem 按针连接到真实游戏逻辑 (真实数据源 + 用户反馈 + 实时更新)
-- [ ] 将其他游戏系统按针连接到真实游戏逻辑 (Economy, Farm, Property, Task, Shop)
+- [ ] 将其他游戏系统按针连接到真实游戏逻辑
+  - [x] GameEconomy 修复 (withdraw, claimInterest mutations)
+  - [x] GameFarm 改进 (添加用户反馈、加载状态)
+  - [ ] GameProperty 完成
+  - [ ] GameTasks 完成
+  - [ ] GameShop 完成
 - [x] 实现游戏状态持久化到数据库
 - [x] 实现游戏状态自动保存（通过 saveGameStateToDb）
 
