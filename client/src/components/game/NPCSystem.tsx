@@ -1,9 +1,12 @@
-import React, { useState, useMemo } from 'react';
+'use client';
+
+import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Heart, MessageCircle, Gift, Star } from 'lucide-react';
+import { Search, Heart, MessageCircle, Gift, Star, Loader2 } from 'lucide-react';
+import { trpc } from '@/lib/trpc';
 
 interface NPC {
   id: string;
@@ -89,6 +92,10 @@ export function NPCSystem() {
   const [selectedNPC, setSelectedNPC] = useState<NPC | null>(allNPCs[0]);
   const [filterRelationship, setFilterRelationship] = useState<string>('all');
   const [filterLocation, setFilterLocation] = useState<string>('all');
+  const [loadingAction, setLoadingAction] = useState<string | null>(null);
+
+  // tRPC mutations for NPC interactions
+  const interactNPC = trpc.game.npc.interact.useMutation();
 
   const filteredNPCs = useMemo(() => {
     return allNPCs.filter((npc) => {
@@ -286,16 +293,82 @@ export function NPCSystem() {
                     </TabsContent>
 
                     <TabsContent value="actions" className="space-y-3">
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10">
-                        <MessageCircle className="w-4 h-4 mr-2" />
+                      <Button
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10"
+                        disabled={loadingAction === 'interact'}
+                        onClick={async () => {
+                          if (!selectedNPC) return;
+                          setLoadingAction('interact');
+                          try {
+                            await interactNPC.mutateAsync({
+                              npcId: selectedNPC.id,
+                              type: 'greet',
+                            });
+                            console.log(`对话成功: 与 ${selectedNPC.name} 的对话很愉快！好感度 +5`);
+                          } catch (error) {
+                            console.error('对话失败: 请稍后重试');
+                          } finally {
+                            setLoadingAction(null);
+                          }
+                        }}
+                      >
+                        {loadingAction === 'interact' ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <MessageCircle className="w-4 h-4 mr-2" />
+                        )}
                         对话
                       </Button>
-                      <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white h-10">
-                        <Gift className="w-4 h-4 mr-2" />
+                      <Button
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white h-10"
+                        disabled={loadingAction === 'gift'}
+                        onClick={async () => {
+                          if (!selectedNPC) return;
+                          setLoadingAction('gift');
+                          try {
+                            await interactNPC.mutateAsync({
+                              npcId: selectedNPC.id,
+                              type: 'gift',
+                            });
+                            console.log(`送礼成功: ${selectedNPC.name} 很高兴！好感度 +10`);
+                          } catch (error) {
+                            console.error('送礼失败: 请稍后重试');
+                          } finally {
+                            setLoadingAction(null);
+                          }
+                        }}
+                      >
+                        {loadingAction === 'gift' ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Gift className="w-4 h-4 mr-2" />
+                        )}
                         送礼
                       </Button>
-                      <Button className="w-full bg-pink-600 hover:bg-pink-700 text-white h-10">
-                        <Heart className="w-4 h-4 mr-2" />
+                      <Button
+                        className="w-full bg-pink-600 hover:bg-pink-700 text-white h-10"
+                        disabled={loadingAction === 'date'}
+                        onClick={async () => {
+                          if (!selectedNPC) return;
+                          setLoadingAction('date');
+                          try {
+                            await interactNPC.mutateAsync({
+                              npcId: selectedNPC.id,
+                              type: 'date',
+                            });
+                            console.log(`约会成功: 与 ${selectedNPC.name} 的约会很美妙！好感度 +20`);
+                          } catch (error) {
+                            console.error('约会失败: 请稍后重试');
+                          } finally {
+                            setLoadingAction(null);
+                          }
+                        }}
+                      >
+                        {loadingAction === 'date' ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Heart className="w-4 h-4 mr-2" />
+                        )}
                         约会
                       </Button>
                       <Button className="w-full bg-yellow-600 hover:bg-yellow-700 text-white h-10">
