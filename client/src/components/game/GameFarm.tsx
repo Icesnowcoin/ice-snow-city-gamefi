@@ -1,50 +1,78 @@
-import React, { useState } from "react";
+'use client';
+
+import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Loader2, Sprout, Droplets, Sun } from "lucide-react";
+import { Loader2, Sprout, Droplets, Sun, CheckCircle2, AlertCircle } from "lucide-react";
 
 export const GameFarm: React.FC = () => {
   const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // 获取农场数据
   const { data: farmData, isLoading: farmLoading, refetch: refetchFarm } = 
     trpc.game.npc.getNpcsByScene.useQuery({ sceneId: "farm" }, { staleTime: 30000 });
 
   // 种植 mutation
-  const plantMutation = (trpc.game.npc as any).interactWithNPC.useMutation({
+  const plantMutation = trpc.game.npc.interact.useMutation({
     onSuccess: () => {
       refetchFarm();
-      console.log("种植成功");
+      setFeedback({ type: 'success', message: '种植成功！' });
+      setIsProcessing(false);
+      setTimeout(() => setFeedback(null), 3000);
     },
     onError: (error: any) => {
-      console.error("种植失败:", error.message);
+      setFeedback({ type: 'error', message: `种植失败: ${error.message}` });
+      setIsProcessing(false);
+      setTimeout(() => setFeedback(null), 3000);
+    },
+  });
+
+  // 浇水 mutation
+  const waterMutation = trpc.game.npc.interact.useMutation({
+    onSuccess: () => {
+      refetchFarm();
+      setFeedback({ type: 'success', message: '浇水成功！' });
+      setIsProcessing(false);
+      setTimeout(() => setFeedback(null), 3000);
+    },
+    onError: (error: any) => {
+      setFeedback({ type: 'error', message: `浇水失败: ${error.message}` });
+      setIsProcessing(false);
+      setTimeout(() => setFeedback(null), 3000);
     },
   });
 
   // 收获 mutation
-  const harvestMutation = (trpc.game.npc as any).interactWithNPC.useMutation({
+  const harvestMutation = trpc.game.npc.interact.useMutation({
     onSuccess: () => {
       refetchFarm();
-      console.log("收获成功");
+      setFeedback({ type: 'success', message: '收获成功！' });
+      setIsProcessing(false);
+      setTimeout(() => setFeedback(null), 3000);
     },
     onError: (error: any) => {
-      console.error("收获失败:", error.message);
+      setFeedback({ type: 'error', message: `收获失败: ${error.message}` });
+      setIsProcessing(false);
+      setTimeout(() => setFeedback(null), 3000);
     },
   });
 
   const handlePlant = async (cropId: string) => {
-    await plantMutation.mutateAsync({
-      npcId: cropId,
-      action: "greet",
-    });
+    setIsProcessing(true);
+    await plantMutation.mutateAsync({ npcId: cropId, type: "greet" });
+  };
+
+  const handleWater = async (cropId: string) => {
+    setIsProcessing(true);
+    await waterMutation.mutateAsync({ npcId: cropId, type: "gift" });
   };
 
   const handleHarvest = async (cropId: string) => {
-    await harvestMutation.mutateAsync({
-      npcId: cropId,
-      action: "talk",
-    });
+    setIsProcessing(true);
+    await harvestMutation.mutateAsync({ npcId: cropId, type: "trade" });
   };
 
   if (farmLoading) {
@@ -66,6 +94,18 @@ export const GameFarm: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-900 to-green-800 p-4 pb-20">
       <h1 className="text-3xl font-bold text-white mb-6">农业系统</h1>
+
+      {/* 反馈消息 */}
+      {feedback && (
+        <div className={`mb-4 p-3 rounded flex items-center gap-2 ${feedback.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
+          {feedback.type === 'success' ? (
+            <CheckCircle2 className="w-5 h-5 text-white" />
+          ) : (
+            <AlertCircle className="w-5 h-5 text-white" />
+          )}
+          <span className="text-white text-sm">{feedback.message}</span>
+        </div>
+      )}
 
       {/* 农作物列表 */}
       <div className="space-y-3 mb-6">
@@ -117,10 +157,32 @@ export const GameFarm: React.FC = () => {
                         e.stopPropagation();
                         handlePlant(crop.id);
                       }}
+                      disabled={isProcessing}
                       className="flex-1 bg-blue-600 hover:bg-blue-700 text-sm"
                     >
-                      <Sprout className="w-4 h-4 mr-1" />
+                      {isProcessing ? (
+                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      ) : (
+                        <Sprout className="w-4 h-4 mr-1" />
+                      )}
                       种植
+                    </Button>
+                  )}
+                  {crop.status === "growing" && (
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleWater(crop.id);
+                      }}
+                      disabled={isProcessing}
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-sm"
+                    >
+                      {isProcessing ? (
+                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      ) : (
+                        <Droplets className="w-4 h-4 mr-1" />
+                      )}
+                      浇水
                     </Button>
                   )}
                   {crop.status === "ready" && (
@@ -129,9 +191,14 @@ export const GameFarm: React.FC = () => {
                         e.stopPropagation();
                         handleHarvest(crop.id);
                       }}
+                      disabled={isProcessing}
                       className="flex-1 bg-green-600 hover:bg-green-700 text-sm"
                     >
-                      <Sprout className="w-4 h-4 mr-1" />
+                      {isProcessing ? (
+                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      ) : (
+                        <Sprout className="w-4 h-4 mr-1" />
+                      )}
                       收获
                     </Button>
                   )}
