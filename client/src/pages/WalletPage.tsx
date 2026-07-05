@@ -78,24 +78,15 @@ export default function WalletPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const mockTransactions = [
-    {
-      id: 1,
-      type: "deposit",
-      amount: "1000.00",
-      status: "completed",
-      date: "2026-06-22 10:30:00",
-      txHash: "0x1234567890abcdef1234567890abcdef12345678",
-    },
-    {
-      id: 2,
-      type: "withdraw",
-      amount: "500.00",
-      status: "completed",
-      date: "2026-06-21 15:45:00",
-      txHash: "0xabcdef1234567890abcdef1234567890abcdef12",
-    },
-  ];
+  // Real transactions from game state
+  const transactions = gameState?.transactions?.slice(0, 20)?.map((tx: any, idx: number) => ({
+    id: idx + 1,
+    type: tx.type || "deposit",
+    amount: tx.amount?.toString() || "0",
+    status: tx.status || "completed",
+    date: tx.timestamp ? new Date(tx.timestamp).toLocaleString() : new Date().toLocaleString(),
+    txHash: tx.hash || tx.id || `tx-${idx}`,
+  })) || [];
 
   const handleDeposit = async () => {
     if (!depositAmount) {
@@ -287,7 +278,17 @@ export default function WalletPage() {
                 </div>
               ) : (
               <div className="space-y-3">
-                {mockTransactions?.map((tx: any) => (
+                {transactions.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <Clock className="w-10 h-10 text-muted-foreground mb-3" />
+                    <p className="text-muted-foreground">
+                      {lang === "zh" ? "暂无交易记录" : "No transactions yet"}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {lang === "zh" ? "开始存款或取款后，交易记录将显示在这里" : "Transactions will appear here after deposits or withdrawals"}
+                    </p>
+                  </div>
+                ) : transactions.map((tx: any) => (
                   <div key={tx.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="flex-shrink-0">
@@ -333,6 +334,15 @@ export default function WalletPage() {
                 ))}
               </div>
               )}
+              {/* Gas Fee Notice */}
+              <div className="mt-4 p-3 bg-yellow-900/20 border border-yellow-600/30 rounded-lg">
+                <p className="text-xs text-yellow-300 flex items-center gap-2">
+                  <AlertCircle className="w-3 h-3" />
+                  {lang === "zh"
+                    ? "Gas 费用由玩家承担。充值和提现操作需要支付 BNB 作为 Gas 费。"
+                    : "Gas fees are paid by the player. Deposits and withdrawals require BNB for Gas."}
+                </p>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -348,19 +358,19 @@ export default function WalletPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{lang === "zh" ? "可用余额" : "Available Balance"}</p>
-                    <p className="text-2xl font-bold">1,234.56 ISC</p>
+                    <p className="text-2xl font-bold">{wallet?.iscBalance?.toLocaleString() || "0"} ISC</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">{lang === "zh" ? "冻结余额" : "Frozen Balance"}</p>
-                    <p className="text-2xl font-bold">0.00 ISC</p>
+                    <p className="text-sm text-muted-foreground">{lang === "zh" ? "银行存款" : "Bank Balance"}</p>
+                    <p className="text-2xl font-bold">{wallet?.bankBalance?.toLocaleString() || "0"} ISC</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">{lang === "zh" ? "总充值" : "Total Deposits"}</p>
-                    <p className="text-2xl font-bold">5,000.00 ISC</p>
+                    <p className="text-sm text-muted-foreground">{lang === "zh" ? "总资产" : "Total Assets"}</p>
+                    <p className="text-2xl font-bold">{wallet?.totalAssets?.toLocaleString() || "0"} ISC</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">{lang === "zh" ? "总提现" : "Total Withdrawals"}</p>
-                    <p className="text-2xl font-bold">3,765.44 ISC</p>
+                    <p className="text-sm text-muted-foreground">{lang === "zh" ? "Gas 费用说明" : "Gas Fee Info"}</p>
+                    <p className="text-sm font-medium text-yellow-500">{lang === "zh" ? "由玩家承担 (BNB)" : "Paid by player (BNB)"}</p>
                   </div>
                 </div>
 
