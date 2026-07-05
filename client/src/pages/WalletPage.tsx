@@ -89,28 +89,42 @@ export default function WalletPage() {
   })) || [];
 
   const handleDeposit = async () => {
-    if (!depositAmount) {
-      toast.error(lang === "zh" ? "请输入金额" : "Please enter amount");
+    const amount = parseInt(depositAmount);
+    if (!depositAmount || isNaN(amount)) {
+      toast.error(lang === "zh" ? "请输入有效金额" : "Please enter a valid amount");
+      return;
+    }
+    if (amount < 100) {
+      toast.error(lang === "zh" ? "最低充值 100 ISC" : "Minimum deposit is 100 ISC");
+      return;
+    }
+    if (amount > 1000000) {
+      toast.error(lang === "zh" ? "单笔最高 1,000,000 ISC" : "Maximum 1,000,000 ISC per transaction");
       return;
     }
     try {
-      await depositMutation.mutateAsync({
-        amount: parseInt(depositAmount),
-      });
+      await depositMutation.mutateAsync({ amount });
     } catch (error) {
       toast.error(lang === "zh" ? "充值失败" : "Deposit failed");
     }
   };
 
   const handleWithdraw = async () => {
-    if (!withdrawAmount) {
-      toast.error(lang === "zh" ? "请输入金额" : "Please enter amount");
+    const amount = parseInt(withdrawAmount);
+    if (!withdrawAmount || isNaN(amount)) {
+      toast.error(lang === "zh" ? "请输入有效金额" : "Please enter a valid amount");
+      return;
+    }
+    if (amount < 100) {
+      toast.error(lang === "zh" ? "最低提现 100 ISC" : "Minimum withdrawal is 100 ISC");
+      return;
+    }
+    if (wallet && amount > wallet.bankBalance) {
+      toast.error(lang === "zh" ? "余额不足" : "Insufficient balance");
       return;
     }
     try {
-      await withdrawMutation.mutateAsync({
-        amount: parseInt(withdrawAmount),
-      });
+      await withdrawMutation.mutateAsync({ amount });
     } catch (error) {
       toast.error(lang === "zh" ? "提现失败" : "Withdrawal failed");
     }
@@ -339,8 +353,8 @@ export default function WalletPage() {
                 <p className="text-xs text-yellow-300 flex items-center gap-2">
                   <AlertCircle className="w-3 h-3" />
                   {lang === "zh"
-                    ? "Gas 费用由玩家承担。充值和提现操作需要支付 BNB 作为 Gas 费。"
-                    : "Gas fees are paid by the player. Deposits and withdrawals require BNB for Gas."}
+                    ? "提现 Gas 费由玩家承担 (BNB)，充值 Gas 费由系统承担。"
+                    : "Withdrawal gas fees paid by player (BNB). Deposit gas fees covered by system."}
                 </p>
               </div>
             </CardContent>
@@ -370,7 +384,7 @@ export default function WalletPage() {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{lang === "zh" ? "Gas 费用说明" : "Gas Fee Info"}</p>
-                    <p className="text-sm font-medium text-yellow-500">{lang === "zh" ? "由玩家承担 (BNB)" : "Paid by player (BNB)"}</p>
+                    <p className="text-sm font-medium text-yellow-500">{lang === "zh" ? "提现由玩家承担" : "Withdrawal: player pays"}</p>
                   </div>
                 </div>
 

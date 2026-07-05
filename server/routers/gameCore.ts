@@ -20,23 +20,30 @@ export const playerRouter = router({
    * 获取玩家信息
    */
   getProfile: protectedProcedure.query(async ({ ctx }) => {
-    // 模拟玩家数据（后续连接数据库）
+    const userId = ctx.user!.id;
+    const state = await getGameState(String(userId), userId);
     return {
-      id: ctx.user!.id,
-      username: ctx.user!.email?.split("@")[0] || "Player",
-      level: 5,
-      experience: 1250,
-      stamina: 85,
+      id: userId,
+      username: ctx.user!.email?.split("@")[0] || state.player.name || "Player",
+      level: state.player.level,
+      experience: state.player.experience,
+      totalExperience: state.player.totalExperience,
+      stamina: state.assets.energy,
       maxStamina: 100,
-      hunger: 70,
-      thirst: 65,
-      happiness: 75,
+      hunger: state.assets.food,
+      thirst: state.assets.water,
+      happiness: state.assets.reputation,
       health: 95,
-      money: 50000, // ISC
-      bankBalance: 25000, // ISC in bank
+      money: state.wallet.money,
+      isc: state.wallet.isc,
+      bankBalance: state.bankAccount.balance,
       currentScene: "home",
       maritalStatus: "single",
-      createdAt: Date.now(),
+      createdAt: state.bankAccount.accountCreatedAt?.getTime() || Date.now(),
+      propertiesOwned: state.progress.propertiesOwned,
+      farmsCreated: state.progress.farmsCreated,
+      tasksCompleted: state.progress.tasksCompleted,
+      npcsFriended: state.progress.npcsFriended,
     };
   }),
 
@@ -170,16 +177,44 @@ export const npcRouter = router({
 
 export const economyRouter = router({
   /**
-   * 获取经济数据
+   * 获取经济数据 - real game state
    */
   getEconomyData: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.user!.id;
+    const state = await getGameState(String(userId), userId);
     return {
-      totalMoney: 50000,
-      totalISC: 25000,
-      bankBalance: 10000,
-      dailyIncome: 500,
-      dailyExpense: 300,
-      netIncome: 200,
+      totalMoney: state.wallet.money,
+      totalISC: state.wallet.isc,
+      bankBalance: state.bankAccount.balance,
+      dailyIncome: Math.floor(state.bankAccount.balance * state.bankAccount.interestRate / 365 / 100),
+      dailyExpense: 0,
+      netIncome: Math.floor(state.bankAccount.balance * state.bankAccount.interestRate / 365 / 100),
+    };
+  }),
+
+  /**
+   * 获取银行详细信息
+   */
+  getBankInfo: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.user!.id;
+    const state = await getGameState(String(userId), userId);
+    const daysSinceLastInterest = Math.floor(
+      (new Date().getTime() - new Date(state.bankAccount.lastInterestPaid).getTime()) / (1000 * 60 * 60 * 24)
+    );
+    const dailyRate = state.bankAccount.interestRate / 365 / 100;
+    const pendingInterest = Math.max(0, Math.floor(state.bankAccount.balance * dailyRate * daysSinceLastInterest));
+    return {
+      balance: state.bankAccount.balance,
+      interestRate: state.bankAccount.interestRate,
+      depositCount: state.bankAccount.depositCount,
+      totalDeposited: state.bankAccount.totalDeposited,
+      lastInterestPaid: state.bankAccount.lastInterestPaid,
+      accountCreatedAt: state.bankAccount.accountCreatedAt,
+      pendingInterest,
+      dailyInterest: Math.max(1, Math.floor(state.bankAccount.balance * dailyRate)),
+      monthlyInterest: Math.max(1, Math.floor(state.bankAccount.balance * state.bankAccount.interestRate / 12 / 100)),
+      yearlyInterest: Math.floor(state.bankAccount.balance * state.bankAccount.interestRate / 100),
+      canClaimInterest: daysSinceLastInterest >= 1,
     };
   }),
 
@@ -188,11 +223,19 @@ export const economyRouter = router({
    */
   deposit: protectedProcedure
     .input(z.object({ amount: z.number().positive() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      if (input.amount > state.wallet.money) {
+        throw new Error('Insufficient balance');
+      }
+      const action = EconomyService.bankDeposit(state, input.amount);
+      const result = await dispatchAction(playerId, userId, action);
       return {
         success: true,
         amount: input.amount,
-        newBalance: 10000 + input.amount,
+        newBalance: state.bankAccount.balance + input.amount,
       };
     }),
 
@@ -201,11 +244,19 @@ export const economyRouter = router({
    */
   withdraw: protectedProcedure
     .input(z.object({ amount: z.number().positive() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      if (input.amount > state.bankAccount.balance) {
+        throw new Error('Insufficient bank balance');
+      }
+      const action = EconomyService.bankWithdraw(state, input.amount);
+      const result = await dispatchAction(playerId, userId, action);
       return {
         success: true,
         amount: input.amount,
-        newBalance: 10000 - input.amount,
+        newBalance: state.bankAccount.balance - input.amount,
       };
     }),
 
@@ -213,10 +264,25 @@ export const economyRouter = router({
    * 领取利息
    */
   claimInterest: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.user!.id;
+    const playerId = String(userId);
+    const state = await getGameState(playerId, userId);
+    const daysSinceLastInterest = Math.floor(
+      (new Date().getTime() - new Date(state.bankAccount.lastInterestPaid).getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (daysSinceLastInterest < 1) {
+      throw new Error('Interest can only be claimed once per day');
+    }
+    const interest = Math.max(1, Math.floor(state.bankAccount.balance * (state.bankAccount.interestRate / 100) / 12));
+    const action = {
+      type: 'BANK_CLAIM_INTEREST' as const,
+      payload: { amount: interest },
+    };
+    const result = await dispatchAction(playerId, userId, action);
     return {
       success: true,
-      interest: 50,
-      newBalance: 10050,
+      interest,
+      newBalance: state.bankAccount.balance + interest,
     };
   }),
 });

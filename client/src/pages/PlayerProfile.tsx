@@ -1,11 +1,17 @@
+import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { usePlayerProfile } from "@/hooks/useGameData";
+import { usePlayerProfile, useUpdateProfile } from "@/hooks/useGameData";
+import { trpc } from "@/lib/trpc";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import {
   User,
   Award,
@@ -17,150 +23,247 @@ import {
   Trophy,
   Star,
   Zap,
+  Heart,
+  Droplets,
+  Utensils,
+  Battery,
+  Home,
+  Loader2,
+  Save,
+  Shield,
 } from "lucide-react";
 
 export default function PlayerProfile() {
-  const { t, lang } = useLanguage();
-  const { data: player, isLoading: playerLoading } = usePlayerProfile();
+  const { lang } = useLanguage();
+  const { data: player, isLoading, refetch } = usePlayerProfile();
+  const updateProfile = useUpdateProfile();
+  const [editOpen, setEditOpen] = useState(false);
+  const [editUsername, setEditUsername] = useState("");
 
-  const mockAchievements = [
-    { id: 1, name: lang === "zh" ? "首次交易" : "First Trade", icon: "🎯", progress: 100 },
-    { id: 2, name: lang === "zh" ? "富豪" : "Millionaire", icon: "💰", progress: 75 },
-    { id: 3, name: lang === "zh" ? "房地产大亨" : "Real Estate Tycoon", icon: "🏠", progress: 50 },
-    { id: 4, name: lang === "zh" ? "农业专家" : "Agriculture Expert", icon: "🌾", progress: 30 },
-    { id: 5, name: lang === "zh" ? "社交大师" : "Social Master", icon: "👥", progress: 60 },
-    { id: 6, name: lang === "zh" ? "任务完成者" : "Quest Completer", icon: "✅", progress: 85 },
-  ];
-  const achievements = mockAchievements;
+  const handleSaveProfile = async () => {
+    if (!editUsername.trim()) {
+      toast.error(lang === "zh" ? "用户名不能为空" : "Username cannot be empty");
+      return;
+    }
+    try {
+      await updateProfile.mutateAsync({ username: editUsername });
+      toast.success(lang === "zh" ? "资料更新成功" : "Profile updated");
+      setEditOpen(false);
+      refetch();
+    } catch (error) {
+      toast.error(lang === "zh" ? "更新失败" : "Update failed");
+    }
+  };
 
-  const mockPlayer = (player as any) || { level: 42, experience: 8500, totalExperience: 10000, username: "Player" };
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-48 w-full" />
+        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
+  }
 
-  const statistics = [
-    { label: lang === "zh" ? "总交易数" : "Total Trades", value: "234" },
-    { label: lang === "zh" ? "成功率" : "Success Rate", value: "98.5%" },
-    { label: lang === "zh" ? "平均交易额" : "Avg Trade", value: "156.78 ISC" },
-    { label: lang === "zh" ? "总收入" : "Total Income", value: "12,345.67 ISC" },
-    { label: lang === "zh" ? "总支出" : "Total Expense", value: "8,234.56 ISC" },
-    { label: lang === "zh" ? "净利润" : "Net Profit", value: "4,111.11 ISC" },
-  ];
-
-  const badges = [
-    { name: lang === "zh" ? "新手" : "Newcomer", color: "bg-blue-500" },
-    { name: lang === "zh" ? "商人" : "Merchant", color: "bg-green-500" },
-    { name: lang === "zh" ? "投资者" : "Investor", color: "bg-purple-500" },
-    { name: lang === "zh" ? "社交达人" : "Socialite", color: "bg-pink-500" },
-  ];
+  const p = player as any;
 
   return (
     <div className="space-y-6">
       {/* Profile Header */}
-      <Card>
+      <Card className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white border-0">
         <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex items-start gap-4">
             {/* Avatar */}
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400 flex items-center justify-center text-white text-5xl font-bold">
-                U
-              </div>
-              <Button variant="outline" size="sm" className="gap-2">
-                <Edit2 className="w-4 h-4" />
-                {lang === "zh" ? "编辑资料" : "Edit Profile"}
-              </Button>
+            <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold flex-shrink-0">
+              {(p?.username || "P")[0].toUpperCase()}
             </div>
-
-            {/* Profile Info */}
-            <div className="flex-1 space-y-4">
-              <div>
-                <h1 className="text-3xl font-bold">玩家昵称</h1>
-                <p className="text-muted-foreground">Player ID: #123456789</p>
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-bold truncate">{p?.username || "Player"}</h1>
+                <Dialog open={editOpen} onOpenChange={setEditOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-white hover:bg-white/20"
+                      onClick={() => setEditUsername(p?.username || "")}
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>{lang === "zh" ? "编辑资料" : "Edit Profile"}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label>{lang === "zh" ? "用户名" : "Username"}</Label>
+                        <Input
+                          value={editUsername}
+                          onChange={(e) => setEditUsername(e.target.value)}
+                          placeholder={lang === "zh" ? "输入新用户名" : "Enter new username"}
+                        />
+                      </div>
+                      <Button
+                        onClick={handleSaveProfile}
+                        disabled={updateProfile.isPending}
+                        className="w-full"
+                      >
+                        {updateProfile.isPending ? (
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        ) : (
+                          <Save className="w-4 h-4 mr-2" />
+                        )}
+                        {lang === "zh" ? "保存" : "Save"}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">{lang === "zh" ? "等级" : "Level"}</p>
-                  <p className="text-3xl font-bold">{mockPlayer.level}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{lang === "zh" ? "经验值" : "Experience"}</p>
-                  <p className="text-2xl font-bold">{mockPlayer.experience}/{(mockPlayer as any).totalExperience || 10000}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{lang === "zh" ? "排名" : "Ranking"}</p>
-                  <p className="text-2xl font-bold text-yellow-500">#42</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{lang === "zh" ? "加入时间" : "Joined"}</p>
-                  <p className="text-sm">2026-01-15</p>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-sm font-medium">{lang === "zh" ? "升级进度" : "Level Progress"}</p>
-                <Progress value={(mockPlayer.experience / ((mockPlayer as any).totalExperience || 10000)) * 100} className="h-2" />
-              </div>
-
-              {/* Badges */}
-              <div className="flex flex-wrap gap-2">
-                {badges.map((badge) => (
-                  <Badge key={badge.name} className={`${badge.color} text-white`}>
-                    {badge.name}
-                  </Badge>
-                ))}
+              <p className="text-blue-100 text-sm">ID: #{p?.id || "000"}</p>
+              <div className="flex items-center gap-3 mt-2">
+                <Badge className="bg-yellow-500 text-black">
+                  Lv.{p?.level || 1}
+                </Badge>
+                <Badge className="bg-white/20 text-white">
+                  {p?.maritalStatus === "married" ? (lang === "zh" ? "已婚" : "Married") : (lang === "zh" ? "单身" : "Single")}
+                </Badge>
               </div>
             </div>
+          </div>
 
-            {/* Contact Info */}
-            <div className="space-y-3">
+          {/* Level Progress */}
+          <div className="mt-4">
+            <div className="flex justify-between text-sm text-blue-100 mb-1">
+              <span>EXP: {p?.experience || 0}/{p?.totalExperience || 10000}</span>
+              <span>{Math.round(((p?.experience || 0) / (p?.totalExperience || 10000)) * 100)}%</span>
+            </div>
+            <Progress value={((p?.experience || 0) / (p?.totalExperience || 10000)) * 100} className="h-2" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Status Bars */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">{lang === "zh" ? "状态" : "Status"}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm">
-                <Mail className="w-4 h-4 text-muted-foreground" />
-                <span>player@example.com</span>
+                <Battery className="w-4 h-4 text-yellow-500" />
+                <span>{lang === "zh" ? "体力" : "Stamina"}</span>
+                <span className="ml-auto font-medium">{p?.stamina || 0}/{p?.maxStamina || 100}</span>
               </div>
+              <Progress value={((p?.stamina || 0) / (p?.maxStamina || 100)) * 100} className="h-1.5" />
+            </div>
+            <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm">
-                <MapPin className="w-4 h-4 text-muted-foreground" />
-                <span>{lang === "zh" ? "冰雪城市" : "Ice Snow City"}</span>
+                <Heart className="w-4 h-4 text-red-500" />
+                <span>{lang === "zh" ? "健康" : "Health"}</span>
+                <span className="ml-auto font-medium">{p?.health || 0}</span>
               </div>
+              <Progress value={p?.health || 0} className="h-1.5" />
+            </div>
+            <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm">
-                <Calendar className="w-4 h-4 text-muted-foreground" />
-                <span>{lang === "zh" ? "最后活动: 2 小时前" : "Last Active: 2h ago"}</span>
+                <Utensils className="w-4 h-4 text-orange-500" />
+                <span>{lang === "zh" ? "饥饿" : "Hunger"}</span>
+                <span className="ml-auto font-medium">{p?.hunger || 0}</span>
               </div>
+              <Progress value={p?.hunger || 0} className="h-1.5" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm">
+                <Droplets className="w-4 h-4 text-blue-500" />
+                <span>{lang === "zh" ? "口渴" : "Thirst"}</span>
+                <span className="ml-auto font-medium">{p?.thirst || 0}</span>
+              </div>
+              <Progress value={p?.thirst || 0} className="h-1.5" />
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Tabs */}
-      <Tabs defaultValue="achievements" className="w-full">
+      <Tabs defaultValue="stats" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="achievements" className="gap-2">
-            <Trophy className="w-4 h-4" />
-            {lang === "zh" ? "成就" : "Achievements"}
-          </TabsTrigger>
-          <TabsTrigger value="statistics" className="gap-2">
-            <TrendingUp className="w-4 h-4" />
-            {lang === "zh" ? "统计" : "Statistics"}
-          </TabsTrigger>
-          <TabsTrigger value="social" className="gap-2">
-            <Star className="w-4 h-4" />
-            {lang === "zh" ? "社交" : "Social"}
-          </TabsTrigger>
+          <TabsTrigger value="stats">{lang === "zh" ? "统计" : "Stats"}</TabsTrigger>
+          <TabsTrigger value="achievements">{lang === "zh" ? "成就" : "Achievements"}</TabsTrigger>
+          <TabsTrigger value="account">{lang === "zh" ? "账户" : "Account"}</TabsTrigger>
         </TabsList>
+
+        {/* Stats Tab */}
+        <TabsContent value="stats">
+          <Card>
+            <CardContent className="pt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-accent rounded-lg text-center">
+                  <Home className="w-5 h-5 mx-auto text-blue-500 mb-1" />
+                  <p className="text-2xl font-bold">{p?.propertiesOwned || 0}</p>
+                  <p className="text-xs text-muted-foreground">{lang === "zh" ? "房产" : "Properties"}</p>
+                </div>
+                <div className="p-3 bg-accent rounded-lg text-center">
+                  <Zap className="w-5 h-5 mx-auto text-green-500 mb-1" />
+                  <p className="text-2xl font-bold">{p?.farmsCreated || 0}</p>
+                  <p className="text-xs text-muted-foreground">{lang === "zh" ? "农场" : "Farms"}</p>
+                </div>
+                <div className="p-3 bg-accent rounded-lg text-center">
+                  <Trophy className="w-5 h-5 mx-auto text-yellow-500 mb-1" />
+                  <p className="text-2xl font-bold">{p?.tasksCompleted || 0}</p>
+                  <p className="text-xs text-muted-foreground">{lang === "zh" ? "任务" : "Tasks"}</p>
+                </div>
+                <div className="p-3 bg-accent rounded-lg text-center">
+                  <User className="w-5 h-5 mx-auto text-pink-500 mb-1" />
+                  <p className="text-2xl font-bold">{p?.npcsFriended || 0}</p>
+                  <p className="text-xs text-muted-foreground">{lang === "zh" ? "好友" : "Friends"}</p>
+                </div>
+              </div>
+
+              <div className="mt-4 space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">{lang === "zh" ? "钱包余额" : "Wallet"}</span>
+                  <span className="font-medium">{p?.money?.toLocaleString() || 0} ISC</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">{lang === "zh" ? "银行存款" : "Bank"}</span>
+                  <span className="font-medium">{p?.bankBalance?.toLocaleString() || 0} ISC</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">{lang === "zh" ? "总资产" : "Total Assets"}</span>
+                  <span className="font-bold text-green-600">
+                    {((p?.money || 0) + (p?.isc || 0) + (p?.bankBalance || 0)).toLocaleString()} ISC
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* Achievements Tab */}
         <TabsContent value="achievements">
           <Card>
-            <CardHeader>
-              <CardTitle>{lang === "zh" ? "成就列表" : "Achievement List"}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {achievements.map((achievement: any) => (
-                  <div key={achievement.id} className="border rounded-lg p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="text-3xl">{achievement.icon}</div>
-                      <span className="text-sm font-medium">{achievement.progress}%</span>
+            <CardContent className="pt-4">
+              <div className="space-y-3">
+                {[
+                  { id: "first_login", name: lang === "zh" ? "首次登录" : "First Login", icon: "🎯", progress: 100 },
+                  { id: "first_trade", name: lang === "zh" ? "首次交易" : "First Trade", icon: "💰", progress: p?.tasksCompleted > 0 ? 100 : 0 },
+                  { id: "property_owner", name: lang === "zh" ? "房产拥有者" : "Property Owner", icon: "🏠", progress: p?.propertiesOwned > 0 ? 100 : 0 },
+                  { id: "farmer", name: lang === "zh" ? "农业专家" : "Farmer", icon: "🌾", progress: p?.farmsCreated > 0 ? 100 : 0 },
+                  { id: "social", name: lang === "zh" ? "社交达人" : "Social Master", icon: "👥", progress: Math.min(100, (p?.npcsFriended || 0) * 20) },
+                  { id: "rich", name: lang === "zh" ? "富豪" : "Millionaire", icon: "💎", progress: Math.min(100, ((p?.money || 0) + (p?.bankBalance || 0)) / 1000) },
+                ].map((achievement) => (
+                  <div key={achievement.id} className="flex items-center gap-3 p-3 border rounded-lg">
+                    <span className="text-2xl">{achievement.icon}</span>
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{achievement.name}</p>
+                      <Progress value={achievement.progress} className="h-1.5 mt-1" />
                     </div>
-                    <h3 className="font-medium">{achievement.name}</h3>
-                    <Progress value={achievement.progress} className="h-2" />
+                    <Badge variant={achievement.progress >= 100 ? "default" : "outline"} className="text-xs">
+                      {achievement.progress >= 100 ? (lang === "zh" ? "已达成" : "Done") : `${achievement.progress}%`}
+                    </Badge>
                   </div>
                 ))}
               </div>
@@ -168,96 +271,57 @@ export default function PlayerProfile() {
           </Card>
         </TabsContent>
 
-        {/* Statistics Tab */}
-        <TabsContent value="statistics">
+        {/* Account Tab */}
+        <TabsContent value="account">
           <Card>
-            <CardHeader>
-              <CardTitle>{lang === "zh" ? "游戏统计" : "Game Statistics"}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {statistics.map((stat: any, index: number) => (
-                  <div key={index} className="text-center">
-                    <p className="text-sm text-muted-foreground mb-2">{stat.label}</p>
-                    <p className="text-3xl font-bold">{stat.value}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Social Tab */}
-        <TabsContent value="social">
-          <Card>
-            <CardHeader>
-              <CardTitle>{lang === "zh" ? "社交关系" : "Social Connections"}</CardTitle>
-            </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <Mail className="w-5 h-5 text-muted-foreground" />
                   <div>
-                    <p className="font-medium">{lang === "zh" ? "好友" : "Friends"}</p>
-                    <p className="text-sm text-muted-foreground">{lang === "zh" ? "已添加 42 个好友" : "42 friends added"}</p>
+                    <p className="text-xs text-muted-foreground">{lang === "zh" ? "邮箱" : "Email"}</p>
+                    <p className="font-medium text-sm">player@example.com</p>
                   </div>
-                  <Button variant="outline" size="sm">
-                    {lang === "zh" ? "管理" : "Manage"}
+                </div>
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <Shield className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">{lang === "zh" ? "实名认证" : "Identity Verification"}</p>
+                    <p className="font-medium text-sm text-yellow-500">{lang === "zh" ? "未认证" : "Not Verified"}</p>
+                  </div>
+                  <Button size="sm" variant="outline" className="ml-auto" onClick={() => toast.info(lang === "zh" ? "功能开发中" : "Coming soon")}>
+                    {lang === "zh" ? "认证" : "Verify"}
                   </Button>
                 </div>
-
-                <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <MapPin className="w-5 h-5 text-muted-foreground" />
                   <div>
-                    <p className="font-medium">{lang === "zh" ? "粉丝" : "Followers"}</p>
-                    <p className="text-sm text-muted-foreground">{lang === "zh" ? "获得 156 个粉丝" : "156 followers"}</p>
+                    <p className="text-xs text-muted-foreground">{lang === "zh" ? "当前位置" : "Location"}</p>
+                    <p className="font-medium text-sm">{lang === "zh" ? "冰雪城" : "Ice Snow City"}</p>
                   </div>
-                  <Button variant="outline" size="sm">
-                    {lang === "zh" ? "查看" : "View"}
-                  </Button>
+                </div>
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <Calendar className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">{lang === "zh" ? "注册时间" : "Registered"}</p>
+                    <p className="font-medium text-sm">
+                      {p?.createdAt ? new Date(p.createdAt).toLocaleDateString() : "-"}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium">{lang === "zh" ? "公会" : "Guild"}</p>
-                    <p className="text-sm text-muted-foreground">{lang === "zh" ? "加入公会: 冰雪商人团" : "Guild: Ice Snow Merchants"}</p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    {lang === "zh" ? "详情" : "Details"}
-                  </Button>
+                <div className="border-t pt-4 space-y-2">
+                  <p className="text-xs text-muted-foreground">
+                    {lang === "zh"
+                      ? "提示：一个实名信息终身只能注册一个游戏账户。提款前需完成实名认证并设置提款密码。最多可绑定 3 个链上地址用于提款。"
+                      : "Note: One identity can only register one game account. Complete identity verification and set withdrawal password before withdrawing. Up to 3 blockchain addresses can be bound for withdrawal."}
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Recent Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{lang === "zh" ? "最近活动" : "Recent Activity"}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center justify-between border-b pb-4 last:border-b-0">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400 flex items-center justify-center text-white">
-                    <Zap className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="font-medium">
-                      {lang === "zh" ? `活动 ${i}` : `Activity ${i}`}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {lang === "zh" ? "2 小时前" : "2 hours ago"}
-                    </p>
-                  </div>
-                </div>
-                <span className="text-sm font-medium text-green-600">+100 ISC</span>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
