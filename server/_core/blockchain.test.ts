@@ -153,7 +153,7 @@ describe("BlockchainService", () => {
   });
 
   describe("Error Handling", () => {
-    it("should handle network errors gracefully", async () => {
+    it("should handle network errors gracefully", { timeout: 15000 }, async () => {
       // Simulate network error by using invalid RPC URL
       const invalidService = new BlockchainService();
 

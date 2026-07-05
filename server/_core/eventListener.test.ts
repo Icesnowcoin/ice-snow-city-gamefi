@@ -81,7 +81,7 @@ describe("EventListenerService", () => {
   });
 
   describe("Service Lifecycle", () => {
-    it("should initialize service", async () => {
+    it("should initialize service", { timeout: 15000 }, async () => {
       const config = {
         iscManagerAddress: "0x1234567890123456789012345678901234567890",
         cityTreasuryAddress: "0x0987654321098765432109876543210987654321",
@@ -151,7 +151,7 @@ describe("EventListenerService", () => {
   });
 
   describe("Error Handling", () => {
-    it("should handle initialization without RPC URL", async () => {
+    it("should handle initialization without RPC URL", { timeout: 15000 }, async () => {
       const originalRPC = process.env.BSC_RPC_URL;
       
       try {

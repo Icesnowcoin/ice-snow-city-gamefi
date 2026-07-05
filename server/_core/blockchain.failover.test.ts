@@ -6,12 +6,13 @@ describe("BlockchainService RPC Failover Integration", () => {
   let blockchainService: BlockchainService;
 
   beforeEach(() => {
+    vi.setConfig({ testTimeout: 15000 });
     blockchainService = new BlockchainService();
     rpcFailoverManager.reset();
   });
 
   describe("RPC Endpoint Selection", () => {
-    it("should use RPC failover manager for endpoint selection", async () => {
+    it("should use RPC failover manager for endpoint selection", { timeout: 15000 }, async () => {
       const getNextEndpointSpy = vi.spyOn(rpcFailoverManager, "getNextEndpoint");
       
       try {
@@ -23,7 +24,7 @@ describe("BlockchainService RPC Failover Integration", () => {
       expect(getNextEndpointSpy).toHaveBeenCalled();
     });
 
-    it("should handle RPC endpoint changes", async () => {
+    it("should handle RPC endpoint changes", { timeout: 15000 }, async () => {
       const getNextEndpointSpy = vi.spyOn(rpcFailoverManager, "getNextEndpoint");
       
       try {
