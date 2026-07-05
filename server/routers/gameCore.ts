@@ -535,6 +535,97 @@ export const gameCoreRouter = router({
       return dispatchAction(playerId, userId, action);
     }),
 
+  // Property actions
+  getProperties: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.user!.id;
+    const state = await getGameState(String(userId), userId);
+    return {
+      owned: state.properties || [],
+      money: state.wallet.money,
+    };
+  }),
+  purchaseProperty: protectedProcedure
+    .input(z.object({ propertyId: z.string(), price: z.number().positive() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      if (state.wallet.money < input.price) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Insufficient funds" });
+      }
+      const action = PropertyService.purchaseProperty(state, input.propertyId, input.price);
+      return dispatchAction(playerId, userId, action);
+    }),
+  sellProperty: protectedProcedure
+    .input(z.object({ propertyId: z.string(), price: z.number().positive() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const action = PropertyService.sellProperty(state, input.propertyId, input.price);
+      return dispatchAction(playerId, userId, action);
+    }),
+  rentProperty: protectedProcedure
+    .input(z.object({ propertyId: z.string(), renterId: z.string(), monthlyRent: z.number().positive() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const action = PropertyService.rentProperty(state, input.propertyId, input.renterId, input.monthlyRent);
+      return dispatchAction(playerId, userId, action);
+    }),
+  collectRent: protectedProcedure
+    .input(z.object({ propertyId: z.string(), amount: z.number().positive() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const action = PropertyService.collectRent(state, input.propertyId, input.amount);
+      return dispatchAction(playerId, userId, action);
+    }),
+  // Farm actions
+  createFarm: protectedProcedure
+    .input(z.object({ name: z.string(), location: z.string().default("city_farm"), size: z.number().positive().default(4) }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const farm = {
+        id: `farm_${Date.now()}`,
+        ownerId: playerId,
+        name: input.name,
+        location: input.location,
+        size: input.size,
+        totalPlots: input.size,
+        availablePlots: input.size,
+        crops: [],
+        createdAt: new Date(),
+      };
+      const action = FarmService.createFarm(state, farm);
+      return dispatchAction(playerId, userId, action);
+    }),
+  harvestCrop: protectedProcedure
+    .input(z.object({ farmId: z.string(), cropId: z.string(), yieldAmount: z.number().positive().default(10) }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      const action = FarmService.harvestCrop(state, input.farmId, input.cropId, input.yieldAmount);
+      return dispatchAction(playerId, userId, action);
+    }),
+  // Shop actions
+  shopPurchase: protectedProcedure
+    .input(z.object({ itemId: z.string(), quantity: z.number().positive().default(1), cost: z.number().positive() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user!.id;
+      const playerId = String(userId);
+      const state = await getGameState(playerId, userId);
+      if (state.wallet.money < input.cost * input.quantity) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Insufficient funds" });
+      }
+      const action = ShopService.purchaseItem(state, input.itemId, input.quantity, input.cost);
+      return dispatchAction(playerId, userId, action);
+    }),
   // Game time
   advanceTime: protectedProcedure
     .input(z.object({ minutes: z.number().positive() }))

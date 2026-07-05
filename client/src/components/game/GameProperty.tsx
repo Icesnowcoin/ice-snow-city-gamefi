@@ -49,7 +49,13 @@ export const GameProperty: React.FC = () => {
   const monthlyIncome = ownedProperties.reduce((total: number, p: any) => total + (p.rentalIncome || 0), 0);
   const totalValue = ownedProperties.reduce((total: number, p: any) => total + (p.price || 0), 0);
 
-  // 购买房产
+  // 购买房产 mutation
+  const purchaseMutation = trpc.game.core.purchaseProperty.useMutation({
+    onSuccess: () => {
+      refetchState();
+    },
+  });
+
   const handleBuy = async (property: typeof marketProperties[0]) => {
     if (!wallet || wallet.money < property.price) {
       showFeedback("error", `余额不足！需要 ${property.price} ISC，当前余额 ${wallet?.money || 0} ISC`);
@@ -60,7 +66,7 @@ export const GameProperty: React.FC = () => {
       return;
     }
     try {
-      await refetchState();
+      await purchaseMutation.mutateAsync({ propertyId: property.id, price: property.price });
       showFeedback("success", `成功购买 ${property.name}！每月可获得 ${property.monthlyRent} ISC 租金收入`);
     } catch (error: any) {
       showFeedback("error", `购买失败: ${error.message}`);
