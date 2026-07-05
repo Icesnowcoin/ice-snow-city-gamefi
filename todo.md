@@ -259,10 +259,10 @@
 - [x] 将 NPCSystem 按针连接到真实游戏逻辑 (真实数据源 + 用户反馈 + 实时更新)
 - [x] 将其他游戏系统按针连接到真实游戏逻辑
   - [x] GameEconomy 修复 (withdraw, claimInterest mutations)
-  - [x] GameFarm 改进 (添加用户反馈、加载状态)
-  - [x] GameProperty 完成 (真实房产数据 + 购买流程 + 投资回报率)
-  - [x] GameTasks 完成 (任务列表 + 接受/完成 + 进度条)
-  - [x] GameShop 完成 (商品分类 + 购买流程 + 数量选择)
+  - [x] GameFarm 重写 (createFarm + harvestCrop mutations + 真实数据)
+  - [x] GameProperty 重写 (purchaseProperty mutation + 真实房产数据)
+  - [x] GameTasks 完成 (getTaskList + acceptTask/completeTask)
+  - [x] GameShop 完成 (getAvailableItems + consumeItem)
 - [x] 实现游戏状态持久化到数据库
 - [x] 实现游戏状态自动保存（通过 saveGameStateToDb）
 
