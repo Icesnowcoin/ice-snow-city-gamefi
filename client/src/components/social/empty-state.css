@@ -1,0 +1,370 @@
+/* 空状态容器 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.3) 0%, rgba(15, 23, 42, 0.3) 100%);
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+/* 空状态图标包装器 */
+.empty-state-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border-radius: 50%;
+  animation: float 3s ease-in-out infinite;
+}
+
+.empty-icon {
+  width: 40px;
+  height: 40px;
+  color: #3b82f6;
+  opacity: 0.7;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* 空状态标题 */
+.empty-state-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0 0 12px 0;
+  letter-spacing: 0.5px;
+}
+
+/* 空状态描述 */
+.empty-state-description {
+  font-size: 14px;
+  color: #cbd5e1;
+  margin: 0 0 24px 0;
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+/* 空状态操作按钮 */
+.empty-state-action {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.empty-state-action:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.empty-state-action .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* 在线状态指示器 */
+.online-indicator {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 指示器尺寸 */
+.indicator-sm {
+  width: 8px;
+  height: 8px;
+}
+
+.indicator-md {
+  width: 12px;
+  height: 12px;
+}
+
+.indicator-lg {
+  width: 16px;
+  height: 16px;
+}
+
+/* 指示器点 */
+.indicator-dot {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+/* 状态颜色 */
+.status-online .indicator-dot {
+  background-color: #10b981;
+  border-color: #059669;
+}
+
+.status-offline .indicator-dot {
+  background-color: #64748b;
+  border-color: #475569;
+}
+
+.status-away .indicator-dot {
+  background-color: #f59e0b;
+  border-color: #d97706;
+}
+
+.status-busy .indicator-dot {
+  background-color: #ef4444;
+  border-color: #dc2626;
+}
+
+/* 脉冲动画 */
+.indicator-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+.status-online .indicator-pulse {
+  border-color: #10b981;
+}
+
+.status-away .indicator-pulse {
+  border-color: #f59e0b;
+}
+
+.status-busy .indicator-pulse {
+  border-color: #ef4444;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* 状态徽章 */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.badge-sm {
+  padding: 3px 8px;
+  font-size: 10px;
+}
+
+.badge-md {
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+.badge-lg {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* 徽章点 */
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.badge-label {
+  white-space: nowrap;
+}
+
+/* 状态分组标题 */
+.status-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 12px 0 8px 0;
+}
+
+.header-icon {
+  font-size: 14px;
+}
+
+.header-label {
+  flex: 1;
+}
+
+.header-count {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* 在线/离线状态视觉区分 */
+.friend-item {
+  transition: all 0.3s ease;
+}
+
+.friend-item.online {
+  background: rgba(16, 185, 129, 0.05);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.friend-item.online:hover {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.friend-item.offline {
+  opacity: 0.7;
+}
+
+.friend-item.offline:hover {
+  opacity: 0.85;
+  background: rgba(100, 116, 139, 0.05);
+}
+
+.friend-item.away {
+  background: rgba(245, 158, 11, 0.05);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.friend-item.busy {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+/* 在线状态标签 */
+.friend-status-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.status-online .friend-status-label {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.status-offline .friend-status-label {
+  color: #94a3b8;
+  background: rgba(100, 116, 139, 0.1);
+}
+
+.status-away .friend-status-label {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.status-busy .friend-status-label {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* 最后在线时间 */
+.last-seen-time {
+  font-size: 10px;
+  color: #64748b;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.last-seen-time::before {
+  content: '·';
+  margin: 0 2px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .empty-state {
+    min-height: 250px;
+    padding: 30px 16px;
+  }
+
+  .empty-state-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 16px;
+  }
+
+  .empty-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .empty-state-title {
+    font-size: 16px;
+  }
+
+  .empty-state-description {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+}
+
+/* 动画优化 */
+@media (prefers-reduced-motion: reduce) {
+  .empty-state-icon-wrapper,
+  .indicator-pulse,
+  .empty-state-action {
+    animation: none;
+  }
+
+  .friend-item {
+    transition: none;
+  }
+}
