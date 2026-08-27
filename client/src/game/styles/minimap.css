@@ -1,0 +1,102 @@
+.minimap-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(26, 26, 46, 0.95);
+  border: 2px solid #4a9d6f;
+  border-radius: 8px;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  font-family: 'Arial', sans-serif;
+}
+
+.minimap-header {
+  background: linear-gradient(135deg, #4a9d6f 0%, #2d6a4f 100%);
+  padding: 10px 15px;
+  border-bottom: 1px solid #3a7d5f;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.minimap-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.minimap-canvas {
+  display: block;
+  background: #1a1a2e;
+  cursor: crosshair;
+  border-radius: 0 0 6px 6px;
+  transition: filter 0.2s ease;
+}
+
+.minimap-canvas:hover {
+  filter: brightness(1.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .minimap-container {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .minimap-header h3 {
+    font-size: 12px;
+  }
+}
+
+/* 暗色主题支持 */
+@media (prefers-color-scheme: dark) {
+  .minimap-container {
+    background: rgba(26, 26, 46, 0.98);
+    border-color: #4a9d6f;
+  }
+
+  .minimap-header {
+    background: linear-gradient(135deg, #4a9d6f 0%, #2d6a4f 100%);
+  }
+}
+
+/* 亮色主题支持 */
+@media (prefers-color-scheme: light) {
+  .minimap-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: #4a9d6f;
+  }
+
+  .minimap-header {
+    background: linear-gradient(135deg, #4a9d6f 0%, #2d6a4f 100%);
+    color: #ffffff;
+  }
+
+  .minimap-canvas {
+    background: #f5f5f5;
+  }
+}
+
+/* 动画效果 */
+@keyframes minimapPulse {
+  0% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(74, 157, 111, 0.4);
+  }
+  100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.minimap-container.active {
+  animation: minimapPulse 2s ease-in-out infinite;
+}
