@@ -1,0 +1,1 @@
+ALTER TABLE `signed_nft_orders` ADD `fulfillTxHash` varchar(66);
