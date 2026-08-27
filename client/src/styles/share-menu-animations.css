@@ -1,0 +1,298 @@
+/* Share Menu Button Animations */
+.share-menu-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.share-menu-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.share-menu-button:hover::before {
+  left: 100%;
+}
+
+/* Share Menu Item Animations */
+.share-menu-item {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.share-menu-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.3s ease;
+  opacity: 0.5;
+}
+
+.share-menu-item:hover::after {
+  width: 100%;
+}
+
+/* Platform-specific colors */
+.share-item-twitter {
+  --platform-color: #1da1f2;
+}
+
+.share-item-telegram {
+  --platform-color: #0088cc;
+}
+
+.share-item-clipboard {
+  --platform-color: #10b981;
+}
+
+.share-item-download {
+  --platform-color: #a855f7;
+}
+
+/* Success state animations */
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes successGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.share-success {
+  animation: successPulse 0.6s ease-out;
+}
+
+.share-success-glow {
+  animation: successGlow 1s ease-out;
+}
+
+/* Toast animations */
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+}
+
+.toast-enter {
+  animation: toastSlideIn 0.3s ease-out;
+}
+
+.toast-exit {
+  animation: toastSlideOut 0.3s ease-out;
+}
+
+/* Ripple effect for share buttons */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(0);
+  animation: ripple 0.6s ease-out;
+  pointer-events: none;
+}
+
+/* Floating label animation */
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}
+
+.float-label {
+  animation: floatUp 2s ease-out forwards;
+  position: absolute;
+  pointer-events: none;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Checkmark animation */
+@keyframes checkmarkDraw {
+  0% {
+    stroke-dashoffset: 50;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.checkmark-animate {
+  stroke-dasharray: 50;
+  animation: checkmarkDraw 0.6s ease-out forwards;
+}
+
+/* Loading spinner enhancement */
+@keyframes spinnerRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinnerPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.spinner-enhanced {
+  animation: spinnerRotate 1s linear infinite, spinnerPulse 2s ease-in-out infinite;
+}
+
+/* Button press effect */
+@keyframes buttonPress {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.button-press {
+  animation: buttonPress 0.2s ease-out;
+}
+
+/* Dropdown menu animations */
+@keyframes dropdownSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dropdownSlideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.dropdown-enter {
+  animation: dropdownSlideDown 0.2s ease-out;
+}
+
+.dropdown-exit {
+  animation: dropdownSlideUp 0.2s ease-out;
+}
+
+/* Success badge animations */
+@keyframes badgePop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.badge-pop {
+  animation: badgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Confetti animation */
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.confetti {
+  animation: confettiFall 2s ease-out forwards;
+  position: absolute;
+  pointer-events: none;
+}
