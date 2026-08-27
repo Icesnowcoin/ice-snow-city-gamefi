@@ -1,0 +1,224 @@
+.npc-dialogue-ui {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  max-width: 600px;
+  width: 90%;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.dialogue-box {
+  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  font-family: 'Arial', sans-serif;
+}
+
+.dialogue-box.emotion-happy {
+  border-color: #ffd700;
+  background: linear-gradient(135deg, #fffacd 0%, #ffffff 100%);
+}
+
+.dialogue-box.emotion-sad {
+  border-color: #87ceeb;
+  background: linear-gradient(135deg, #e0f6ff 0%, #ffffff 100%);
+}
+
+.dialogue-box.emotion-angry {
+  border-color: #ff6b6b;
+  background: linear-gradient(135deg, #ffe0e0 0%, #ffffff 100%);
+}
+
+.dialogue-box.emotion-surprised {
+  border-color: #ff69b4;
+  background: linear-gradient(135deg, #ffe4f0 0%, #ffffff 100%);
+}
+
+/* 对话头部 */
+.dialogue-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+  position: relative;
+}
+
+.npc-avatar {
+  flex-shrink: 0;
+}
+
+.avatar-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.npc-info {
+  flex: 1;
+}
+
+.npc-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.emotion-indicator {
+  font-size: 12px;
+  color: #999;
+  text-transform: capitalize;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #999;
+  padding: 4px 8px;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+/* 对话内容 */
+.dialogue-content {
+  margin-bottom: 16px;
+  min-height: 60px;
+}
+
+.dialogue-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  word-wrap: break-word;
+}
+
+.typing-indicator {
+  display: inline-block;
+  animation: blink 0.7s infinite;
+  margin-left: 4px;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 对话选项 */
+.dialogue-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dialogue-option-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+
+.dialogue-option-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.dialogue-option-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.dialogue-option-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.option-text {
+  flex: 1;
+}
+
+.option-reward {
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .npc-dialogue-ui {
+    width: 95%;
+    bottom: 10px;
+  }
+
+  .dialogue-box {
+    padding: 12px;
+  }
+
+  .dialogue-text {
+    font-size: 13px;
+  }
+
+  .dialogue-option-button {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .npc-name {
+    font-size: 14px;
+  }
+}
