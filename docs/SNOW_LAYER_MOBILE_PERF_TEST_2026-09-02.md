@@ -1,0 +1,71 @@
+# Snow Layer Mobile Performance Test
+
+## Purpose
+
+`client/src/game/snowLayerPerfHarness.ts` runs a controlled browser benchmark that renders the same scene first with a baseline PBR material and then with `IceSnowSnowLayerMaterialPlugin`. It is intended for real iOS Safari and Android Chromium devices. It is not a substitute for GPU vendor profiling or a real gameplay session.
+
+## Running on a device
+
+Expose the harness through a development or staging page that creates a same-origin canvas and calls:
+
+```ts
+const samples = await runSnowLayerPerfBenchmark(canvas, {
+  durationMs: 10000,
+  quality: "medium",
+  meshCount: 24,
+  onProgress: (mode, elapsed, total) => {
+    status.textContent = `${mode}: ${Math.round((elapsed / total) * 100)}%`;
+  },
+});
+console.table(samples);
+```
+
+Run each device after a cold page load, after one warm-up run, and with the same orientation, browser tab state, brightness policy and power mode. Do not compare results when the device is thermally throttling or when another WebGL tab is active.
+
+## Recorded metrics
+
+| Metric | Meaning |
+|---|---|
+| `engineFps` | FPS derived from average measured frame time |
+| `averageFrameMs` | Mean time between rendered frames |
+| `p95FrameMs` | 95th-percentile frame time; useful for stutter detection |
+| `droppedFrameRatio` | Share of samples above 33.34 ms, approximately below 30 FPS |
+| `frames` | Number of frame samples collected |
+| `renderer` | WebGL1/WebGL2 context level used by the harness |
+| `devicePixelRatio` | Device pixel ratio at test time |
+
+The important comparison is `snow.averageFrameMs - baseline.averageFrameMs`, together with the change in `p95FrameMs` and `droppedFrameRatio`. A higher average FPS with a worse P95 is not an acceptable quality improvement.
+
+## Suggested acceptance gates
+
+These are starting engineering gates, not guarantees for every device. The final values must be calibrated against the intended supported-device matrix.
+
+| Device tier | Target | Warning | Action |
+|---|---:|---:|---|
+| High | Snow layer remains at or above 50 FPS | P95 above 25 ms | Reduce shadow/Bloom before removing PBR |
+| Medium | Snow layer remains at or above 40 FPS | P95 above 30 ms | Switch from High to Medium or reduce texture scale |
+| Low | Snow layer remains at or above 30 FPS | Dropped ratio above 20% | Use Low quality: no normal map, no real-time shadow, no Bloom |
+
+## Interpretation rules
+
+The harness measures rendering overhead only. It does not measure GLB download time, texture upload spikes, garbage collection, UI work, network calls or the full GameHub scene. Before release, repeat the test with the real four-building vertical slice, real textures, camera movement, LOD switching and the actual notification/UI overlay.
+
+The test must also verify that disabling the snow plugin does not change game economy values, NFT state, transaction state or the 60/40 fee split. The plugin is a visual layer only.
+
+## 测试阶段性能监控 UI
+
+访问游戏路由时添加 `?perf=1` 可显示 `PerformanceMonitorPanel`。面板以低频间隔采样 Babylon `Engine.getFps()`、帧时间和引擎 Draw Calls，并在浏览器支持 `performance.memory` 时显示 JS Heap 估算；没有 Babylon Engine 时显示“等待场景注册”，不会伪造数值。面板默认不显示在正式游戏 UI 中，可通过关闭按钮隐藏。
+
+生产场景接入时，应将真实 `Engine` 与可选 `Scene` 传入 `PerformanceMonitorPanel`，不要创建第二个 Engine 或第二个 render loop。内存字段不等于 GPU 显存，Draw Calls 是 Babylon 当前引擎统计值；最终 iOS/Android 性能结论仍需使用真实设备云或真机采样。
+
+## CSV 性能记录导出
+
+测试模式下的性能监控面板会保留最近最多 1,200 条 Babylon 采样记录。点击“导出 CSV”后，浏览器直接生成并下载 `isc-performance-<timestamp>.csv`，不会向服务器上传性能数据；没有真实 Babylon 采样时，按钮会显示“暂无可导出的性能记录”。
+
+CSV 包含 `timestamp_iso`、`fps`、`frame_time_ms`、`draw_calls`、`js_heap_used_mb`、`js_heap_limit_mb` 和 `source` 字段。JS Heap 字段为空表示浏览器未提供该估算能力，不应解释为零；时间戳使用 ISO 8601 UTC 格式。导出记录仅用于测试、回归和设备对比，不可替代真实设备云或真机 GPU 性能结论。
+
+面板的“清除数据”按钮仅重置当前页面内存中的性能采样历史，不会删除已下载的 CSV，也不会影响游戏进度、交易数据、链上模拟状态或服务器数据。按钮在有采样记录时可用，点击后必须通过二次确认；选择“取消”不会改变记录，确认后记录计数归零并显示短暂的成功状态。
+
+面板统计区的“平均 FPS”是当前记录窗口内所有 FPS 采样的算术平均值；“峰值内存”是窗口内可用 JS Heap 已使用值的最大值。没有采样时平均 FPS 显示“暂无数据”；浏览器未提供任何 JS Heap 估算时峰值内存显示“不可用”。清除采样记录会同步重置两项统计。
+
+统计区默认在平均 FPS 严格低于 30 时显示红色高亮和“低于 30 FPS”告警；平均 FPS 等于 30 不告警。峰值 JS Heap 默认超过 512 MB 时显示红色高亮，并标注实际配置阈值；等于 512 MB 不告警。`PerformanceMonitorPanel` 支持通过 `peakMemoryWarningMb` 覆盖内存阈值。不可用内存不会被当作超限值。
