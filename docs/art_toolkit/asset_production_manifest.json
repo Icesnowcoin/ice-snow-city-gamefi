@@ -1,0 +1,67 @@
+{
+  "project": "Ice Snow City",
+  "version": "2026.08",
+  "orientation": "16:9-landscape",
+  "style": "3d-semi-realistic-cartoon-2.5d",
+  "statusPolicy": {
+    "catalogued": "规格已登记，尚无真实运行文件",
+    "pending-import": "文件已由美术交付但尚未完成运行时验证",
+    "verified": "GLB、PBR、LOD、碰撞体、动画、纹理预算和运行时回归全部通过"
+  },
+  "referenceBoards": {
+    "artDirection": "/manus-storage/ice-snow-city-art-direction-board_f8f6b8ee.png",
+    "characters": "/manus-storage/ice-snow-city-character-sheet_504645ab.png",
+    "buildings": "/manus-storage/ice-snow-city-building-sheet_71d43ad7.png",
+    "environment": "/manus-storage/ice-snow-city-environment-sheet_32eca047.png",
+    "ui": "/manus-storage/ice-snow-city-ui-sheet_df5a6eef.png"
+  },
+  "assetGroups": [
+    {
+      "group": "player",
+      "targetCount": 1,
+      "polygonRange": [15000, 25000],
+      "textureResolution": "2K",
+      "boneRange": [60, 80],
+      "requiredAnimations": ["idle", "walk", "run", "work", "sleep", "celebrate", "sad", "talk"],
+      "status": "catalogued"
+    },
+    {
+      "group": "npcs",
+      "targetCount": 20,
+      "polygonRange": [10000, 20000],
+      "textureResolution": "1K-2K",
+      "boneRange": [50, 70],
+      "requiredCategories": ["merchant", "farmer", "worker", "doctor", "teacher", "artist", "student", "police", "firefighter"],
+      "status": "catalogued"
+    },
+    {
+      "group": "buildings",
+      "targetCount": 15,
+      "polygonRange": [5000, 15000],
+      "textureResolution": "2K-4K",
+      "requiredAnimations": ["door-open", "production", "harvest"],
+      "requiredEffects": ["smoke", "ice-blue-pulse"],
+      "status": "catalogued"
+    },
+    {
+      "group": "environment",
+      "targetCount": 30,
+      "requiredVariants": ["day", "night", "snow-fog"],
+      "status": "catalogued"
+    },
+    {
+      "group": "ui",
+      "targetCount": 1,
+      "requiredAssets": ["official-isc-logo", "balance-chip", "prosperity-bar", "quest-card", "bottom-sheet", "toast", "map-markers"],
+      "status": "verified-framework-only"
+    }
+  ],
+  "runtimeGates": [
+    "assetManifest",
+    "pbrMaterialPresets",
+    "textureOptimization",
+    "animationExportValidation",
+    "assetReadiness",
+    "visualConsistency"
+  ]
+}
