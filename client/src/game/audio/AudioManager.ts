@@ -33,8 +33,8 @@ export interface AudioPlaybackState {
  * 使用 Web Audio API 管理游戏音效
  */
 export class AudioManager {
-  private audioContext: AudioContext;
-  private masterGain: GainNode;
+  private audioContext!: AudioContext;
+  private masterGain!: GainNode;
   private typeGains: Map<AudioType, GainNode> = new Map();
   private audioElements: Map<string, HTMLAudioElement> = new Map();
   private audioSources: Map<string, AudioBufferSourceNode> = new Map();
@@ -46,6 +46,10 @@ export class AudioManager {
   constructor() {
     // 初始化 Web Audio API
     const audioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+    if (typeof audioContextClass !== "function") {
+      console.warn("[AudioManager] Web Audio API unavailable; audio will remain disabled.");
+      return;
+    }
     this.audioContext = new audioContextClass();
 
     // 创建主音量控制
@@ -69,6 +73,7 @@ export class AudioManager {
    * 预加载音频文件
    */
   public async preloadAudio(config: AudioConfig): Promise<void> {
+    if (!this.isInitialized) return;
     if (this.audioBuffers.has(config.id)) {
       return; // 已经加载过
     }
@@ -119,9 +124,14 @@ export class AudioManager {
       this.fadeIn(config.id, config.volume, config.fadeInDuration);
     }
 
-    audio.play().catch((error) => {
+    try {
+      const playback = audio.play();
+      if (playback && typeof playback.catch === "function") {
+        playback.catch((error) => console.error(`Failed to play audio: ${config.id}`, error));
+      }
+    } catch (error) {
       console.error(`Failed to play audio: ${config.id}`, error);
-    });
+    }
 
     // 监听音频事件
     audio.addEventListener('ended', () => {
@@ -180,9 +190,14 @@ export class AudioManager {
   public resumeAudio(audioId: string): void {
     const audio = this.audioElements.get(audioId);
     if (audio) {
-      audio.play().catch((error) => {
+      try {
+        const playback = audio.play();
+        if (playback && typeof playback.catch === "function") {
+          playback.catch((error) => console.error(`Failed to resume audio: ${audioId}`, error));
+        }
+      } catch (error) {
         console.error(`Failed to resume audio: ${audioId}`, error);
-      });
+      }
 
       this.playbackStates.set(audioId, {
         ...this.playbackStates.get(audioId)!,
@@ -220,6 +235,7 @@ export class AudioManager {
    * 设置主音量
    */
   public setMasterVolume(volume: number): void {
+    if (!this.masterGain) return;
     this.masterGain.gain.value = Math.max(0, Math.min(1, volume));
   }
 

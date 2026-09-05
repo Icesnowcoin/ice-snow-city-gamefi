@@ -5,16 +5,27 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowUpRight, ArrowDownRight, RefreshCw, Shield, Coins, TrendingUp, Wallet, AlertCircle, CheckCircle } from "lucide-react";
+import { Wallet, AlertCircle, CheckCircle } from "lucide-react";
+import { ethers } from "ethers";
+import { ISCLogo, ISCAmount } from "@/components/ISCLogo";
 import { useWeb3Wallet } from "@/hooks/useWeb3Wallet";
 import { useISCMarketplace } from "@/hooks/useISCMarketplace";
+import { SignedNftOrderList } from "@/components/social/SignedNftOrderList";
 
-// 配置
-const ISC_MARKETPLACE_ADDRESS = "0x..."; // 待部署
 const ISC_TOKEN_ADDRESS = "0x11229a3f976566FA8a3ba462C432122f3B8876f6";
 const TREASURY_ADDRESS = "0x3B79D4A0bd73FCaB12DFEd34dA830b376A50e019";
+type MarketStats = { iscPrice: string; priceChange?: string; volume24h: string; treasuryBalance?: string };
+type Order = { price: string; amount: string; total?: string };
+type SellListing = { nftContract: string; tokenId: number; amount: number; listingType: number };
+export interface TradingCenterProps {
+  marketplaceAddress?: string;
+  marketStats?: MarketStats;
+  orderBook?: { asks: Order[]; bids: Order[] };
+  selectedBuyListingId?: number;
+  sellListing?: SellListing;
+}
 
-export default function TradingCenter() {
+export default function TradingCenter({ marketplaceAddress, marketStats, orderBook, selectedBuyListingId, sellListing }: TradingCenterProps) {
   const [activeTab, setActiveTab] = useState("market");
   const [amount, setAmount] = useState("");
   const [price, setPrice] = useState("");
@@ -22,11 +33,9 @@ export default function TradingCenter() {
   const [isApproved, setIsApproved] = useState(false);
 
   const wallet = useWeb3Wallet();
-  const marketplace = useISCMarketplace(
-    ISC_MARKETPLACE_ADDRESS,
-    ISC_TOKEN_ADDRESS,
-    wallet.signer
-  );
+  const validMarketplaceAddress = marketplaceAddress && ethers.isAddress(marketplaceAddress) ? marketplaceAddress : ethers.ZeroAddress;
+  const canTrade = Boolean(wallet.isConnected && wallet.signer && validMarketplaceAddress !== ethers.ZeroAddress);
+  const marketplace = useISCMarketplace(validMarketplaceAddress, ISC_TOKEN_ADDRESS, wallet.signer);
 
   // 获取 ISC 余额
   useEffect(() => {
@@ -35,29 +44,10 @@ export default function TradingCenter() {
         setISCBalance(balance);
       });
     }
-  }, [wallet.isConnected, wallet.address, marketplace]);
+  }, [wallet.isConnected, wallet.address, marketplace.getISCBalance]);
 
-  // 模拟市场数据
-  const marketStats = {
-    iscPrice: "0.085 USDT",
-    priceChange: "+12.5%",
-    volume24h: "1,450,230 ISC",
-    treasuryBalance: "145,230,000 ISC",
-    commissionRate: "10%"
-  };
-
-  const orderBook = {
-    asks: [
-      { price: "0.088", amount: "5,000", total: "440.00" },
-      { price: "0.087", amount: "12,400", total: "1,078.80" },
-      { price: "0.086", amount: "8,200", total: "705.20" },
-    ],
-    bids: [
-      { price: "0.084", amount: "15,000", total: "1,260.00" },
-      { price: "0.083", amount: "20,500", total: "1,701.50" },
-      { price: "0.082", amount: "8,900", total: "729.80" },
-    ]
-  };
+  const asks = orderBook?.asks ?? [];
+  const bids = orderBook?.bids ?? [];
 
   const handleApprove = async () => {
     const result = await marketplace.approveISC(amount || "1000");
@@ -71,19 +61,13 @@ export default function TradingCenter() {
       await handleApprove();
       return;
     }
-    // 实际购买逻辑
-    await marketplace.buyItem(1); // 示例 listingId
+    if (!canTrade || selectedBuyListingId === undefined) return;
+    await marketplace.buyItem(selectedBuyListingId);
   };
 
   const handleSell = async () => {
-    // 实际卖出逻辑
-    await marketplace.sellItem(
-      "0x...", // NFT 合约地址
-      1, // tokenId
-      1, // amount
-      price,
-      0 // listingType: ERC721
-    );
+    if (!canTrade || !sellListing || !ethers.isAddress(sellListing.nftContract)) return;
+    await marketplace.sellItem(sellListing.nftContract, sellListing.tokenId, sellListing.amount, price, sellListing.listingType);
   };
 
   return (
@@ -91,7 +75,7 @@ export default function TradingCenter() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Coins className="text-blue-500" /> ISC 中央交易中心
+            <ISCLogo size="lg" className="drop-shadow-[0_0_10px_rgba(103,232,249,0.85)]" /> ISC 中央交易中心
           </h1>
           <p className="text-muted-foreground mt-1">
             现代化都市资产与商品自由交易市场（每笔交易自动扣除 10% 佣金存入国库）
@@ -104,7 +88,7 @@ export default function TradingCenter() {
                 <Wallet className="w-4 h-4" /> {wallet.address?.slice(0, 6)}...{wallet.address?.slice(-4)}
               </Badge>
               <Badge variant="outline" className="flex items-center gap-1 text-sm py-1.5 px-3">
-                <Coins className="w-4 h-4" /> {iscBalance.slice(0, 10)} ISC
+                <ISCAmount amount={`${iscBalance.slice(0, 10)} ISC`} size="sm" />
               </Badge>
               <Button variant="outline" size="sm" onClick={wallet.disconnectWallet}>
                 断开连接
@@ -138,6 +122,13 @@ export default function TradingCenter() {
         </Alert>
       )}
 
+      {!marketplaceAddress && (
+        <Alert className="mb-4 border-amber-500 bg-amber-500/10">
+          <AlertCircle className="h-4 w-4 text-amber-500" />
+          <AlertDescription>市场合约尚未配置。当前仅展示真实数据入口，交易操作将在合约地址和挂单数据验证后启用。</AlertDescription>
+        </Alert>
+      )}
+
       {marketplace.success && (
         <Alert className="mb-4 border-green-500 bg-green-500/10">
           <CheckCircle className="h-4 w-4 text-green-500" />
@@ -151,23 +142,21 @@ export default function TradingCenter() {
           <CardContent className="pt-6">
             <div className="text-muted-foreground text-sm">ISC 当前价格</div>
             <div className="text-2xl font-bold mt-1 flex items-center gap-2">
-              {marketStats.iscPrice}
-              <span className="text-green-500 text-sm flex items-center">
-                <ArrowUpRight className="w-4 h-4" /> {marketStats.priceChange}
-              </span>
+              {marketStats?.iscPrice ?? "暂无真实行情"}
+              {marketStats?.priceChange && <span className="text-green-500 text-sm">{marketStats.priceChange}</span>}
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-muted-foreground text-sm">24h 交易量</div>
-            <div className="text-2xl font-bold mt-1">{marketStats.volume24h}</div>
+            <div className="text-2xl font-bold mt-1">{marketStats?.volume24h ?? "暂无数据"}</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-muted-foreground text-sm">国库累计收益 (10% 税收)</div>
-            <div className="text-2xl font-bold mt-1 text-blue-500">{marketStats.treasuryBalance}</div>
+            <div className="text-2xl font-bold mt-1 text-blue-500">{marketStats?.treasuryBalance ?? "不可用"}</div>
           </CardContent>
         </Card>
         <Card>
@@ -232,7 +221,7 @@ export default function TradingCenter() {
                   </div>
                   <Button 
                     className="w-full bg-green-600 hover:bg-green-700 text-white" 
-                    disabled={marketplace.isLoading || !amount || !price}
+                    disabled={marketplace.isLoading || !canTrade || selectedBuyListingId === undefined || !amount || !price}
                     onClick={handleBuy}
                   >
                     {marketplace.isLoading ? "处理中..." : isApproved ? "立即买入 ISC" : "授权并买入"}
@@ -268,7 +257,7 @@ export default function TradingCenter() {
                   </div>
                   <Button 
                     className="w-full bg-red-600 hover:bg-red-700 text-white" 
-                    disabled={marketplace.isLoading || !amount || !price}
+                    disabled={marketplace.isLoading || !canTrade || !sellListing || !amount || !price}
                     onClick={handleSell}
                   >
                     {marketplace.isLoading ? "处理中..." : "立即卖出 ISC"}
@@ -293,7 +282,7 @@ export default function TradingCenter() {
                   <span>数量 (ISC)</span>
                 </div>
                 <div className="space-y-1">
-                  {orderBook.asks.map((ask, i) => (
+                  {asks.length === 0 ? <p className="text-sm text-muted-foreground py-4">暂无已验证的卖盘数据</p> : asks.map((ask, i) => (
                     <div key={i} className="flex justify-between text-sm py-1 px-2 bg-red-500/10 rounded text-red-500 cursor-pointer hover:bg-red-500/20">
                       <span>{ask.price}</span>
                       <span>{ask.amount}</span>
@@ -309,7 +298,7 @@ export default function TradingCenter() {
                   <span>数量 (ISC)</span>
                 </div>
                 <div className="space-y-1">
-                  {orderBook.bids.map((bid, i) => (
+                  {bids.length === 0 ? <p className="text-sm text-muted-foreground py-4">暂无已验证的买盘数据</p> : bids.map((bid, i) => (
                     <div key={i} className="flex justify-between text-sm py-1 px-2 bg-green-500/10 rounded text-green-500 cursor-pointer hover:bg-green-500/20">
                       <span>{bid.price}</span>
                       <span>{bid.amount}</span>
@@ -321,6 +310,8 @@ export default function TradingCenter() {
           </CardContent>
         </Card>
       </div>
+
+      <SignedNftOrderList marketplaceAddress={marketplaceAddress} chainId={wallet.chainId ?? undefined} provider={wallet.provider} signer={wallet.signer} buyerAddress={wallet.address} iscTokenAddress={ISC_TOKEN_ADDRESS} />
     </div>
   );
 }

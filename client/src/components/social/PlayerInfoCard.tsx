@@ -529,7 +529,7 @@ export const PlayerInfoCard: React.FC<PlayerInfoCardProps> = ({
                 <div className="flex flex-col gap-1.5 pt-1">
                   <span className="text-[11px] text-slate-400 font-medium">快捷插入热门话题与表情：</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {['#CryptoGaming', '#Metaverse', '#NFTCommunity', '#Solana', '#Web3Gaming', '🏙️', '❄️', '🚀', '💎', '🔥'].map((item) => (
+                    {['#CryptoGaming', '#Metaverse', '#NFTCommunity', '#Solana', '#Web3Gaming', '#ISC', '🏙️', '🚀', '💎', '🔥'].map((item) => (
                       <button
                         key={item}
                         type="button"

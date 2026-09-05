@@ -179,7 +179,7 @@ export class SeasonSystem {
         {
           season: 'spring',
           roofColor: new BABYLON.Color3(0.6, 0.3, 0.1),
-          wallColor: new BABYLON.Color3(0.9, 0.85, 0.8),
+          wallColor: new BABYLON.Color3(0.52, 0.62, 0.72),
           snowCoverage: 0,
           iceFormation: 0,
         },
@@ -189,7 +189,7 @@ export class SeasonSystem {
         {
           season: 'summer',
           roofColor: new BABYLON.Color3(0.5, 0.25, 0.05),
-          wallColor: new BABYLON.Color3(1, 0.95, 0.9),
+          wallColor: new BABYLON.Color3(0.62, 0.7, 0.8),
           snowCoverage: 0,
           iceFormation: 0,
         },
@@ -199,7 +199,7 @@ export class SeasonSystem {
         {
           season: 'autumn',
           roofColor: new BABYLON.Color3(0.7, 0.4, 0.15),
-          wallColor: new BABYLON.Color3(0.95, 0.9, 0.85),
+          wallColor: new BABYLON.Color3(0.64, 0.58, 0.52),
           snowCoverage: 0,
           iceFormation: 0,
         },

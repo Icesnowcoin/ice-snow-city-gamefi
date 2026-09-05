@@ -15,6 +15,7 @@ import { triggerMobileHaptic } from "@/components/ui/mobile-bottom-sheet";
 import type { NpcInteractionProfile } from "@/lib/npcInteractionData";
 import { PlayerCharacterModel } from "@/game/models/PlayerCharacterModel";
 import { loadHighFidelityCharacterWithFallback } from "@/lib/highFidelityCharacterLoader";
+import { CORE_ASSET_MANIFEST, getAssetRuntimeLabel } from "@/lib/assetManifest";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 type NpcLanguage = "zh" | "en";
@@ -47,6 +48,11 @@ function getPreviewPalette(profile: NpcInteractionProfile) {
   return NPC_PREVIEW_PALETTES[hash % NPC_PREVIEW_PALETTES.length];
 }
 
+function getNpcAssetManifestEntry(profile: NpcInteractionProfile) {
+  const catalogue = CORE_ASSET_MANIFEST.find((entry) => entry.kind === "npc") ?? CORE_ASSET_MANIFEST[1];
+  return { ...catalogue, id: profile.id, displayName: profile.name, glbUrl: profile.modelAssetUrl ?? null, status: profile.modelAssetUrl ? "catalogued" as const : "pending-import" as const };
+}
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
@@ -59,6 +65,7 @@ export function NpcModelTouchPreview({
   profile,
   lang,
 }: NpcModelTouchPreviewProps) {
+  const assetManifestEntry = getNpcAssetManifestEntry(profile);
   const containerRef = useRef<HTMLDivElement>(null);
   const modelRef = useRef<PlayerCharacterModel | null>(null);
   const loadedModelRef = useRef<THREE.Object3D | null>(null);
@@ -85,7 +92,7 @@ export function NpcModelTouchPreview({
   const [loadProgress, setLoadProgress] = useState<number>(0);
   const [webglUnavailable, setWebglUnavailable] = useState(false);
   const [modelSource, setModelSource] = useState<
-    "prototype" | "loading-glb" | "glb" | "glb-fallback"
+    "prototype" | "loading-glb" | "loading-baseline" | "glb" | "baseline-glb" | "glb-fallback"
   >("prototype");
 
   useEffect(() => {
@@ -106,7 +113,13 @@ export function NpcModelTouchPreview({
 
     let disposed = false;
     setWebglUnavailable(false);
-    setModelSource(profile.modelAssetUrl ? "loading-glb" : "prototype");
+    setModelSource(
+      profile.modelAssetUrl
+        ? "loading-glb"
+        : assetManifestEntry.baselineGlbUrl
+          ? "loading-baseline"
+          : "prototype"
+    );
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x07111f);
@@ -203,6 +216,35 @@ export function NpcModelTouchPreview({
         .catch(() => {
           if (!disposed) setModelSource("glb-fallback");
         });
+    } else if (assetManifestEntry.baselineGlbUrl) {
+      setLoadProgress(0);
+      new GLTFLoader().load(
+        assetManifestEntry.baselineGlbUrl,
+        (result) => {
+          if (disposed) return;
+          model.dispose();
+          scene.remove(model.getScene());
+          loadedModelRef.current = result.scene;
+          result.scene.traverse((object: THREE.Object3D) => {
+            if (object instanceof THREE.Mesh) {
+              object.castShadow = true;
+              object.receiveShadow = true;
+            }
+          });
+          scene.add(result.scene);
+          modelRef.current = null;
+          setLoadProgress(100);
+          setModelSource("baseline-glb");
+        },
+        (progress) => {
+          if (!disposed && progress.total > 0) {
+            setLoadProgress(Math.min(100, Math.round((progress.loaded / progress.total) * 100)));
+          }
+        },
+        () => {
+          if (!disposed) setModelSource("glb-fallback");
+        }
+      );
     }
 
     let animationFrame = 0;
@@ -486,28 +528,40 @@ export function NpcModelTouchPreview({
               data-testid="npc-3d-source-label"
               className="rounded-lg bg-slate-950/65 px-2 py-1"
             >
-              {modelSource === "glb"
-                ? lang === "zh"
-                  ? "真实 GLB 资产"
-                  : "Real GLB asset"
-                : modelSource === "loading-glb"
+                {modelSource === "glb"
+                  ? lang === "zh"
+                    ? "真实 GLB 资产 · 已加载"
+                    : "Real GLB asset · Loaded"
+                  : modelSource === "loading-glb"
                   ? lang === "zh"
                     ? `正在加载 GLB (${loadProgress}%)`
                     : `Loading GLB (${loadProgress}%)`
+                  : modelSource === "loading-baseline"
+                    ? lang === "zh"
+                      ? `正在加载开发基线 (${loadProgress}%)`
+                      : `Loading baseline (${loadProgress}%)`
+                    : modelSource === "baseline-glb"
+                      ? lang === "zh"
+                        ? "程序化基线 GLB · 开发预览"
+                        : "Procedural baseline GLB · Dev preview"
                   : modelSource === "glb-fallback"
                     ? lang === "zh"
                       ? "GLB 不可用 · 原型回退"
                       : "GLB unavailable · prototype fallback"
-                    : lang === "zh"
-                      ? "程序化原型预览"
-                      : "Procedural prototype preview"}
+                    : assetManifestEntry.glbUrl
+                      ? lang === "zh"
+                        ? `${getAssetRuntimeLabel(assetManifestEntry)} · 正在加载`
+                        : `${getAssetRuntimeLabel(assetManifestEntry)} · Loading`
+                      : lang === "zh"
+                        ? `${getAssetRuntimeLabel(assetManifestEntry)} · 程序化原型预览`
+                        : `${getAssetRuntimeLabel(assetManifestEntry)} · Procedural prototype preview`}
             </span>
             <span className="rounded-lg bg-slate-950/65 px-2 py-1 font-mono">
               {rotationDegrees}° · {zoomPercent}%
             </span>
           </div>
 
-          {modelSource === "loading-glb" && (
+          {(modelSource === "loading-glb" || modelSource === "loading-baseline") && (
             <div
               className="h-1.5 w-full overflow-hidden rounded-full bg-slate-900/80 shadow-inner"
               role="progressbar"

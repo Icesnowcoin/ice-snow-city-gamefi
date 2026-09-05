@@ -55,3 +55,6 @@ out/
 # Manus specific
 .manus-logs/
 .project-config.json
+
+# Local session notes may contain credentials or transient tokens
+SESSION_PROGRESS.md

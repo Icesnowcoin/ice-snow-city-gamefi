@@ -47,7 +47,7 @@ export class AgriculturalBuildingManager {
 
     roof.position = new BABYLON.Vector3(position.x, position.y + 12, position.z);
     const roofMaterial = new BABYLON.StandardMaterial('roofMat', this.engine.getScene());
-    (roofMaterial as any).diffuse = new BABYLON.Color3(0.8, 0.2, 0.1); // 红色屋顶
+    roofMaterial.diffuseColor = new BABYLON.Color3(0.8, 0.2, 0.1); // 红色屋顶
     roof.material = roofMaterial;
 
     this.buildings.set(name, farmhouse);
@@ -83,7 +83,7 @@ export class AgriculturalBuildingManager {
 
     frame.position = position;
     const frameMaterial = new BABYLON.StandardMaterial('frameMat', this.engine.getScene());
-    (frameMaterial as any).diffuse = new BABYLON.Color3(0.5, 0.5, 0.5); // 灰色金属
+    frameMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5); // 灰色金属
     frame.material = frameMaterial;
 
     this.buildings.set(name, greenhouse);
@@ -114,7 +114,7 @@ export class AgriculturalBuildingManager {
 
     top.position = new BABYLON.Vector3(position.x, position.y + 16.5, position.z);
     const topMaterial = new BABYLON.StandardMaterial('dryer_top_mat', this.engine.getScene());
-    (topMaterial as any).diffuse = new BABYLON.Color3(0.6, 0.6, 0.6);
+    topMaterial.diffuseColor = new BABYLON.Color3(0.6, 0.6, 0.6);
     top.material = topMaterial;
 
     this.buildings.set(name, dryer);
@@ -143,7 +143,7 @@ export class AgriculturalBuildingManager {
 
     door.position = new BABYLON.Vector3(position.x, position.y + 2, position.z + 22.5);
     const doorMaterial = new BABYLON.StandardMaterial('doorMat', this.engine.getScene());
-    (doorMaterial as any).diffuse = new BABYLON.Color3(0.2, 0.4, 0.8); // 蓝色门
+    doorMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.4, 0.8); // 蓝色门
     door.material = doorMaterial;
 
     this.buildings.set(name, storage);
@@ -217,7 +217,7 @@ export class AgriculturalBuildingManager {
 
     roof.position = new BABYLON.Vector3(position.x, position.y + 8, position.z);
     const roofMaterial = new BABYLON.StandardMaterial('shed_roof_mat', this.engine.getScene());
-    (roofMaterial as any).diffuse = new BABYLON.Color3(0.7, 0.3, 0.1); // 红棕色屋顶
+    roofMaterial.diffuseColor = new BABYLON.Color3(0.7, 0.3, 0.1); // 红棕色屋顶
     roof.material = roofMaterial;
 
     this.buildings.set(name, shed);

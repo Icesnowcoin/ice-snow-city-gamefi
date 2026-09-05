@@ -7,7 +7,19 @@ import { EnvironmentalAudioManager } from './EnvironmentalAudioManager';
 describe('Audio System Tests', () => {
   let audioManager: AudioManager;
 
+  class TestAudioContext {
+    destination = {};
+    createGain() {
+      return { gain: { value: 1 }, connect: vi.fn() } as unknown as GainNode;
+    }
+    decodeAudioData() {
+      return Promise.resolve({} as AudioBuffer);
+    }
+  }
+
   beforeEach(() => {
+    vi.stubGlobal('AudioContext', TestAudioContext);
+    vi.stubGlobal('webkitAudioContext', TestAudioContext);
     audioManager = new AudioManager();
   });
 

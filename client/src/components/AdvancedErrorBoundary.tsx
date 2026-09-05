@@ -114,10 +114,13 @@ class AdvancedErrorBoundary extends Component<Props, State> {
     this.resetTimeoutId = setTimeout(() => {
       this.setState((prevState) => ({
         ...prevState,
+        hasError: false,
+        error: null,
+        errorInfo: null,
         retryCount: prevState.retryCount + 1,
         isRetrying: false,
+        errorTimestamp: null,
       }));
-      this.resetErrorBoundary();
     }, delay);
   };
 

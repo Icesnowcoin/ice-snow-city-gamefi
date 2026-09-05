@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import AdvancedErrorBoundary from './AdvancedErrorBoundary';
@@ -7,6 +7,10 @@ import AdvancedErrorBoundary from './AdvancedErrorBoundary';
 describe('AdvancedErrorBoundary', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   describe('Error Detection', () => {
@@ -82,7 +86,8 @@ describe('AdvancedErrorBoundary', () => {
       });
     });
 
-    it('should disable retry after max attempts', async () => {
+    it('should hide retry after max attempts', () => {
+      vi.useFakeTimers();
       const ThrowError = () => {
         throw new Error('Test error');
       };
@@ -91,8 +96,15 @@ describe('AdvancedErrorBoundary', () => {
         React.createElement(AdvancedErrorBoundary, {}, React.createElement(ThrowError))
       );
 
-      // Simulate max retries reached
-      expect(screen.getByText('已达到最大重试次数')).toBeTruthy();
+      for (const delay of [1000, 2000, 4000]) {
+        act(() => {
+          fireEvent.click(screen.getByText('重试'));
+          vi.advanceTimersByTime(delay);
+        });
+      }
+
+      expect(screen.queryByText('重试')).toBeNull();
+      vi.useRealTimers();
     });
   });
 

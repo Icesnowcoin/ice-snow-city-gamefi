@@ -4,6 +4,11 @@ import type { TrpcContext } from './_core/context';
 
 type AuthenticatedUser = NonNullable<TrpcContext['user']>;
 
+let isolatedUserCounter = 0;
+function createIsolatedUserId(): number {
+  return 1_000_000_000 + (Date.now() % 500_000) * 1_000 + (process.pid % 1_000) + isolatedUserCounter++;
+}
+
 function createAuthContext(userId: number): TrpcContext {
   const user: AuthenticatedUser = {
     id: userId,
@@ -27,7 +32,7 @@ function createAuthContext(userId: number): TrpcContext {
 describe('Share Statistics E2E Tests', () => {
   describe('Complete Share Workflow', () => {
     it('should complete full share recording workflow', async () => {
-      const userId = Math.floor(Math.random() * 100000) + 1000;
+      const userId = createIsolatedUserId();
       const ctx = createAuthContext(userId);
       const caller = appRouter.createCaller(ctx);
 
@@ -62,7 +67,7 @@ describe('Share Statistics E2E Tests', () => {
     });
 
     it('should handle concurrent share recordings', async () => {
-      const userId = Math.floor(Math.random() * 100000) + 2000;
+      const userId = createIsolatedUserId();
       const ctx = createAuthContext(userId);
       const caller = appRouter.createCaller(ctx);
 
@@ -86,7 +91,7 @@ describe('Share Statistics E2E Tests', () => {
     });
 
     it('should track share statistics over time', async () => {
-      const userId = Math.floor(Math.random() * 100000) + 3000;
+      const userId = createIsolatedUserId();
       const ctx = createAuthContext(userId);
       const caller = appRouter.createCaller(ctx);
 
@@ -121,7 +126,7 @@ describe('Share Statistics E2E Tests', () => {
 
   describe('Share Statistics Dashboard Integration', () => {
     it('should provide data for dashboard visualization', { timeout: 15000 }, async () => {
-      const userId = Math.floor(Math.random() * 100000) + 4000;
+      const userId = createIsolatedUserId();
       const ctx = createAuthContext(userId);
       const caller = appRouter.createCaller(ctx);
 
@@ -160,7 +165,7 @@ describe('Share Statistics E2E Tests', () => {
     });
 
     it('should handle empty statistics gracefully', async () => {
-      const userId = Math.floor(Math.random() * 100000) + 5000;
+      const userId = createIsolatedUserId();
       const ctx = createAuthContext(userId);
       const caller = appRouter.createCaller(ctx);
 
@@ -180,7 +185,7 @@ describe('Share Statistics E2E Tests', () => {
 
   describe('Share Menu Integration', () => {
     it('should record share from menu interactions', async () => {
-      const userId = Math.floor(Math.random() * 100000) + 6000;
+      const userId = createIsolatedUserId();
       const ctx = createAuthContext(userId);
       const caller = appRouter.createCaller(ctx);
 
@@ -202,7 +207,7 @@ describe('Share Statistics E2E Tests', () => {
     });
 
     it('should handle rapid successive shares', async () => {
-      const userId = Math.floor(Math.random() * 100000) + 7000;
+      const userId = createIsolatedUserId();
       const ctx = createAuthContext(userId);
       const caller = appRouter.createCaller(ctx);
 
@@ -235,7 +240,7 @@ describe('Share Statistics E2E Tests', () => {
 
   describe('Error Handling and Edge Cases', () => {
     it('should handle invalid platform gracefully', async () => {
-      const userId = Math.floor(Math.random() * 100000) + 8000;
+      const userId = createIsolatedUserId();
       const ctx = createAuthContext(userId);
       const caller = appRouter.createCaller(ctx);
 
@@ -251,7 +256,7 @@ describe('Share Statistics E2E Tests', () => {
     });
 
     it('should handle missing amount gracefully', async () => {
-      const userId = Math.floor(Math.random() * 100000) + 9000;
+      const userId = createIsolatedUserId();
       const ctx = createAuthContext(userId);
       const caller = appRouter.createCaller(ctx);
 
@@ -264,7 +269,7 @@ describe('Share Statistics E2E Tests', () => {
     });
 
     it('should maintain data consistency across operations', async () => {
-      const userId = Math.floor(Math.random() * 100000) + 10000;
+      const userId = createIsolatedUserId();
       const ctx = createAuthContext(userId);
       const caller = appRouter.createCaller(ctx);
 

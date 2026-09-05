@@ -37,6 +37,10 @@
 - 📋 Phase 2: NFT marketplace, staking, trading
 - 📋 Phase 3: DAO governance, cross-chain, UGC content
 
+### Release Readiness
+
+最新发布就绪证据与边界请参阅 [`docs/RELEASE_READINESS_STATUS_2026-08-27.md`](./docs/RELEASE_READINESS_STATUS_2026-08-27.md)。当前代码已通过 164 个测试文件、2041 项测试、受控内存生产构建、凭据扫描和 Draft 合约只读静态检查。真实 GLB/PBR/LOD/碰撞体/动画资产、第三方合约审计与部署、GitHub 历史 Token 账户侧撤销，以及生产链上索引写入仍属于未关闭的外部门禁，不应被项目状态误报为完成。
+
 ## 🚀 Quick Start
 
 ### Prerequisites

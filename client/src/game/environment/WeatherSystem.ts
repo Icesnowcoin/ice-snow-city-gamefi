@@ -5,6 +5,46 @@ import { ParticleSystemManager } from '../effects/ParticleSystem';
  * 天气类型
  */
 export type WeatherType = 'clear' | 'cloudy' | 'rainy' | 'stormy' | 'snowy';
+export type WeatherQuality = 'low' | 'medium' | 'high';
+
+export interface WeatherPerformanceOptions {
+  quality?: WeatherQuality;
+}
+
+export interface WeatherParticleBudget {
+  maxParticles: number;
+  emitRate: number;
+  textureSize: number;
+}
+
+const WEATHER_PARTICLE_BUDGETS: Record<WeatherQuality, { snow: number; rain: number; textureSize: number }> = {
+  low: { snow: 600, rain: 900, textureSize: 32 },
+  medium: { snow: 1500, rain: 2500, textureSize: 48 },
+  high: { snow: 3000, rain: 5000, textureSize: 64 },
+};
+
+export function disposeWeatherParticleResources(
+  particleSystem: { dispose: () => void } | null,
+  texture: { dispose: () => void } | null,
+): void {
+  particleSystem?.dispose();
+  texture?.dispose();
+}
+
+export function getWeatherParticleBudget(
+  type: Extract<WeatherType, 'snowy' | 'rainy'>,
+  intensity: number,
+  quality: WeatherQuality = 'medium',
+): WeatherParticleBudget {
+  const clampedIntensity = Math.min(1, Math.max(0, intensity));
+  const budget = WEATHER_PARTICLE_BUDGETS[quality];
+  const isSnow = type === 'snowy';
+  return {
+    maxParticles: budget[isSnow ? 'snow' : 'rain'],
+    emitRate: isSnow ? 80 + clampedIntensity * 160 : 220 + clampedIntensity * 280,
+    textureSize: budget.textureSize,
+  };
+}
 
 /**
  * 天气配置
@@ -28,13 +68,24 @@ export class WeatherSystem {
   private weatherTimer: number = 0;
   private rainParticles: BABYLON.ParticleSystem | null = null;
   private snowParticles: BABYLON.ParticleSystem | null = null;
+  private rainTexture: BABYLON.DynamicTexture | null = null;
+  private snowTexture: BABYLON.DynamicTexture | null = null;
   private windForce: BABYLON.Vector3 = new BABYLON.Vector3(0, 0, 0);
   private onWeatherChanged: ((weather: WeatherConfig) => void) | null = null;
   private isActive: boolean = false;
+  private quality: WeatherQuality;
+  private readonly emitterPosition = new BABYLON.Vector3(0, 50, 0);
+  private lastEmitterX = Number.NaN;
+  private lastEmitterZ = Number.NaN;
 
-  constructor(scene: BABYLON.Scene, particleManager: ParticleSystemManager) {
+  constructor(
+    scene: BABYLON.Scene,
+    particleManager: ParticleSystemManager,
+    options: WeatherPerformanceOptions = {},
+  ) {
     this.scene = scene;
     this.particleManager = particleManager;
+    this.quality = options.quality ?? 'medium';
 
     this.currentWeather = {
       type: 'clear',
@@ -43,6 +94,21 @@ export class WeatherSystem {
       windDirection: new BABYLON.Vector3(1, 0, 0),
       duration: 300,
     };
+  }
+
+  /**
+   * 设置天气质量档位，不改变天气逻辑，只调整粒子预算。
+   */
+  public setQuality(quality: WeatherQuality): void {
+    if (this.quality === quality) return;
+    this.quality = quality;
+    if (this.currentWeather.type === 'snowy' || this.currentWeather.type === 'rainy' || this.currentWeather.type === 'stormy') {
+      this.applyWeather();
+    }
+  }
+
+  public getQuality(): WeatherQuality {
+    return this.quality;
   }
 
   /**
@@ -178,11 +244,12 @@ export class WeatherSystem {
     }
 
     // 创建雨滴发射器
-    const emitter = new BABYLON.Vector3(0, 50, 0);
-    const particleSystem = new BABYLON.ParticleSystem('rainParticles', 5000, this.scene);
+    const budget = getWeatherParticleBudget('rainy', intensity, this.quality);
+    const particleSystem = new BABYLON.ParticleSystem('rainParticles', budget.maxParticles, this.scene);
 
-    particleSystem.emitter = emitter;
-    particleSystem.particleTexture = new BABYLON.DynamicTexture('rainTexture', 64, this.scene);
+    particleSystem.emitter = this.emitterPosition;
+    this.rainTexture = new BABYLON.DynamicTexture('rainTexture', budget.textureSize, this.scene);
+    particleSystem.particleTexture = this.rainTexture;
 
     // 粒子设置
     particleSystem.addColorGradient(0, new BABYLON.Color4(0.8, 0.9, 1, 0.8));
@@ -197,7 +264,7 @@ export class WeatherSystem {
     particleSystem.minEmitPower = 5 + intensity * 10;
     particleSystem.maxEmitPower = 10 + intensity * 15;
 
-    particleSystem.emitRate = 500 + intensity * 500;
+    particleSystem.emitRate = budget.emitRate;
 
     particleSystem.minSize = 0.1;
     particleSystem.maxSize = 0.3;
@@ -217,11 +284,12 @@ export class WeatherSystem {
     }
 
     // 创建雪花发射器
-    const emitter = new BABYLON.Vector3(0, 50, 0);
-    const particleSystem = new BABYLON.ParticleSystem('snowParticles', 3000, this.scene);
+    const budget = getWeatherParticleBudget('snowy', intensity, this.quality);
+    const particleSystem = new BABYLON.ParticleSystem('snowParticles', budget.maxParticles, this.scene);
 
-    particleSystem.emitter = emitter;
-    particleSystem.particleTexture = new BABYLON.DynamicTexture('snowTexture', 64, this.scene);
+    particleSystem.emitter = this.emitterPosition;
+    this.snowTexture = new BABYLON.DynamicTexture('snowTexture', budget.textureSize, this.scene);
+    particleSystem.particleTexture = this.snowTexture;
 
     // 粒子设置
     particleSystem.addColorGradient(0, new BABYLON.Color4(1, 1, 1, 0.9));
@@ -236,7 +304,7 @@ export class WeatherSystem {
     particleSystem.minEmitPower = 1 + intensity * 3;
     particleSystem.maxEmitPower = 3 + intensity * 5;
 
-    particleSystem.emitRate = 200 + intensity * 300;
+    particleSystem.emitRate = budget.emitRate;
 
     particleSystem.minSize = 0.3;
     particleSystem.maxSize = 0.8;
@@ -251,15 +319,13 @@ export class WeatherSystem {
    * 清理天气效果
    */
   private clearWeatherEffects(): void {
-    if (this.rainParticles) {
-      this.rainParticles.dispose();
-      this.rainParticles = null;
-    }
+    disposeWeatherParticleResources(this.rainParticles, this.rainTexture);
+    this.rainParticles = null;
+    this.rainTexture = null;
 
-    if (this.snowParticles) {
-      this.snowParticles.dispose();
-      this.snowParticles = null;
-    }
+    disposeWeatherParticleResources(this.snowParticles, this.snowTexture);
+    this.snowParticles = null;
+    this.snowTexture = null;
 
     // 恢复光照
     this.scene.lights.forEach((light) => {
@@ -323,11 +389,14 @@ export class WeatherSystem {
     // 更新粒子位置以跟随摄像机
     const camera = this.scene.activeCamera;
     if (camera) {
-      if (this.rainParticles) {
-        this.rainParticles.emitter = new BABYLON.Vector3(camera.position.x, 50, camera.position.z);
-      }
-      if (this.snowParticles) {
-        this.snowParticles.emitter = new BABYLON.Vector3(camera.position.x, 50, camera.position.z);
+      const movedX = Number.isNaN(this.lastEmitterX) || Math.abs(camera.position.x - this.lastEmitterX) >= 0.5;
+      const movedZ = Number.isNaN(this.lastEmitterZ) || Math.abs(camera.position.z - this.lastEmitterZ) >= 0.5;
+      if (movedX || movedZ) {
+        this.emitterPosition.copyFromFloats(camera.position.x, 50, camera.position.z);
+        this.lastEmitterX = camera.position.x;
+        this.lastEmitterZ = camera.position.z;
+        if (this.rainParticles) this.rainParticles.emitter = this.emitterPosition;
+        if (this.snowParticles) this.snowParticles.emitter = this.emitterPosition;
       }
     }
   }

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollText, RefreshCw } from "lucide-react";
+import { ISCAmount } from "@/components/ISCLogo";
 import { useState } from "react";
 
 const EVENT_FILTERS = ["all", "UtilityFeePaid", "LuxuryGiftRebateProcessed", "LandMinted", "HouseMinted"];
@@ -131,7 +132,7 @@ export default function EventLogsPage() {
                       {event.amount && (
                         <div>
                           <span className="text-muted-foreground">{t("common.amount")}:</span>
-                          <span className="font-mono text-chart-1">{event.amount} ISC</span>
+                          <ISCAmount amount={String(event.amount)} size="xs" className="font-mono text-chart-1" />
                         </div>
                       )}
                     </div>

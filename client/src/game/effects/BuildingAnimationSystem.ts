@@ -238,9 +238,31 @@ export class BuildingAnimationSystem {
   }
 
   /**
+   * 播放建筑门开动画。传入门网格或门节点，动画结束后回到关闭状态。
+   */
+  playDoorOpenAnimation(mesh: BABYLON.Mesh, config: BuildingAnimationConfig = { duration: 450 }): Promise<void> {
+    return new Promise((resolve) => {
+      const animationName = `door_open_${mesh.name}`;
+      this.stopAnimation(mesh, animationName);
+      const originalRotation = mesh.rotation.clone();
+      const animation = new BABYLON.Animation(`${animationName}_rotation`, "rotation", 60, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+      animation.setKeys([
+        { frame: 0, value: originalRotation },
+        { frame: 24, value: new BABYLON.Vector3(originalRotation.x, originalRotation.y - Math.PI / 2, originalRotation.z) },
+        { frame: 48, value: new BABYLON.Vector3(originalRotation.x, originalRotation.y - Math.PI / 2, originalRotation.z) },
+        { frame: 72, value: originalRotation },
+      ]);
+      animation.setEasingFunction(new BABYLON.CircleEase());
+      mesh.animations.push(animation);
+      const animatable = this.scene.beginAnimation(mesh, 0, 72, false, Math.max(0.1, 800 / Math.max(1, config.duration)));
+      animatable.onAnimationEnd = () => { mesh.rotation = originalRotation; resolve(); };
+    });
+  }
+
+  /**
    * 播放建筑生产动画（脉冲）
    */
-  playProductionAnimation(mesh: BABYLON.Mesh, config: BuildingAnimationConfig = { duration: 800 }): void {
+  playProductionAnimation(mesh: BABYLON.Mesh, config: BuildingAnimationConfig & { loop?: boolean } = { duration: 800 }): void {
     const animationName = `production_${mesh.name}`;
     this.stopAnimation(mesh, animationName);
 
@@ -266,8 +288,95 @@ export class BuildingAnimationSystem {
 
     mesh.animations.push(scaleAnimation);
 
-    // 启动循环动画
-    this.scene.beginAnimation(mesh, 0, 60, true, 1);
+    // 生产过程默认循环；收获前可调用 stopProductionAnimation。
+    this.scene.beginAnimation(mesh, 0, 60, config.loop !== false, Math.max(0.1, 800 / Math.max(1, config.duration)));
+  }
+
+  stopProductionAnimation(mesh: BABYLON.Mesh): void {
+    this.scene.stopAnimation(mesh);
+    mesh.animations = mesh.animations.filter((animation) => !animation.name.startsWith(`production_${mesh.name}`));
+  }
+
+  /**
+   * 播放建筑收获动画：轻微上浮并回落，结束后恢复原始变换。
+   */
+  playHarvestAnimation(mesh: BABYLON.Mesh, config: BuildingAnimationConfig = { duration: 550 }): Promise<void> {
+    return new Promise((resolve) => {
+      const animationName = `harvest_${mesh.name}`;
+      this.stopAnimation(mesh, animationName);
+      const originalPosition = mesh.position.clone();
+      const originalScale = mesh.scaling.clone();
+      const positionAnimation = new BABYLON.Animation(`${animationName}_position`, "position", 60, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+      positionAnimation.setKeys([
+        { frame: 0, value: originalPosition },
+        { frame: 24, value: originalPosition.add(new BABYLON.Vector3(0, 0.25, 0)) },
+        { frame: 48, value: originalPosition },
+      ]);
+      const scaleAnimation = new BABYLON.Animation(`${animationName}_scale`, "scaling", 60, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+      scaleAnimation.setKeys([
+        { frame: 0, value: originalScale },
+        { frame: 24, value: originalScale.scale(1.08) },
+        { frame: 48, value: originalScale },
+      ]);
+      mesh.animations.push(positionAnimation, scaleAnimation);
+      const animatable = this.scene.beginAnimation(mesh, 0, 48, false, Math.max(0.1, 800 / Math.max(1, config.duration)));
+      animatable.onAnimationEnd = () => { mesh.position = originalPosition; mesh.scaling = originalScale; resolve(); };
+    });
+  }
+
+  /**
+   * 播放建筑烟雾效果。该实现使用透明度与缩放动画，不依赖未交付的纹理资产。
+   */
+  playSmokeEffect(mesh: BABYLON.Mesh, config: BuildingAnimationConfig & { loop?: boolean } = { duration: 900 }): void {
+    const animationName = `smoke_${mesh.name}`;
+    this.stopAnimation(mesh, animationName);
+    const material = mesh.material instanceof BABYLON.StandardMaterial
+      ? mesh.material
+      : new BABYLON.StandardMaterial(`${animationName}_material`, this.scene);
+    const originalAlpha = material.alpha;
+    const originalScale = mesh.scaling.clone();
+    material.alpha = 0;
+    mesh.material = material;
+    const alphaAnimation = new BABYLON.Animation(`${animationName}_alpha`, "material.alpha", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    alphaAnimation.setKeys([{ frame: 0, value: 0 }, { frame: 30, value: 0.42 }, { frame: 60, value: 0 }]);
+    const scaleAnimation = new BABYLON.Animation(`${animationName}_scale`, "scaling", 60, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    scaleAnimation.setKeys([{ frame: 0, value: originalScale }, { frame: 60, value: originalScale.scale(1.12) }]);
+    mesh.animations.push(alphaAnimation, scaleAnimation);
+    const animatable = this.scene.beginAnimation(mesh, 0, 60, config.loop !== false, Math.max(0.1, 900 / Math.max(1, config.duration)));
+    if (config.loop === false) {
+      animatable.onAnimationEnd = () => { material.alpha = originalAlpha; mesh.scaling = originalScale; };
+    }
+  }
+
+  stopSmokeEffect(mesh: BABYLON.Mesh): void {
+    this.scene.stopAnimation(mesh);
+    mesh.animations = mesh.animations.filter((animation) => !animation.name.startsWith(`smoke_${mesh.name}`));
+    if (mesh.material instanceof BABYLON.StandardMaterial) mesh.material.alpha = 1;
+  }
+
+  /**
+   * 播放冰蓝色光效脉冲，用于建筑生产、完成或收益可收取提示。
+   */
+  playLightEffect(mesh: BABYLON.Mesh, config: BuildingAnimationConfig & { loop?: boolean } = { duration: 700 }): void {
+    const animationName = `light_${mesh.name}`;
+    this.stopAnimation(mesh, animationName);
+    const material = mesh.material instanceof BABYLON.StandardMaterial
+      ? mesh.material
+      : new BABYLON.StandardMaterial(`${animationName}_material`, this.scene);
+    const originalEmissive = material.emissiveColor.clone();
+    material.emissiveColor = new BABYLON.Color3(0.05, 0.55, 1);
+    mesh.material = material;
+    const emissiveAnimation = new BABYLON.Animation(`${animationName}_emissive`, "material.emissiveColor", 60, BABYLON.Animation.ANIMATIONTYPE_COLOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    emissiveAnimation.setKeys([{ frame: 0, value: new BABYLON.Color3(0.05, 0.55, 1) }, { frame: 30, value: new BABYLON.Color3(0.35, 0.9, 1) }, { frame: 60, value: new BABYLON.Color3(0.05, 0.55, 1) }]);
+    mesh.animations.push(emissiveAnimation);
+    const animatable = this.scene.beginAnimation(mesh, 0, 60, config.loop !== false, Math.max(0.1, 700 / Math.max(1, config.duration)));
+    if (config.loop === false) animatable.onAnimationEnd = () => { material.emissiveColor = originalEmissive; };
+  }
+
+  stopLightEffect(mesh: BABYLON.Mesh): void {
+    this.scene.stopAnimation(mesh);
+    mesh.animations = mesh.animations.filter((animation) => !animation.name.startsWith(`light_${mesh.name}`));
+    if (mesh.material instanceof BABYLON.StandardMaterial) mesh.material.emissiveColor = new BABYLON.Color3(0, 0, 0);
   }
 
   /**

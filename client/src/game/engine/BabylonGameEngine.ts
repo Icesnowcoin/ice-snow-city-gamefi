@@ -6,6 +6,18 @@ import '@babylonjs/materials';
  * Babylon.js 3D 游戏引擎
  * 负责场景管理、相机控制、光照、物理等核心功能
  */
+export interface LoadModelProgress {
+  loaded: number;
+  total: number;
+  lengthComputable: boolean;
+  percent: number | null;
+}
+
+export interface LoadModelOptions {
+  onProgress?: (progress: LoadModelProgress) => void;
+  signal?: AbortSignal;
+}
+
 export class BabylonGameEngine {
   private engine: BABYLON.Engine | null = null;
   private scene: BABYLON.Scene | null = null;
@@ -82,11 +94,11 @@ export class BabylonGameEngine {
 
     // 环境光
     const ambientLight = new BABYLON.HemisphericLight('ambient', new BABYLON.Vector3(0, 1, 0), this.scene);
-    ambientLight.intensity = 0.6;
+    ambientLight.intensity = 0.32;
 
     // 主光源（太阳光）
     const sunLight = new BABYLON.DirectionalLight('sun', new BABYLON.Vector3(-1, 1, -1), this.scene);
-    sunLight.intensity = 0.8;
+    sunLight.intensity = 0.5;
     sunLight.position = new BABYLON.Vector3(100, 100, -100);
 
     // 阴影贴图
@@ -96,7 +108,7 @@ export class BabylonGameEngine {
 
     // 点光源（用于建筑和环境）
     const pointLight = new BABYLON.PointLight('point', new BABYLON.Vector3(0, 20, 0), this.scene);
-    pointLight.intensity = 0.3;
+    pointLight.intensity = 0.12;
     pointLight.range = 100;
   }
 
@@ -108,7 +120,7 @@ export class BabylonGameEngine {
 
     // 创建天空盒材质
     const skyboxMaterial = new BABYLON.StandardMaterial('skyBox', this.scene);
-    skyboxMaterial.emissiveColor = new BABYLON.Color3(0.8, 0.9, 1);
+    skyboxMaterial.emissiveColor = new BABYLON.Color3(0.18, 0.28, 0.5);
     skyboxMaterial.backFaceCulling = false;
 
     // 创建天空盒网格
@@ -132,8 +144,8 @@ export class BabylonGameEngine {
 
     // 地面材质
     const groundMaterial = new BABYLON.StandardMaterial('groundMat', this.scene);
-    (groundMaterial as any).diffuse = new BABYLON.Color3(0.4, 0.6, 0.3);
-    (groundMaterial as any).specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+    groundMaterial.diffuseColor = new BABYLON.Color3(0.12, 0.22, 0.3);
+    groundMaterial.specularColor = new BABYLON.Color3(0.08, 0.12, 0.16);
     ground.material = groundMaterial;
 
     return ground;
@@ -164,7 +176,7 @@ export class BabylonGameEngine {
 
     // 建筑材质
     const material = new BABYLON.StandardMaterial(`${name}Mat`, this.scene);
-    (material as any).diffuse = color;
+    material.diffuseColor = color;
     (material as any).specularColor = new BABYLON.Color3(0.3, 0.3, 0.3);
     building.material = material;
 
@@ -198,7 +210,7 @@ export class BabylonGameEngine {
 
     // 材质
     const material = new BABYLON.StandardMaterial(`${name}Mat`, this.scene);
-    (material as any).diffuse = color;
+    material.diffuseColor = color;
     (material as any).specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
     cylinder.material = material;
 
@@ -229,7 +241,7 @@ export class BabylonGameEngine {
 
     // 材质
     const material = new BABYLON.StandardMaterial(`${name}Mat`, this.scene);
-    (material as any).diffuse = color;
+    material.diffuseColor = color;
     (material as any).specularColor = new BABYLON.Color3(0.3, 0.3, 0.3);
     sphere.material = material;
 
@@ -245,16 +257,46 @@ export class BabylonGameEngine {
   public async loadModel(
     url: string,
     name: string,
-    position: BABYLON.Vector3
+    position: BABYLON.Vector3,
+    options: LoadModelOptions = {},
   ): Promise<BABYLON.AbstractMesh> {
     if (!this.scene) throw new Error('Scene not initialized');
+    if (options.signal?.aborted) throw new DOMException('Model loading was aborted', 'AbortError');
 
-    const result = await BABYLON.SceneLoader.ImportMeshAsync('', '', url, this.scene);
-    const mesh = result.meshes[0];
+    const result = await BABYLON.SceneLoader.ImportMeshAsync(
+      '',
+      '',
+      url,
+      this.scene,
+      (event) => {
+        const total = event.lengthComputable ? event.total : 0;
+        const loaded = event.loaded;
+        options.onProgress?.({
+          loaded,
+          total,
+          lengthComputable: event.lengthComputable,
+          percent: event.lengthComputable && total > 0 ? Math.min(100, (loaded / total) * 100) : null,
+        });
+      },
+    );
+
+    if (options.signal?.aborted) {
+      result.meshes.forEach((mesh) => mesh.dispose(false, true));
+      throw new DOMException('Model loading was aborted', 'AbortError');
+    }
+
+    const mesh = result.meshes.find((candidate) => !candidate.parent) ?? result.meshes[0];
+    if (!mesh) throw new Error(`No renderable meshes found in model: ${url}`);
+
     mesh.name = name;
-    mesh.position = position;
-
+    mesh.position = position.clone();
+    options.onProgress?.({ loaded: 1, total: 1, lengthComputable: true, percent: 100 });
     return mesh;
+  }
+
+  /** Dispose a loaded GLB root and its owned materials/textures. */
+  public disposeLoadedModel(mesh: BABYLON.AbstractMesh): void {
+    mesh.dispose(false, true);
   }
 
   /**
@@ -269,6 +311,16 @@ export class BabylonGameEngine {
     this.camera.setTarget(target);
   }
 
+  /**
+   * 将相机切换为 2.5D 等距视角；默认自由相机行为保持不变。
+   */
+  public setIsometricView(center: BABYLON.Vector3 = BABYLON.Vector3.Zero(), distance = 42): void {
+    const safeDistance = Math.max(1, distance);
+    this.setCameraView(
+      new BABYLON.Vector3(center.x + safeDistance, center.y + safeDistance, center.z - safeDistance),
+      center.clone(),
+    );
+  }
   /**
    * 获取场景
    */

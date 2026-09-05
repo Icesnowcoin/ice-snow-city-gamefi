@@ -49,9 +49,16 @@ const RETRY_DELAY_MS = 1000;
 /**
  * Blockchain service class for managing on-chain interactions
  */
+export type BlockchainProviderFactory = (rpcUrl: string) => ethers.JsonRpcProvider;
+
 export class BlockchainService {
   private provider: ethers.JsonRpcProvider | null = null;
   private signer: ethers.Wallet | null = null;
+  private readonly providerFactory: BlockchainProviderFactory;
+
+  constructor(providerFactory: BlockchainProviderFactory = (rpcUrl) => new ethers.JsonRpcProvider(rpcUrl)) {
+    this.providerFactory = providerFactory;
+  }
   private iscManagerContract: Contract | null = null;
   private cityTreasuryContract: Contract | null = null;
   private iscStakingContract: Contract | null = null;
@@ -73,7 +80,7 @@ export class BlockchainService {
       // Initialize provider with RPC failover
       const rpcUrl = this.rpcFailoverManager.getNextEndpoint();
       console.log(`[Blockchain] Using RPC endpoint: ${rpcUrl}`);
-      this.provider = new ethers.JsonRpcProvider(rpcUrl);
+      this.provider = this.providerFactory(rpcUrl);
 
       // Verify provider connectivity
       const network = await this.provider.getNetwork();
@@ -123,7 +130,7 @@ export class BlockchainService {
       const nextRpc = this.rpcFailoverManager.getNextEndpoint();
       if (nextRpc !== BSC_RPC_URL) {
         console.log(`[Blockchain] Retrying with next RPC endpoint: ${nextRpc}`);
-        this.provider = new ethers.JsonRpcProvider(nextRpc);
+        this.provider = this.providerFactory(nextRpc);
         return this.initialize();
       }
       

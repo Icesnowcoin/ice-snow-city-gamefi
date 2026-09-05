@@ -19,6 +19,22 @@ import type { Request, Response } from 'express';
 let redisClient: ReturnType<typeof createClient> | null = null;
 
 /**
+ * Development preview pages can issue many asset/HMR requests while a scene is
+ * loading. Never weaken production limits; only the local development server
+ * bypasses application-level limiters to avoid false 429 blank screens.
+ */
+export function shouldSkipDevelopmentRateLimit(req: Request): boolean {
+  return process.env.NODE_ENV === 'development' || req.path === '/health' || req.path === '/api/health';
+}
+
+export function getClientIp(req: Request): string {
+  const forwarded = req.headers['x-forwarded-for'];
+  const forwardedIp = Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(',')[0]?.trim();
+  const rawIp = forwardedIp || req.ip || '127.0.0.1';
+  return ipKeyGenerator(rawIp);
+}
+
+/**
  * Initialize Redis client for rate limiting
  */
 async function initializeRedisClient() {
@@ -67,10 +83,7 @@ export function createGlobalRateLimiter() {
     message: 'Too many requests from this server, please try again later.',
     standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
     legacyHeaders: false, // Disable `X-RateLimit-*` headers
-    skip: (req: Request) => {
-      // Skip rate limiting for health checks
-      return req.path === '/health' || req.path === '/api/health';
-    },
+    skip: (req: Request) => shouldSkipDevelopmentRateLimit(req),
   });
 }
 
@@ -101,13 +114,8 @@ export async function createIpRateLimiter() {
     message: 'Too many requests from this IP, please try again after a minute.',
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req: Request) => {
-      return req.ip || (req.headers['x-forwarded-for'] as string)?.split(',')[0] || '127.0.0.1';
-    },
-    skip: (req: Request) => {
-      // Skip rate limiting for health checks
-      return req.path === '/health' || req.path === '/api/health';
-    },
+    keyGenerator: getClientIp,
+    skip: (req: Request) => shouldSkipDevelopmentRateLimit(req),
   });
 }
 
@@ -143,12 +151,9 @@ export async function createUserRateLimiter() {
       if (userId) {
         return `user:${userId}`;
       }
-      return req.ip || (req.headers['x-forwarded-for'] as string)?.split(',')[0] || '127.0.0.1';
+      return getClientIp(req);
     },
-    skip: (req: Request) => {
-      // Skip rate limiting for health checks and public endpoints
-      return req.path === '/health' || req.path === '/api/health' || req.path === '/api/oauth/callback';
-    },
+    skip: (req: Request) => shouldSkipDevelopmentRateLimit(req) || req.path === '/api/oauth/callback',
   });
 }
 
@@ -184,6 +189,7 @@ export async function createApiRateLimiter() {
       return 100; // 100 requests per minute for other endpoints
     },
     message: 'Too many API requests, please try again later.',
+    skip: (req: Request) => shouldSkipDevelopmentRateLimit(req),
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req: Request) => {
@@ -191,7 +197,7 @@ export async function createApiRateLimiter() {
       if (userId) {
         return `api:${userId}`;
       }
-      return `api:${(req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.ip || 'unknown'}`;
+      return `api:${getClientIp(req)}`;
     },
   });
 }

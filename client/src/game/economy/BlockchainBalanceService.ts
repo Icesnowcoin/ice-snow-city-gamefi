@@ -22,11 +22,13 @@ export class BlockchainBalanceService {
   private mockBalance: number = 0;
   private refreshHistory: BlockchainRefreshResult[] = [];
   private maxHistorySize: number = 100;
+  private readonly networkDelayMs: number;
 
-  constructor(address?: string) {
+  constructor(address?: string, networkDelayMs = 0) {
     if (address) {
       this.mockAddress = address;
     }
+    this.networkDelayMs = Math.max(0, networkDelayMs);
   }
 
   /**
@@ -35,8 +37,10 @@ export class BlockchainBalanceService {
    */
   async refreshISCBalance(): Promise<BlockchainRefreshResult> {
     try {
-      // 模拟网络延迟
-      await this.simulateNetworkDelay();
+      // 网络延迟仅用于演示，可通过构造参数显式启用。
+      if (this.networkDelayMs > 0) {
+        await this.simulateNetworkDelay();
+      }
 
       // 模拟从区块链获取余额
       // 实际应用中应该调用真实的智能合约
@@ -128,8 +132,7 @@ export class BlockchainBalanceService {
    */
   private simulateNetworkDelay(): Promise<void> {
     return new Promise((resolve) => {
-      const delay = 800 + Math.random() * 1200; // 800-2000ms
-      setTimeout(resolve, delay);
+      setTimeout(resolve, this.networkDelayMs);
     });
   }
 

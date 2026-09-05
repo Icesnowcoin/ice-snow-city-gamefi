@@ -41,7 +41,7 @@ export class VegetationManager {
 
     // 麦田材质（金黄色）
     const material = new BABYLON.StandardMaterial(`${name}_mat`, this.engine.getScene());
-    (material as any).diffuse = new BABYLON.Color3(0.9, 0.8, 0.3); // 金黄色
+    material.diffuseColor = new BABYLON.Color3(0.9, 0.8, 0.3); // 金黄色
     (material as any).specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
     field.material = material;
 
@@ -188,7 +188,7 @@ export class VegetationManager {
 
     // 渠道材质（蓝色水）
     const material = new BABYLON.StandardMaterial(`${name}_mat`, this.engine.getScene());
-    (material as any).diffuse = new BABYLON.Color3(0.3, 0.6, 0.9); // 蓝色
+    material.diffuseColor = new BABYLON.Color3(0.3, 0.6, 0.9); // 蓝色
     material.alpha = 0.6;
     (material as any).specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
     channel.material = material;

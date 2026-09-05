@@ -26,6 +26,8 @@ export interface ChatPanelProps {
   onStartPrivateChat?: (userId: string) => void;
   onAddFriend?: (userId: string) => void;
   onRemoveFriend?: (userId: string) => void;
+  /** 由上层真实资料服务提供，避免聊天消息携带虚构玩家资产统计 */
+  playerProfiles?: Record<string, Partial<PlayerInfo>>;
 }
 
 const CHANNEL_ICONS: Record<string, React.ReactNode> = {
@@ -56,6 +58,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   onStartPrivateChat,
   onAddFriend,
   onRemoveFriend,
+  playerProfiles = {},
 }) => {
   const [selectedChannelId, setSelectedChannelId] = useState<string>(
     channels[0]?.id || ''
@@ -180,13 +183,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                         <div
                           className="message-avatar"
                           onClick={() => {
+                            const profile = playerProfiles[msg.senderId] ?? {};
                             setSelectedPlayer({
+                              ...profile,
                               userId: msg.senderId,
-                              userName: msg.senderName,
-                              level: 1,
-                              avatar: msg.senderAvatar,
-                              status: 'online',
-                              signature: '这是一个玩家',
+                              userName: profile.userName ?? msg.senderName,
+                              level: profile.level ?? 0,
+                              avatar: profile.avatar ?? msg.senderAvatar,
+                              status: profile.status ?? 'offline',
                             });
                             setShowPlayerInfo(true);
                           }}

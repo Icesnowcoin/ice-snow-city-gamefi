@@ -328,6 +328,7 @@ export function drawCharacterPosterStickers(
   placements: CharacterPosterStickerPlacement[] = [],
   width = 900,
   height = 1200,
+  logoImage?: HTMLImageElement,
 ): void {
   placements.forEach((placement) => {
     const sticker = getCharacterPosterSticker(placement.stickerId);
@@ -342,7 +343,12 @@ export function drawCharacterPosterStickers(
     ctx.font = `${fontSize}px "Apple Color Emoji", "Segoe UI Emoji", sans-serif`;
     ctx.shadowColor = 'rgba(2, 6, 23, 0.55)';
     ctx.shadowBlur = 12;
-    ctx.fillText(sticker.glyph, 0, 0);
+    if (sticker.assetUrl && logoImage) {
+      const logoSize = fontSize * 1.12;
+      ctx.drawImage(logoImage, -logoSize / 2, -logoSize / 2, logoSize, logoSize);
+    } else {
+      ctx.fillText(sticker.glyph, 0, 0);
+    }
     if (sticker.category === 'badge') {
       ctx.shadowBlur = 0;
       ctx.fillStyle = sticker.tint;
@@ -470,6 +476,14 @@ export async function generateCharacterSnapshotPosterDataUrlAsync(options: Chara
     candidate.onerror = () => resolve(null);
     candidate.src = options.canvasDataUrl;
   });
+  const logoImage = await new Promise<HTMLImageElement | null>((resolve) => {
+    const hasBrandedSticker = options.stickerPlacements?.some((placement) => getCharacterPosterSticker(placement.stickerId).assetUrl);
+    if (!hasBrandedSticker) return resolve(null);
+    const candidate = new Image();
+    candidate.onload = () => resolve(candidate);
+    candidate.onerror = () => resolve(null);
+    candidate.src = getCharacterPosterSticker('winter-pioneer').assetUrl ?? '';
+  });
 
   const gradient = ctx.createLinearGradient(0, 0, 900, 1200);
   gradient.addColorStop(0, '#0e7490');
@@ -499,7 +513,7 @@ export async function generateCharacterSnapshotPosterDataUrlAsync(options: Chara
     ctx.font = '20px sans-serif';
     ctx.fillText('角色截图暂不可用，已保留状态信息', 190, 500);
   }
-  drawCharacterPosterStickers(ctx, options.stickerPlacements);
+  drawCharacterPosterStickers(ctx, options.stickerPlacements, 900, 1200, logoImage ?? undefined);
   ctx.fillStyle = '#cbd5e1';
   ctx.font = '22px sans-serif';
   ctx.fillText(`环境：${options.environmentLabel}`, 95, 820);
@@ -617,7 +631,7 @@ export function getRandomTwitterShareText(options: PosterOptions): string {
   const buildings = assetSummary?.buildingCount ?? 0;
 
   const templates = [
-    `❄️ 冰雪风暴降临，我的 Web3 帝国坚不可摧！在《冰雪城市》已集结 ${lands} 宗核心土地与 ${buildings} 座高能建筑。欢迎大佬们来参观主页并扫码串门：${profileUrl} #IceSnowCity #Web3Gaming #Metaverse`,
+    `ISC 冰雪都市风暴降临，我的 Web3 帝国坚不可摧！在《冰雪城市》已集结 ${lands} 宗核心土地与 ${buildings} 座高能建筑。欢迎大佬们来参观主页并扫码串门：${profileUrl} #IceSnowCity #Web3Gaming #Metaverse`,
     `🚀 沉浸式体验《冰雪城市》现代都市建设！目前资产已达 ${lands} 块土地 + ${buildings} 栋建筑，ISC 经济生态太给力了。主页速来围观：${profileUrl} #CryptoGaming #NFTCommunity #IceSnowCity`,
     `💎 打造属于你的冬季商业奇迹！我在 Ice Snow City 拥有 ${lands} 宗土地与 ${buildings} 栋建筑 NFT。点击下方主页链接直达我的专属都市：${profileUrl} #Solana #Web3 #IceSnowCity`,
     `🏙️ 拒绝内卷，在《冰雪城市》开启链上地产大亨之路！目前已解锁 ${lands} 宗土地和 ${buildings} 栋建筑。快来围观我的个人主页：${profileUrl} #Metaverse #GameFi #IceSnowCity`

@@ -339,6 +339,13 @@ describe("NpcModelTouchPreview", () => {
     expect(screen.getByText("速度: 1x")).toBeTruthy();
   });
 
+  it("labels the procedural baseline separately when no real modelAssetUrl is provided", () => {
+    render(<NpcModelTouchPreview profile={profile} lang="zh" />);
+    const sourceLabel = screen.getByTestId("npc-3d-source-label");
+    expect(sourceLabel.textContent).toContain("正在加载开发基线");
+    expect(sourceLabel.textContent).not.toContain("真实 GLB");
+  });
+
   it("displays loading source label when modelAssetUrl is provided", () => {
     const profileWithAsset = {
       ...profile,
