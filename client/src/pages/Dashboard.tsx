@@ -4,6 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Key, Settings, ScrollText, Terminal, Landmark, PiggyBank } from "lucide-react";
 import { Link } from "wouter";
+import { ISCAmount, ISCLogo } from "@/components/ISCLogo";
 
 export default function Dashboard() {
   const { t, lang } = useLanguage();
@@ -21,9 +22,9 @@ export default function Dashboard() {
     },
     {
       title: t("nav.treasury"),
-      icon: Landmark,
+      icon: ISCLogo,
       path: "/treasury",
-      value: treasuryQuery.data ? `${treasuryQuery.data.balance} ISC` : "0 ISC",
+      value: <ISCAmount amount={treasuryQuery.data ? String(treasuryQuery.data.balance) : "0"} size="sm" />,
       color: "text-chart-1",
     },
     {

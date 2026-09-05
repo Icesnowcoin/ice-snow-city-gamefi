@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import TokenDisplay from "@/components/TokenDisplay";
+import { ISCAmount, ISCLogo } from "@/components/ISCLogo";
 import TransactionHistoryPanel from "@/components/TransactionHistoryPanel";
 import BlockchainSyncOverlay from "@/components/BlockchainSyncOverlay";
 import { ShareStatisticsDashboard } from "@/components/ShareStatisticsDashboard";
@@ -202,7 +203,7 @@ export default function WalletPage() {
                 <p className="text-cyan-100">{lang === "zh" ? "区块链 ISC 余额" : "Blockchain ISC Balance"}</p>
                 <TokenDisplay className="mt-2" showDetails={true} />
               </div>
-              <Wallet className="w-12 h-12 opacity-50" />
+              <ISCLogo size="xl" className="opacity-80 drop-shadow-[0_0_14px_rgba(103,232,249,0.85)]" />
             </div>
           </div>
         </CardContent>
@@ -218,10 +219,10 @@ export default function WalletPage() {
                 {walletLoading ? (
                   <Skeleton className="h-10 w-32 mt-1" />
                 ) : (
-                  <p className="text-4xl font-bold">{wallet?.iscBalance.toString() || "0"}</p>
+                  <ISCAmount amount={wallet?.iscBalance?.toLocaleString() || "0"} size="xl" className="mt-1 font-bold text-white" />
                 )}
               </div>
-              <Wallet className="w-12 h-12 opacity-50" />
+              <ISCLogo size="xl" className="opacity-80 drop-shadow-[0_0_14px_rgba(103,232,249,0.85)]" />
             </div>
             <div className="pt-4 border-t border-blue-400">
               <p className="text-sm text-blue-100">{lang === "zh" ? "钱包地址" : "Wallet Address"}</p>
@@ -460,15 +461,15 @@ export default function WalletPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{lang === "zh" ? "可用余额" : "Available Balance"}</p>
-                    <p className="text-2xl font-bold">{wallet?.iscBalance?.toLocaleString() || "0"} ISC</p>
+                    <ISCAmount amount={wallet?.iscBalance?.toLocaleString() || "0"} size="lg" className="font-bold" />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{lang === "zh" ? "银行存款" : "Bank Balance"}</p>
-                    <p className="text-2xl font-bold">{wallet?.bankBalance?.toLocaleString() || "0"} ISC</p>
+                    <ISCAmount amount={wallet?.bankBalance?.toLocaleString() || "0"} size="lg" className="font-bold" />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{lang === "zh" ? "总资产" : "Total Assets"}</p>
-                    <p className="text-2xl font-bold">{wallet?.totalAssets?.toLocaleString() || "0"} ISC</p>
+                    <ISCAmount amount={wallet?.totalAssets?.toLocaleString() || "0"} size="lg" className="font-bold" />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{lang === "zh" ? "Gas 费用说明" : "Gas Fee Info"}</p>

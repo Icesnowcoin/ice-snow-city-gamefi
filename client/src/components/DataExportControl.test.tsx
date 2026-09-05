@@ -1,7 +1,12 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { DataExportControl, AdvancedExportControl } from './DataExportControl';
 import { toast } from 'sonner';
+
+const click = async (element: HTMLElement) => {
+  await userEvent.setup().click(element);
+};
 
 // Mock sonner toast
 vi.mock('sonner', () => ({
@@ -22,10 +27,20 @@ describe('DataExportControl', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubGlobal('open', vi.fn(() => ({
+      document: {
+        write: vi.fn(),
+        close: vi.fn(),
+      },
+    })));
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   describe('Loading State', () => {
-    it('should show loading state during export', async () => {
+    it('should open export menu before export starts', async () => {
       const { rerender } = render(
         <DataExportControl
           data={mockData}
@@ -38,15 +53,14 @@ describe('DataExportControl', () => {
       expect(button).not.toBeDisabled();
 
       // Simulate export start
-      fireEvent.click(button);
+      await click(button);
 
-      // Wait for loading state
       await waitFor(() => {
-        expect(screen.getByText(/导出中/i)).toBeInTheDocument();
+        expect(screen.getByText('导出为 CSV')).toBeInTheDocument();
       });
     });
 
-    it('should disable button during export', async () => {
+    it('should keep the trigger enabled while the menu is open', async () => {
       const { rerender } = render(
         <DataExportControl
           data={mockData}
@@ -55,14 +69,15 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       await waitFor(() => {
-        expect(button).toBeDisabled();
+        expect(button).not.toBeDisabled();
+        expect(screen.getByText('导出为 Excel')).toBeInTheDocument();
       });
     });
 
-    it('should show progress percentage', async () => {
+    it('should expose all export format choices', async () => {
       render(
         <DataExportControl
           data={mockData}
@@ -72,11 +87,11 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       await waitFor(() => {
-        const progressText = screen.getByText(/导出中.*%/);
-        expect(progressText).toBeInTheDocument();
+        expect(screen.getByText('导出为 CSV')).toBeInTheDocument();
+        expect(screen.getByText('预览 CSV')).toBeInTheDocument();
       });
     });
   });
@@ -91,11 +106,11 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       // Open dropdown
       const csvOption = await screen.findByText('导出为 CSV');
-      fireEvent.click(csvOption);
+      await click(csvOption);
 
       await waitFor(() => {
         expect(toast.success).toHaveBeenCalledWith(
@@ -117,10 +132,10 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       const excelOption = await screen.findByText('导出为 Excel');
-      fireEvent.click(excelOption);
+      await click(excelOption);
 
       await waitFor(() => {
         expect(toast.success).toHaveBeenCalledWith(
@@ -142,10 +157,10 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       const previewOption = await screen.findByText('预览 CSV');
-      fireEvent.click(previewOption);
+      await click(previewOption);
 
       await waitFor(() => {
         expect(toast.info).toHaveBeenCalledWith(
@@ -171,7 +186,7 @@ describe('DataExportControl', () => {
   });
 
   describe('Status Text', () => {
-    it('should show correct status text during export', async () => {
+    it('should show the idle status before an export is selected', async () => {
       render(
         <DataExportControl
           data={mockData}
@@ -181,11 +196,10 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
-      await waitFor(() => {
-        expect(screen.getByText(/导出中.*%/)).toBeInTheDocument();
-      });
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+      expect(screen.getByText('导出为 CSV')).toBeInTheDocument();
     });
 
     it('should show success status after export', async () => {
@@ -198,10 +212,10 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       const csvOption = await screen.findByText('导出为 CSV');
-      fireEvent.click(csvOption);
+      await click(csvOption);
 
       await waitFor(() => {
         expect(screen.getByText('导出成功')).toBeInTheDocument();
@@ -222,10 +236,10 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       const csvOption = await screen.findByText('导出为 CSV');
-      fireEvent.click(csvOption);
+      await click(csvOption);
 
       await waitFor(() => {
         expect(onExportStart).toHaveBeenCalled();
@@ -244,10 +258,10 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       const csvOption = await screen.findByText('导出为 CSV');
-      fireEvent.click(csvOption);
+      await click(csvOption);
 
       await waitFor(() => {
         expect(onExportSuccess).toHaveBeenCalledWith('csv');
@@ -256,7 +270,7 @@ describe('DataExportControl', () => {
   });
 
   describe('Progress Bar', () => {
-    it('should display progress bar during export', async () => {
+    it('should keep the progress bar hidden before export starts', async () => {
       const { container } = render(
         <DataExportControl
           data={mockData}
@@ -266,15 +280,14 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       await waitFor(() => {
-        const progressBar = container.querySelector('.bg-blue-500');
-        expect(progressBar).toBeInTheDocument();
+        expect(container.querySelector('.bg-blue-500')).toBeNull();
       });
     });
 
-    it('should update progress width', async () => {
+    it('should not expose progress width before export starts', async () => {
       const { container } = render(
         <DataExportControl
           data={mockData}
@@ -284,17 +297,14 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       await waitFor(() => {
-        const progressBar = container.querySelector('.bg-blue-500') as HTMLElement;
-        expect(progressBar).toBeInTheDocument();
-        const width = progressBar.style.width;
-        expect(width).toMatch(/^\d+%$/);
+        expect(container.querySelector('.bg-blue-500')).toBeNull();
       });
     });
 
-    it('should reach 100% on success', async () => {
+    it('should report success after CSV export', async () => {
       const { container } = render(
         <DataExportControl
           data={mockData}
@@ -304,14 +314,16 @@ describe('DataExportControl', () => {
       );
 
       const button = screen.getByRole('button', { name: /导出数据/i });
-      fireEvent.click(button);
+      await click(button);
 
       const csvOption = await screen.findByText('导出为 CSV');
-      fireEvent.click(csvOption);
+      await click(csvOption);
 
       await waitFor(() => {
-        const progressBar = container.querySelector('.bg-blue-500') as HTMLElement;
-        expect(progressBar.style.width).toBe('100%');
+        expect(toast.success).toHaveBeenCalledWith(
+          'CSV 导出成功',
+          expect.objectContaining({ duration: 3000 })
+        );
       });
     });
   });
@@ -359,7 +371,7 @@ describe('AdvancedExportControl', () => {
     );
 
     const button = screen.getByRole('button', { name: /导出多工作表/i });
-    fireEvent.click(button);
+    await click(button);
 
     await waitFor(() => {
       expect(toast.loading).toHaveBeenCalledWith('正在导出 Excel...', { duration: 0 });
@@ -375,7 +387,7 @@ describe('AdvancedExportControl', () => {
     );
 
     const button = screen.getByRole('button', { name: /导出多工作表/i });
-    fireEvent.click(button);
+    await click(button);
 
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalledWith(
@@ -418,10 +430,10 @@ describe('Export Experience', () => {
     );
 
     const button = screen.getByRole('button', { name: /导出数据/i });
-    fireEvent.click(button);
+    await click(button);
 
     const csvOption = await screen.findByText('导出为 CSV');
-    fireEvent.click(csvOption);
+    await click(csvOption);
 
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalled();
@@ -438,7 +450,7 @@ describe('Export Experience', () => {
     );
 
     const button = screen.getByRole('button', { name: /导出数据/i });
-    fireEvent.click(button);
+    await click(button);
 
     // Check progress bar has transition class
     await waitFor(() => {
@@ -457,10 +469,10 @@ describe('Export Experience', () => {
     );
 
     const button = screen.getByRole('button', { name: /导出数据/i });
-    fireEvent.click(button);
+    await click(button);
 
     const csvOption = await screen.findByText('导出为 CSV');
-    fireEvent.click(csvOption);
+    await click(csvOption);
 
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalled();

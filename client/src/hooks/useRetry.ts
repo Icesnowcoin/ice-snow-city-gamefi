@@ -95,10 +95,14 @@ export function useRetry<T>(
             nextRetryIn: delay,
           });
 
-          // Wait before retrying
-          await new Promise((resolve) => {
-            timeoutRef.current = setTimeout(resolve, delay);
-          });
+          // Wait before retrying; avoid creating a timer for zero-delay retries.
+          if (delay <= 0) {
+            await Promise.resolve();
+          } else {
+            await new Promise((resolve) => {
+              timeoutRef.current = setTimeout(resolve, delay);
+            });
+          }
         } else {
           setState({
             isRetrying: false,
@@ -108,9 +112,7 @@ export function useRetry<T>(
             nextRetryIn: 0,
           });
 
-          if (attempt === maxAttempts - 1) {
-            throw lastError;
-          }
+          throw lastError;
         }
       }
     }
@@ -163,12 +165,13 @@ export function useQueryRetry(config: RetryConfig = {}) {
     backoffMultiplier = 2,
     shouldRetry = (error: Error) => {
       // Retry on network errors or 5xx errors
+      const message = error.message.toLowerCase();
       return (
-        error.message.includes('network') ||
-        error.message.includes('timeout') ||
-        error.message.includes('500') ||
-        error.message.includes('502') ||
-        error.message.includes('503')
+        message.includes('network') ||
+        message.includes('timeout') ||
+        message.includes('500') ||
+        message.includes('502') ||
+        message.includes('503')
       );
     },
   } = config;
@@ -256,50 +259,57 @@ export function useCircuitBreaker(config: {
   const [state, setState] = useState<'closed' | 'open' | 'half-open'>('closed');
   const [failureCount, setFailureCount] = useState(0);
   const [successCount, setSuccessCount] = useState(0);
+  const stateRef = useRef<'closed' | 'open' | 'half-open'>('closed');
+  const failureCountRef = useRef(0);
+  const successCountRef = useRef(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const recordSuccess = useCallback(() => {
-    if (state === 'half-open') {
-      setSuccessCount((prev) => {
-        const newCount = prev + 1;
-        if (newCount >= successThreshold) {
-          setState('closed');
-          setFailureCount(0);
-          setSuccessCount(0);
-        }
-        return newCount;
-      });
-    } else if (state === 'closed') {
+    if (stateRef.current === 'half-open') {
+      const newCount = successCountRef.current + 1;
+      successCountRef.current = newCount;
+      setSuccessCount(newCount);
+      if (newCount >= successThreshold) {
+        stateRef.current = 'closed';
+        failureCountRef.current = 0;
+        successCountRef.current = 0;
+        setState('closed');
+        setFailureCount(0);
+        setSuccessCount(0);
+      }
+    } else if (stateRef.current === 'closed') {
+      failureCountRef.current = 0;
       setFailureCount(0);
     }
-  }, [state, successThreshold]);
+  }, [successThreshold]);
 
   const recordFailure = useCallback(() => {
-    setFailureCount((prev) => {
-      const newCount = prev + 1;
-      if (newCount >= failureThreshold && state === 'closed') {
-        setState('open');
-        // Transition to half-open after timeout
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-        timeoutRef.current = setTimeout(() => {
-          setState('half-open');
-          setFailureCount(0);
-          setSuccessCount(0);
-        }, timeout);
-      }
-      return newCount;
-    });
-  }, [state, failureThreshold, timeout]);
+    const newCount = failureCountRef.current + 1;
+    failureCountRef.current = newCount;
+    setFailureCount(newCount);
+    if (newCount >= failureThreshold && stateRef.current === 'closed') {
+      stateRef.current = 'open';
+      setState('open');
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        stateRef.current = 'half-open';
+        failureCountRef.current = 0;
+        successCountRef.current = 0;
+        setState('half-open');
+        setFailureCount(0);
+        setSuccessCount(0);
+      }, timeout);
+    }
+  }, [failureThreshold, timeout]);
 
   const reset = useCallback(() => {
+    stateRef.current = 'closed';
+    failureCountRef.current = 0;
+    successCountRef.current = 0;
     setState('closed');
     setFailureCount(0);
     setSuccessCount(0);
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
   }, []);
 
   return {

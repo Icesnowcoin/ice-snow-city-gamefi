@@ -6,7 +6,7 @@
 /**
  * 筛选条件类型
  */
-export type FilterOperator = 'equals' | 'notEquals' | 'contains' | 'notContains' | 'greaterThan' | 'lessThan' | 'greaterThanOrEqual' | 'lessThanOrEqual' | 'between' | 'in' | 'notIn' | 'regex' | 'startsWith' | 'endsWith';
+export type FilterOperator = 'equals' | 'notEquals' | 'contains' | 'notContains' | 'greaterThan' | 'lessThan' | 'greaterThanOrEqual' | 'lessThanOrEqual' | 'gt' | 'gte' | 'lt' | 'lte' | 'between' | 'in' | 'notIn' | 'regex' | 'startsWith' | 'endsWith';
 
 /**
  * 筛选条件接口
@@ -41,6 +41,7 @@ export interface SortRule {
  */
 export interface FilterConfig {
   filters?: FilterCondition[];
+  logic?: 'AND' | 'OR';
   filterGroups?: FilterGroup[];
   sorts?: SortRule[];
   limit?: number;
@@ -87,15 +88,19 @@ export class DataFilterService {
         return caseSensitive ? strValue.endsWith(strConditionValue) : strValue.toLowerCase().endsWith(strConditionValue.toLowerCase());
 
       case 'greaterThan':
+      case 'gt':
         return Number(fieldValue) > Number(value);
 
       case 'lessThan':
+      case 'lt':
         return Number(fieldValue) < Number(value);
 
       case 'greaterThanOrEqual':
+      case 'gte':
         return Number(fieldValue) >= Number(value);
 
       case 'lessThanOrEqual':
+      case 'lte':
         return Number(fieldValue) <= Number(value);
 
       case 'between':
@@ -202,7 +207,9 @@ export class DataFilterService {
 
     // 应用筛选条件
     if (config.filters && config.filters.length > 0) {
-      result = this.filter(result, config.filters);
+      result = config.logic === 'OR'
+        ? result.filter((item) => config.filters!.some((condition) => this.matchesCondition(item, condition)))
+        : this.filter(result, config.filters);
     }
 
     // 应用筛选组

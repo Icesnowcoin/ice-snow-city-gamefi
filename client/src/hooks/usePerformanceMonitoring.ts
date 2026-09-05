@@ -312,11 +312,13 @@ export class PerformanceMonitoringService {
   getNetworkStats() {
     if (this.networkRequests.length === 0) return null;
 
-    const avgDuration = this.networkRequests.reduce((sum, r) => sum + r.duration, 0) / this.networkRequests.length;
+    const totalDuration = this.networkRequests.reduce((sum, r) => sum + r.duration, 0);
+    const avgDuration = totalDuration / this.networkRequests.length;
     const slowRequests = this.networkRequests.filter((r) => r.duration > 1000);
 
     return {
       totalRequests: this.networkRequests.length,
+      totalDuration: totalDuration.toFixed(2),
       avgDuration: avgDuration.toFixed(2),
       slowRequests: slowRequests.length,
       slowRequestPercentage: ((slowRequests.length / this.networkRequests.length) * 100).toFixed(2),

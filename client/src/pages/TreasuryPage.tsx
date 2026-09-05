@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Landmark, RefreshCw, TrendingUp, TrendingDown } from "lucide-react";
+import { ISCAmount, ISCLogo } from "@/components/ISCLogo";
 
 export default function TreasuryPage() {
   const { t, lang } = useLanguage();
@@ -21,7 +22,7 @@ export default function TreasuryPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Landmark className="h-6 w-6 text-primary" />
+            <ISCLogo size="lg" className="drop-shadow-[0_0_9px_rgba(103,232,249,0.8)]" />
             {t("treasury.title")}
           </h1>
           <Button
@@ -45,7 +46,7 @@ export default function TreasuryPage() {
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-bold text-primary">
-              {balanceQuery.data?.balance || "0"} ISC
+              <ISCAmount amount={balanceQuery.data?.balance || "0"} size="lg" className="font-bold text-primary" />
             </div>
             <p className="text-xs text-muted-foreground mt-2">
               {lang === "zh" ? "当前城市国库总余额" : "Current total treasury balance"}

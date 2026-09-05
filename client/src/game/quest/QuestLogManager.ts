@@ -59,8 +59,7 @@ export class QuestLogManager {
    */
   acceptQuest(quest: Quest): void {
     quest.acceptedTime = Date.now();
-    quest.status = 'accepted';
-    quest.progress = 0;
+    quest.status = quest.progress > 0 && quest.progress < 100 ? 'in_progress' : quest.status || 'accepted';
     this.quests.set(quest.id, quest);
 
     this.addLogEntry({
@@ -86,9 +85,14 @@ export class QuestLogManager {
     objective.currentCount = Math.min(objective.currentCount + increment, objective.targetCount);
     objective.completed = objective.currentCount >= objective.targetCount;
 
-    // 计算总进度
-    const completedObjectives = quest.objectives.filter(obj => obj.completed).length;
-    quest.progress = Math.round((completedObjectives / quest.objectives.length) * 100);
+    // 计算总进度：若为单目标且进行到一半，直接反映 50% 进度
+    const totalTarget = quest.objectives.reduce((sum, obj) => sum + Math.max(1, obj.targetCount), 0);
+    const totalCurrent = quest.objectives.reduce((sum, obj) => sum + Math.min(obj.currentCount, obj.targetCount), 0);
+    quest.progress = totalTarget > 0 ? Math.round((totalCurrent / totalTarget) * 100) : 0;
+
+    if (quest.status !== 'completed' && quest.status !== 'failed' && quest.status !== 'abandoned') {
+      quest.status = objective.completed ? 'completed' : 'in_progress';
+    }
 
     if (objective.completed) {
       this.addLogEntry({

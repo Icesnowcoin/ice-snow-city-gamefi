@@ -18,8 +18,13 @@ import { SeasonalAudioManager } from '../audio/SeasonalAudioManager';
 import { WeatherAudioManager } from '../audio/WeatherAudioManager';
 import { EnvironmentalAudioManager } from '../audio/EnvironmentalAudioManager';
 import { MinimapManager } from './MinimapManager';
+import { LandmarkManager } from './LandmarkManager';
+import { LandmarkVfxManager } from './LandmarkVfxManager';
+import { NPCWorldManager } from './NPCWorldManager';
 import { TourRouteManager } from '../tour/TourRouteManager';
 import { AutoTourController } from '../tour/AutoTourController';
+import { RouteLightingManager, RouteLightingNode } from './RouteLightingManager';
+import { BusinessDataCollectionManager, BusinessDataPoint } from './BusinessDataCollectionManager';
 
 /**
  * 农业区地图管理器
@@ -35,6 +40,7 @@ export class AgriculturalMapManager {
   private gameObjects: Map<string, Building | Vegetation> = new Map();
   private meshMapper: MeshObjectMapper = new MeshObjectMapper();
   private onObjectSelected: ((object: Building | Vegetation | null) => void) | null = null;
+  private onNPCSelected: ((npcId: string) => void) | null = null;
   private visualFeedback: VisualFeedbackController | null = null;
   private dayNightCycle: DayNightCycleSystem | null = null;
   private weatherSystem: WeatherSystem | null = null;
@@ -49,8 +55,17 @@ export class AgriculturalMapManager {
   private weatherAudioManager: WeatherAudioManager | null = null;
   private environmentalAudioManager: EnvironmentalAudioManager | null = null;
   private minimapManager: MinimapManager | null = null;
+  private landmarkManager: LandmarkManager | null = null;
+  private landmarkVfxManager: LandmarkVfxManager | null = null;
+  private npcWorldManager: NPCWorldManager | null = null;
   private tourRouteManager: TourRouteManager | null = null;
   private autoTourController: AutoTourController | null = null;
+  private routeLightingManager: RouteLightingManager | null = null;
+  private onRouteNodeSelected: ((node: RouteLightingNode) => void) | null = null;
+  private businessDataManager: BusinessDataCollectionManager | null = null;
+  private onBusinessDataPointSelected: ((point: BusinessDataPoint) => void) | null = null;
+  private cameraRoamObserver: BABYLON.Observer<BABYLON.Scene> | null = null;
+  private cameraRoamOnComplete: (() => void) | null = null;
 
   constructor(engine: BabylonGameEngine) {
     this.engine = engine;
@@ -63,6 +78,19 @@ export class AgriculturalMapManager {
    */
   public setOnObjectSelected(callback: (object: Building | Vegetation | null) => void): void {
     this.onObjectSelected = callback;
+  }
+
+  public setOnNPCSelected(callback: (npcId: string) => void): void {
+    this.onNPCSelected = callback;
+  }
+
+  public setOnRouteNodeSelected(callback: (node: RouteLightingNode) => void): void {
+    this.onRouteNodeSelected = callback;
+  }
+
+  public setOnBusinessDataPointSelected(callback: (point: BusinessDataPoint) => void): void {
+    this.onBusinessDataPointSelected = callback;
+    this.businessDataManager?.setOnPointSelected(callback);
   }
 
   /**
@@ -79,6 +107,21 @@ export class AgriculturalMapManager {
     // 创建所有植被
     this.vegetationManager.createCompleteVegetation();
     this.registerVegetation();
+
+    // 创建可点击的程序化测试地块，作为真实 GLB/PBR 资产接入前的交互样板
+    this.createInteractiveTestPlots();
+
+    // 创建商业帝国基础地标占位模型，正式 GLB 资产可沿用相同根节点与元数据
+    this.landmarkManager = new LandmarkManager(this.engine.getScene(), this.meshMapper);
+    this.landmarkManager.createAllLandmarks();
+    this.registerLandmarks();
+    const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const lowQuality = (typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 8) <= 4)
+      || this.engine.getEngine().getCaps().maxTextureSize < 4096;
+    this.landmarkVfxManager = new LandmarkVfxManager(this.engine.getScene(), this.landmarkManager.getRoots(), {
+      reducedMotion,
+      lowQuality,
+    });
 
     // 创建视觉反馈控制器
     this.visualFeedback = new VisualFeedbackController(this.engine.getScene(), {
@@ -169,11 +212,26 @@ export class AgriculturalMapManager {
       showMarkers: true,
     });
 
-    // 设置地图边界
-    this.minimapManager.setMapBounds(-100, 100, -100, 100);
+    // 设置地图边界，覆盖基础地标和农业区的完整布局
+    this.minimapManager.setMapBounds(-140, 150, -140, 150);
+
+    this.businessDataManager = new BusinessDataCollectionManager(this.engine.getScene(), this.minimapManager);
+    this.businessDataManager.createPoints();
+    if (this.onBusinessDataPointSelected) this.businessDataManager.setOnPointSelected(this.onBusinessDataPointSelected);
+
+    this.routeLightingManager = new RouteLightingManager(this.engine.getScene(), this.minimapManager, { reducedMotion });
+    this.routeLightingManager.createRoute();
+    this.routeLightingManager.setOnNodeSelected((node) => this.onRouteNodeSelected?.(node));
 
     // 设置相机位置
     this.setupCameraView();
+
+    // 创建基础 NPC 占位模型、巡逻路线和小地图标记
+    this.npcWorldManager = new NPCWorldManager(this.engine.getScene(), this.minimapManager, {
+      reducedMotion,
+      lowQuality,
+    });
+    this.npcWorldManager.createAllNPCs();
 
     // 初始化导覽系统
     this.tourRouteManager = new TourRouteManager();
@@ -187,6 +245,80 @@ export class AgriculturalMapManager {
 
     // 创建网格和坐标轴（调试用）
     this.createDebugVisuals();
+  }
+
+  /**
+   * 创建可点击的测试地块和建筑样板。
+   * 这些对象只存在于当前场景，用于验证点击选择、信息提示和触控交互链路。
+   */
+  private createInteractiveTestPlots(): void {
+    const scene = this.engine.getScene();
+    const testPlots = [
+      { id: 'test-aurora-residence', name: '瑞景华府', type: 'farmhouse' as const, x: -72, z: -34, height: 16, color: new BABYLON.Color3(0.32, 0.62, 0.86) },
+      { id: 'test-crystal-market', name: '鸿运商都', type: 'storage' as const, x: 8, z: -28, height: 24, color: new BABYLON.Color3(0.56, 0.38, 0.86) },
+      { id: 'test-frost-factory', name: '丰盈智造园', type: 'greenhouse' as const, x: 74, z: -12, height: 19, color: new BABYLON.Color3(0.28, 0.74, 0.58) },
+    ];
+
+    testPlots.forEach((plot) => {
+      const building = createDefaultBuilding(plot.id, plot.name, plot.type, { x: plot.x, y: plot.height / 2, z: plot.z });
+      building.description = `${plot.name}：用于验证冰雪都市 3D 地图的点击查看与移动端触控交互。`;
+      building.state.productivity = 70 + Math.round(plot.height);
+      building.size = { width: 26, height: plot.height, depth: 22 };
+      building.color = { r: plot.color.r, g: plot.color.g, b: plot.color.b };
+      this.gameObjects.set(plot.id, building);
+      this.minimapManager?.addMarker({
+        id: plot.id,
+        name: plot.name,
+        label: plot.name.slice(0, 2),
+        x: plot.x,
+        z: plot.z,
+        type: 'building',
+        color: plot.color,
+        radius: 4,
+        landmark: true,
+      });
+
+      const plotMesh = BABYLON.MeshBuilder.CreateGround(`${plot.id}-plot`, { width: 38, height: 34 }, scene);
+      plotMesh.position = new BABYLON.Vector3(plot.x, 0.06, plot.z);
+      const plotMaterial = new BABYLON.StandardMaterial(`${plot.id}-plot-material`, scene);
+      plotMaterial.diffuseColor = new BABYLON.Color3(0.82, 0.9, 0.96);
+      plotMaterial.emissiveColor = new BABYLON.Color3(0.04, 0.1, 0.16);
+      plotMesh.material = plotMaterial;
+
+      const buildingMesh = this.engine.createBuilding(
+        `${plot.id}-building`,
+        new BABYLON.Vector3(plot.x, plot.height / 2 + 0.12, plot.z),
+        building.size,
+        plot.color,
+      );
+      const facadeMaterial = buildingMesh.material as BABYLON.StandardMaterial;
+      facadeMaterial.emissiveColor = plot.color.scale(0.12);
+      buildingMesh.metadata = { ...(buildingMesh.metadata ?? {}), testPlotId: plot.id };
+
+      this.meshMapper.registerMesh(plotMesh, building);
+      this.meshMapper.registerMesh(buildingMesh, building);
+    });
+  }
+
+  /**
+   * 将地标对象加入统一的游戏对象选择和信息面板数据源。
+   */
+  private registerLandmarks(): void {
+    this.landmarkManager?.getBuildings().forEach((building) => {
+      this.gameObjects.set(building.id, building);
+      const color = building.color;
+      this.minimapManager?.addMarker({
+        id: building.id,
+        name: building.name,
+        label: building.name.slice(0, 2),
+        x: building.position.x,
+        z: building.position.z,
+        type: 'building',
+        color: { r: color.r, g: color.g, b: color.b },
+        radius: building.buildingType === 'city_core' ? 5 : 4,
+        landmark: true,
+      });
+    });
   }
 
   /**
@@ -305,6 +437,17 @@ export class AgriculturalMapManager {
 
     if (hit && hit.hit) {
       this.selectMesh(hit.pickedMesh as BABYLON.Mesh);
+      const pickedMetadata = (hit.pickedMesh as BABYLON.Mesh).metadata as { npcId?: string } | null;
+      if (pickedMetadata?.npcId) {
+        this.onNPCSelected?.(pickedMetadata.npcId);
+        return;
+      }
+      if (this.businessDataManager?.handlePickedMesh(hit.pickedMesh as BABYLON.Mesh)) {
+        return;
+      }
+      if (this.routeLightingManager?.handlePickedMesh(hit.pickedMesh as BABYLON.Mesh)) {
+        return;
+      }
       const gameObject = this.meshMapper.getObjectByMesh(hit.pickedMesh as BABYLON.Mesh);
       if (this.onObjectSelected) {
         this.onObjectSelected(gameObject || null);
@@ -598,11 +741,78 @@ export class AgriculturalMapManager {
   }
 
   /**
+   * 从当前相机视角平滑漫游到金融区（ISC 银行总部附近）。
+   * 仅控制当前本地 Babylon 相机，不改变服务端权限或链上状态。
+   */
+  public roamToFinanceDistrict(onComplete?: () => void, durationMs = 2200): boolean {
+    const scene = this.engine.getScene();
+    const camera = scene.activeCamera as BABYLON.UniversalCamera | null;
+    const bank = this.landmarkManager?.getRoots().get('landmark-isc-bank');
+    if (!camera || !bank) return false;
+
+    this.cancelCameraRoam();
+    const fromPosition = camera.position.clone();
+    const fromTarget = camera.getTarget().clone();
+    const toTarget = bank.position.add(new BABYLON.Vector3(0, 9, 0));
+    const toPosition = bank.position.add(new BABYLON.Vector3(68, 52, -68));
+    const safeDuration = Math.max(500, durationMs);
+    let elapsed = 0;
+    this.cameraRoamOnComplete = onComplete ?? null;
+    this.cameraRoamObserver = scene.onBeforeRenderObservable.add(() => {
+      elapsed += Math.max(0, scene.getEngine().getDeltaTime());
+      const linear = Math.min(1, elapsed / safeDuration);
+      const eased = linear < 0.5 ? 4 * linear * linear * linear : 1 - Math.pow(-2 * linear + 2, 3) / 2;
+      camera.position = BABYLON.Vector3.Lerp(fromPosition, toPosition, eased);
+      camera.setTarget(BABYLON.Vector3.Lerp(fromTarget, toTarget, eased));
+      if (linear >= 1) {
+        const complete = this.cameraRoamOnComplete;
+        this.clearCameraRoam();
+        complete?.();
+      }
+    });
+    return true;
+  }
+
+  /** 取消当前金融区镜头漫游并保持取消瞬间的相机视角。 */
+  public cancelCameraRoam(): void {
+    if (this.cameraRoamObserver) {
+      this.engine.getScene().onBeforeRenderObservable.remove(this.cameraRoamObserver);
+    }
+    this.cameraRoamObserver = null;
+    this.cameraRoamOnComplete = null;
+  }
+
+  private clearCameraRoam(): void {
+    if (this.cameraRoamObserver) {
+      this.engine.getScene().onBeforeRenderObservable.remove(this.cameraRoamObserver);
+    }
+    this.cameraRoamObserver = null;
+    this.cameraRoamOnComplete = null;
+  }
+
+  /**
    * 清理资源
    */
   public dispose(): void {
+    this.cancelCameraRoam();
     this.buildingManager.clear();
     this.vegetationManager.clear();
+
+    if (this.businessDataManager) {
+      this.businessDataManager.clear();
+    }
+
+    if (this.landmarkVfxManager) {
+      this.landmarkVfxManager.dispose();
+    }
+
+    if (this.landmarkManager) {
+      this.landmarkManager.clear();
+    }
+
+    if (this.npcWorldManager) {
+      this.npcWorldManager.dispose();
+    }
 
     if (this.visualFeedback) {
       this.visualFeedback.dispose();
@@ -716,6 +926,31 @@ export class AgriculturalMapManager {
    */
   public getMinimapManager(): MinimapManager | null {
     return this.minimapManager;
+  }
+
+  public lightRouteNode(nodeId: string): RouteLightingNode | null {
+    return this.routeLightingManager?.lightNode(nodeId) ?? null;
+  }
+
+  public interactWithRouteNode(nodeId: string): boolean {
+    return this.routeLightingManager?.selectNode(nodeId) ?? false;
+  }
+
+  public getBusinessDataPoints(): BusinessDataPoint[] {
+    return this.businessDataManager?.getPoints() ?? [];
+  }
+
+  public collectBusinessDataPoint(pointId: string): BusinessDataPoint | null {
+    return this.businessDataManager?.collectPoint(pointId) ?? null;
+  }
+
+  public selectBusinessDataPoint(pointId: string): boolean {
+    return this.businessDataManager?.selectPoint(pointId) ?? false;
+  }
+
+  /** 获取当前地图中的基础 NPC 状态，供 HUD/调试和后续互动系统使用。 */
+  public getNPCWorldManager(): NPCWorldManager | null {
+    return this.npcWorldManager;
   }
 
   /**

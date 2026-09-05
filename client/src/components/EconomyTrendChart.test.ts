@@ -157,7 +157,7 @@ describe('EconomyTrendChart Components', () => {
 
       expect(smoothed.length).toBe(data.length);
       expect(smoothed[0]).toBe(150); // (100 + 200) / 2
-      expect(smoothed[2]).toBe(166.67); // (200 + 150 + 250) / 3 ≈ 166.67
+      expect(smoothed[2]).toBe(200); // (200 + 150 + 250) / 3 = 200
     });
   });
 

@@ -4,6 +4,7 @@ import { useTaskList } from "@/hooks/useGameData";
 import { useMutation } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { ISCAmount } from "@/components/ISCLogo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -192,7 +193,7 @@ export default function TasksPage() {
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
-            <p className="text-2xl font-bold text-orange-600">{stats.totalReward}</p>
+            <ISCAmount amount={String(stats.totalReward)} size="lg" className="font-bold text-orange-600" />
             <p className="text-xs text-muted-foreground">{lang === "zh" ? "已获奖励" : "Rewards Earned"}</p>
           </CardContent>
         </Card>
@@ -243,11 +244,7 @@ export default function TasksPage() {
                       <p className="text-sm text-muted-foreground">{task.description}</p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <div className="flex items-center gap-1 text-orange-600 font-bold">
-                        <Gift className="w-4 h-4" />
-                        <span>{task.reward}</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">ISC</p>
+                      <ISCAmount amount={String(task.reward)} size="sm" className="font-bold text-orange-600" label="任务奖励 ISC" />
                     </div>
                   </div>
 
@@ -308,7 +305,7 @@ export default function TasksPage() {
                             </div>
                             <div>
                               <p className="text-xs text-muted-foreground">{lang === "zh" ? "奖励" : "Reward"}</p>
-                              <p className="font-medium">{selectedTask?.reward} ISC</p>
+                              <ISCAmount amount={String(selectedTask?.reward ?? 0)} size="sm" className="font-medium" />
                             </div>
                             <div>
                               <p className="text-xs text-muted-foreground">{lang === "zh" ? "难度" : "Difficulty"}</p>

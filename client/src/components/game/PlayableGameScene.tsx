@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Loader2, Users, Gift, MessageCircle, MapPin, Zap, Home } from "lucide-react";
+import { formatSimulatedDuration, getYieldProgress, type BuildingYieldStatus } from "./buildingEconomy";
 
 interface Character {
   id: string;
@@ -22,7 +23,26 @@ interface Building {
   color: string;
 }
 
-export const PlayableGameScene: React.FC = () => {
+export type PlacedSceneAsset = {
+  id: string;
+  name: string;
+  kind: "建筑" | "装饰";
+  icon: string;
+};
+
+export type PlayableGameSceneProps = {
+  placedAssets?: PlacedSceneAsset[];
+  claimableBuildingIds?: string[];
+  buildingYieldStatuses?: BuildingYieldStatus[];
+  yieldGameTime?: number;
+};
+
+export const PlayableGameScene: React.FC<PlayableGameSceneProps> = ({
+  placedAssets = [],
+  claimableBuildingIds = [],
+  buildingYieldStatuses = [],
+  yieldGameTime = 0,
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [playerPos, setPlayerPos] = useState({ x: 400, y: 300 });
@@ -89,6 +109,26 @@ export const PlayableGameScene: React.FC = () => {
       ctx.fillText(building.name, building.x, building.y + 50);
     });
 
+    // 绘制玩家已布置的建筑与装饰物
+    placedAssets.forEach((asset, index) => {
+      const x = 90 + (index % 4) * 190;
+      const y = 90 + Math.floor(index / 4) * 115;
+      const color = asset.kind === "建筑" ? "#38bdf8" : "#fbbf24";
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.22;
+      ctx.fillRect(x - 32, y - 28, 64, 56);
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x - 32, y - 28, 64, 56);
+      ctx.font = "24px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(asset.icon, x, y + 8);
+      ctx.fillStyle = "#dbeafe";
+      ctx.font = "11px Arial";
+      ctx.fillText(asset.name, x, y + 48);
+    });
+
     // 绘制 NPC
     characters.forEach((char) => {
       // NPC 圆形
@@ -124,7 +164,7 @@ export const PlayableGameScene: React.FC = () => {
     ctx.font = "bold 12px Arial";
     ctx.textAlign = "center";
     ctx.fillText("你", playerPos.x, playerPos.y - 20);
-  }, [playerPos, characters, selectedCharacter, gameTime]);
+  }, [playerPos, characters, selectedCharacter, gameTime, placedAssets]);
 
   // 处理键盘输入
   useEffect(() => {
@@ -257,19 +297,68 @@ export const PlayableGameScene: React.FC = () => {
 
       {/* 游戏画布 */}
       <Card className="bg-slate-800 border-blue-500 p-2 mb-4">
-        <canvas
-          ref={canvasRef}
-          width={800}
-          height={600}
-          className="w-full border border-blue-500 rounded"
-        />
+        <div className="relative overflow-hidden rounded">
+          {buildings.filter((building) => claimableBuildingIds.includes(building.id)).map((building) => (
+            <div
+              key={`revenue-${building.id}`}
+              className="scene-revenue-coin-marker"
+              style={{ left: `${(building.x / 800) * 100}%`, top: `${(building.y / 600) * 100}%` }}
+              role="status"
+              aria-live="polite"
+              aria-label={`${building.name}有待领取收益，金币提示`}
+              data-testid={`claimable-building-${building.id}`}
+            >
+              <span className="scene-revenue-coin-glyph" aria-hidden="true">🪙</span>
+              <span className="scene-revenue-coin-label">可收取</span>
+            </div>
+          ))}
+          <canvas
+            ref={canvasRef}
+            width={800}
+            height={600}
+            className="relative z-0 w-full border border-blue-500 rounded"
+          />
+        </div>
+        {buildingYieldStatuses.length > 0 && (
+          <div className="mt-3 grid gap-2 sm:grid-cols-3" aria-label="建筑收益产出进度">
+            {buildingYieldStatuses.map((status) => {
+              const remainingMinutes = Math.max(0, status.readyAtMinute - yieldGameTime);
+              const progress = getYieldProgress(yieldGameTime, status.readyAtMinute, status.cycleMinutes);
+              const isReady = remainingMinutes === 0;
+              return (
+                <div
+                  key={`yield-${status.id}`}
+                  className={`rounded-xl border p-3 ${isReady ? "border-amber-300/45 bg-amber-300/10" : "border-cyan-300/20 bg-slate-950/50"}`}
+                  data-testid={`building-yield-card-${status.id}`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-xs font-semibold text-cyan-50">{status.name}</p>
+                      <p className="mt-0.5 text-[10px] text-slate-400">L{status.level} · 周期产出 {status.yieldAmount.toLocaleString()} 虚拟 ISC</p>
+                    </div>
+                    <span className={`shrink-0 text-[10px] font-semibold ${isReady ? "text-amber-200" : "text-cyan-200"}`}>
+                      {isReady ? "可收取" : formatSimulatedDuration(remainingMinutes)}
+                    </span>
+                  </div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-800" role="progressbar" aria-label={`${status.name}收益产出进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
+                    <div className={`h-full rounded-full transition-[width] duration-300 ${isReady ? "bg-amber-300" : "bg-cyan-300"}`} style={{ width: `${progress}%` }} />
+                  </div>
+                  <p className="mt-1 text-[10px] text-slate-400">{isReady ? "收益已准备完毕" : `下一次收益 · ${progress}%`}</p>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </Card>
 
       {/* 控制说明 */}
       <Card className="bg-blue-900 bg-opacity-50 border-blue-500 p-3 mb-4">
-        <p className="text-blue-200 text-sm mb-2">
-          ⌨️ 使用方向键或 WASD 移动 | 靠近 NPC 后可以互动
-        </p>
+          <p className="text-blue-200 text-sm mb-2">
+            ⌨️ 使用方向键或 WASD 移动 | 靠近 NPC 后可以互动
+          </p>
+          <p className="text-cyan-200 text-xs" data-testid="placed-scene-count">
+            城市场景已布置 {placedAssets.length} 件资产 · 建筑和装饰物会实时显示在画布中
+          </p>
       </Card>
 
       {/* NPC 互动面板 */}

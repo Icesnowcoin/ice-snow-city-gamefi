@@ -9,18 +9,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Character3DViewer } from './Character3DViewer';
+import type { PlayerCharacter } from './Character3DViewer';
 import { WardrobePanel } from './WardrobePanel';
 import { ShoeCabinetPanel } from './ShoeCabinetPanel';
 import { JewelryPanel } from './JewelryPanel';
 import { AssetsPanel } from './AssetsPanel';
+import AchievementsPage from '@/pages/AchievementsPage';
+import { MarriagePanel, type MarriageProfile } from '@/components/social/MarriagePanel';
+import { ProfessionSelector } from './ProfessionSelector';
+import { SkillTree, type SkillKey } from './SkillTree';
+import { ProfessionType } from '@shared/types/profession';
 import { OutfitShareCard } from './OutfitShareCard';
+import { ReceivedOffersPanel } from '@/components/social/ReceivedOffersPanel';
+import { WalletBindingPanel } from '@/components/social/WalletBindingPanel';
+import { useWeb3Wallet } from '@/hooks/useWeb3Wallet';
 import { 
   Shirt, 
   Gem, 
   Wallet, 
   Share2, 
   RotateCcw,
-  Save
+  Save,
+  Trophy,
+  HandCoins
 } from 'lucide-react';
 
 interface PlayerCenterProps {
@@ -28,6 +39,17 @@ interface PlayerCenterProps {
   playerName: string;
   level: number;
   profession: string;
+  initialCharacter?: PlayerCharacter | null;
+  initialEquippedItems?: EquippedItems;
+  initialAssets?: PlayerAssets;
+  marriageProfile?: MarriageProfile;
+  onMarriagePropose?: (targetName: string) => void | Promise<void>;
+  onMarriageRespond?: (accepted: boolean) => void | Promise<void>;
+  onMarriageInteract?: (action: 'message' | 'visit') => void;
+  onMarriageDivorce?: () => void | Promise<void>;
+  onProfessionSelect?: (profession: ProfessionType) => void | Promise<void>;
+  activeSkills?: Partial<Record<SkillKey, boolean>>;
+  onSkillActivate?: (skill: SkillKey) => void | Promise<void>;
 }
 
 interface EquippedItems {
@@ -48,11 +70,23 @@ export const PlayerCenter: React.FC<PlayerCenterProps> = ({
   playerName,
   level,
   profession,
+  initialCharacter,
+  initialEquippedItems,
+  initialAssets,
+  marriageProfile,
+  onMarriagePropose,
+  onMarriageRespond,
+  onMarriageInteract,
+  onMarriageDivorce,
+  onProfessionSelect,
+  activeSkills,
+  onSkillActivate,
 }) => {
+  const { address: walletAddress, chainId, provider } = useWeb3Wallet();
   const [activeTab, setActiveTab] = useState('character');
-  const [character, setCharacter] = useState<any>(null);
-  const [equippedItems, setEquippedItems] = useState<EquippedItems>({});
-  const [assets, setAssets] = useState<PlayerAssets>({
+  const [character, setCharacter] = useState<PlayerCharacter | null>(initialCharacter ?? null);
+  const [equippedItems, setEquippedItems] = useState<EquippedItems>(initialEquippedItems ?? {});
+  const [assets, setAssets] = useState<PlayerAssets>(initialAssets ?? {
     iscBalance: 0,
     bankBalance: 0,
     investments: 0,
@@ -61,57 +95,20 @@ export const PlayerCenter: React.FC<PlayerCenterProps> = ({
     totalAssets: 0,
   });
   const [rotation, setRotation] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Load player data
   useEffect(() => {
-    const loadPlayerData = async () => {
-      try {
-        setIsLoading(true);
-        // TODO: Replace with actual API call
-        // const response = await trpc.playerCenter.getPlayerData.useQuery({ playerId });
-        
-        // Mock data for now
-        setCharacter({
-          id: 1,
-          userId: playerId,
-          gender: 'female',
-          skinTone: 'fair',
-          faceShape: 'oval',
-          eyeShape: 'almond',
-          eyeColor: 'blue',
-          noseShape: 'small',
-          mouthShape: 'full',
-          hairStyle: 'long',
-          hairColor: 'white',
-          bodyType: 'slim',
-          height: 170,
-        });
-
-        setEquippedItems({
-          shirt: { id: 1, name: 'Blue Dress', category: 'shirt', price: 100 },
-          pants: { id: 2, name: 'Black Pants', category: 'pants', price: 80 },
-          shoes: { id: 3, name: 'White Heels', category: 'shoes', price: 120 },
-          hat: { id: 4, name: 'Winter Hat', category: 'hat', price: 50 },
-        });
-
-        setAssets({
-          iscBalance: 50000,
-          bankBalance: 100000,
-          investments: 500000,
-          realEstateValue: 1000000,
-          businessValue: 2000000,
-          totalAssets: 3650000,
-        });
-      } catch (error) {
-        console.error('Failed to load player data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadPlayerData();
-  }, [playerId]);
+    setCharacter(initialCharacter ?? null);
+    setEquippedItems(initialEquippedItems ?? {});
+    setAssets(initialAssets ?? {
+      iscBalance: 0,
+      bankBalance: 0,
+      investments: 0,
+      realEstateValue: 0,
+      businessValue: 0,
+      totalAssets: 0,
+    });
+  }, [initialAssets, initialCharacter, initialEquippedItems, playerId]);
 
   const handleEquipItem = (category: string, item: any) => {
     setEquippedItems((prev) => ({
@@ -210,14 +207,20 @@ export const PlayerCenter: React.FC<PlayerCenterProps> = ({
         <div className="flex-1 border-r border-slate-700 p-4 overflow-auto">
           <Card className="bg-slate-800 border-slate-700 h-full">
             <CardContent className="p-0 h-full">
-              <Character3DViewer
-                character={character}
-                equippedItems={equippedItems}
-                onRotationChange={setRotation}
-                autoRotate={true}
-                width={500}
-                height={600}
-              />
+              {character ? (
+                <Character3DViewer
+                  character={character}
+                  equippedItems={equippedItems}
+                  onRotationChange={setRotation}
+                  autoRotate={true}
+                  width={500}
+                  height={600}
+                />
+              ) : (
+                <div className="flex h-full min-h-[320px] items-center justify-center p-6 text-center text-slate-400">
+                  尚未加载角色资产。请从真实玩家资料接口提供角色模型后再预览。
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -225,7 +228,7 @@ export const PlayerCenter: React.FC<PlayerCenterProps> = ({
         {/* Right Panel - Tabs */}
         <div className="flex-1 border-l border-slate-700 p-4 overflow-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col">
-            <TabsList className="grid w-full grid-cols-6 bg-slate-700 border border-slate-600">
+            <TabsList className="grid w-full grid-cols-10 bg-slate-700 border border-slate-600">
               <TabsTrigger value="character" className="text-xs">
                 <Shirt className="w-4 h-4" />
               </TabsTrigger>
@@ -244,6 +247,12 @@ export const PlayerCenter: React.FC<PlayerCenterProps> = ({
               <TabsTrigger value="share" className="text-xs">
                 <Share2 className="w-4 h-4" />
               </TabsTrigger>
+              <TabsTrigger value="achievements" className="text-xs" aria-label="成就与勋章">
+                <Trophy className="w-4 h-4" />
+              </TabsTrigger>
+              <TabsTrigger value="marriage" className="text-xs" aria-label="婚姻与伴侣">💍</TabsTrigger>
+              <TabsTrigger value="profession" className="text-xs" aria-label="职业选择">🏢</TabsTrigger>
+              <TabsTrigger value="offers" className="text-xs" aria-label="收到的出价"><HandCoins className="w-4 h-4" /></TabsTrigger>
             </TabsList>
 
             {/* Character Info Tab */}
@@ -336,6 +345,34 @@ export const PlayerCenter: React.FC<PlayerCenterProps> = ({
                   console.log('Outfit shared:', imageUrl);
                 }}
               />
+            </TabsContent>
+
+            {/* Personal achievements and badges */}
+            <TabsContent value="achievements" className="flex-1 overflow-auto mt-4">
+              <AchievementsPage />
+            </TabsContent>
+
+            <TabsContent value="marriage" className="flex-1 overflow-auto mt-4">
+              {marriageProfile ? (
+                <MarriagePanel profile={marriageProfile} onPropose={onMarriagePropose} onRespond={onMarriageRespond} onInteract={onMarriageInteract} onDivorce={onMarriageDivorce} isProcessing={isLoading} />
+              ) : (
+                <Card className="bg-slate-800 border-slate-700 p-6 text-slate-300">暂无婚姻资料。连接真实关系服务后，此处将显示状态与互动。</Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="profession" className="flex-1 overflow-auto mt-4">
+              {Object.values(ProfessionType).includes(profession as ProfessionType) ? (
+                <div className="space-y-4"><ProfessionSelector currentProfession={profession as ProfessionType} totalAssets={assets.totalAssets} level={level} onSelect={onProfessionSelect ?? (() => undefined)} isProcessing={isLoading} /><SkillTree profession={profession as ProfessionType} level={level} activeSkills={activeSkills} onActivate={onSkillActivate} isProcessing={isLoading} /></div>
+              ) : (
+                <Card className="bg-slate-800 border-slate-700 p-6 text-slate-300">暂无职业资料。连接真实职业服务后，此处将显示选择与解锁条件。</Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="offers" className="flex-1 overflow-auto mt-4">
+              <div className="space-y-4">
+                <WalletBindingPanel provider={provider} address={walletAddress} chainId={chainId} />
+                {walletAddress && chainId ? <ReceivedOffersPanel walletAddress={walletAddress} chainId={chainId} provider={provider} /> : <Card className="bg-slate-800 border-slate-700 p-6 text-slate-300">完成钱包归属验证后，系统才会查询针对你 NFT 的真实报价。</Card>}
+              </div>
             </TabsContent>
           </Tabs>
         </div>

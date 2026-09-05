@@ -32,6 +32,7 @@ import {
 import { trpc } from '@/lib/trpc';
 import { TransactionFilterPanel, FilterCriteria } from '@/components/TransactionFilterPanel';
 import { TransactionDetailModal, TransactionDetail } from '@/components/TransactionDetailModal';
+import { SimulatedTradeHistoryPanel } from '@/components/SimulatedTradeHistoryPanel';
 
 export type TransactionType = 'deposit' | 'withdrawal' | 'refund' | 'fee' | 'income' | 'expense';
 
@@ -486,6 +487,8 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
         isOpen={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
       />
+
+      <SimulatedTradeHistoryPanel />
     </div>
   );
 };

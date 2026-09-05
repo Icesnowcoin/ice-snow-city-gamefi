@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { MinimapManager, MinimapMarker } from './MinimapManager';
 import { CameraJumpController } from './CameraJumpController';
 
@@ -230,7 +230,12 @@ describe('CameraJumpController', () => {
   let controller: CameraJumpController;
 
   beforeEach(() => {
+    vi.useFakeTimers();
     controller = new CameraJumpController(1000);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   describe('初始化', () => {
@@ -255,6 +260,7 @@ describe('CameraJumpController', () => {
 
     it('应该更新相机位置', () => {
       controller.startJump(0, 0, 0, 10, 10, 10);
+      vi.advanceTimersByTime(250);
       const pos = controller.update();
 
       expect(pos).toBeDefined();

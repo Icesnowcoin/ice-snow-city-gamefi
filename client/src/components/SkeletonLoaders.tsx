@@ -256,16 +256,18 @@ export function ProgressIndicator({
   progress: number; // 0-100
   label?: string;
 }) {
+  const clampedProgress = Math.max(0, Math.min(progress, 100));
+
   return (
     <div className="space-y-2">
       {label && <p className="text-sm font-medium">{label}</p>}
       <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
         <div
           className="h-full bg-primary transition-all duration-300 ease-out"
-          style={{ width: `${Math.min(progress, 100)}%` }}
+          style={{ width: `${clampedProgress}%` }}
         />
       </div>
-      <p className="text-xs text-muted-foreground text-right">{Math.round(progress)}%</p>
+      <p className="text-xs text-muted-foreground text-right">{Math.round(clampedProgress)}%</p>
     </div>
   );
 }

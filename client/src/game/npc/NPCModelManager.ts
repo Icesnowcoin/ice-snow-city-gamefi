@@ -71,7 +71,7 @@ export class NPCModelManager {
     head.parent = npcRoot;
 
     // 创建头发（圆锥体）
-    const hair = (BABYLON.MeshBuilder as any).CreateCone(
+    const hair = BABYLON.MeshBuilder.CreateCylinder(
       `npc-hair-${config.npcId}`,
       {
         height: 0.3 * config.scale,
@@ -189,13 +189,15 @@ export class NPCModelManager {
     // 创建动态纹理用于文字
     const dynamicTexture = new BABYLON.DynamicTexture(`label-texture-${npcName}`, 512, this.scene);
     const ctx = dynamicTexture.getContext() as any;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    ctx.fillRect(0, 0, 512, 128);
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 60px Arial';
-    (ctx as CanvasRenderingContext2D).textAlign = 'center';
-    ctx.fillText(npcName, 256, 80);
-    dynamicTexture.update();
+    if (ctx) {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(0, 0, 512, 128);
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 60px Arial';
+      (ctx as CanvasRenderingContext2D).textAlign = 'center';
+      ctx.fillText(npcName, 256, 80);
+      dynamicTexture.update();
+    }
 
     labelMaterial.emissiveTexture = dynamicTexture;
     labelPlane.material = labelMaterial;

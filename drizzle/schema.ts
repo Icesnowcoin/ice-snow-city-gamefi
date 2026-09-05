@@ -845,3 +845,251 @@ export const shareStatistics = mysqlTable("share_statistics", {
 
 export type ShareStatistic = typeof shareStatistics.$inferSelect;
 export type InsertShareStatistic = typeof shareStatistics.$inferInsert;
+
+
+/**
+ * Social economy constants are intentionally represented in whole ISC units.
+ * In-game social actions use the internal ledger and do not trigger blockchain gas.
+ */
+export const socialWallets = mysqlTable("social_wallets", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique().references(() => users.id),
+  megaphones: int("megaphones").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type SocialWallet = typeof socialWallets.$inferSelect;
+export type InsertSocialWallet = typeof socialWallets.$inferInsert;
+
+export const socialTransactions = mysqlTable("social_transactions", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  type: mysqlEnum("type", [
+    "megaphone_purchase",
+    "world_message",
+    "guild_creation",
+    "team_creation",
+    "friend_activation",
+  ]).notNull(),
+  amount: int("amount").notNull(),
+  balanceAfter: decimal("balanceAfter", { precision: 20, scale: 6 }).notNull(),
+  quantity: int("quantity").default(1).notNull(),
+  referenceId: varchar("referenceId", { length: 64 }),
+  idempotencyKey: varchar("idempotencyKey", { length: 128 }).notNull().unique(),
+  status: mysqlEnum("status", ["completed", "failed"]).default("completed").notNull(),
+  description: text("description").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  userCreatedIdx: index("social_transactions_user_created_idx").on(table.userId, table.createdAt),
+  referenceIdx: index("social_transactions_reference_idx").on(table.referenceId),
+}));
+export type SocialTransaction = typeof socialTransactions.$inferSelect;
+export type InsertSocialTransaction = typeof socialTransactions.$inferInsert;
+
+export const socialMessages = mysqlTable("social_messages", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  senderUserId: int("senderUserId").notNull().references(() => users.id),
+  channelType: mysqlEnum("channelType", ["world", "guild", "team", "private", "community"]).notNull(),
+  channelId: varchar("channelId", { length: 64 }),
+  recipientUserId: int("recipientUserId").references(() => users.id),
+  content: varchar("content", { length: 500 }).notNull(),
+  megaphoneConsumed: boolean("megaphoneConsumed").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  channelCreatedIdx: index("social_messages_channel_created_idx").on(table.channelType, table.channelId, table.createdAt),
+  recipientCreatedIdx: index("social_messages_recipient_created_idx").on(table.recipientUserId, table.createdAt),
+}));
+export type SocialMessage = typeof socialMessages.$inferSelect;
+export type InsertSocialMessage = typeof socialMessages.$inferInsert;
+
+export const socialFriendships = mysqlTable("social_friendships", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  userLowId: int("userLowId").notNull().references(() => users.id),
+  userHighId: int("userHighId").notNull().references(() => users.id),
+  initiatedByUserId: int("initiatedByUserId").notNull().references(() => users.id),
+  status: mysqlEnum("status", ["active", "blocked"]).default("active").notNull(),
+  privateChatEnabled: boolean("privateChatEnabled").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  pairUnique: uniqueIndex("social_friendships_pair_unique").on(table.userLowId, table.userHighId),
+  userLowIdx: index("social_friendships_low_idx").on(table.userLowId),
+  userHighIdx: index("social_friendships_high_idx").on(table.userHighId),
+}));
+export type SocialFriendship = typeof socialFriendships.$inferSelect;
+export type InsertSocialFriendship = typeof socialFriendships.$inferInsert;
+
+export const guilds = mysqlTable("guilds", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  ownerUserId: int("ownerUserId").notNull().references(() => users.id),
+  name: varchar("name", { length: 64 }).notNull().unique(),
+  description: varchar("description", { length: 300 }),
+  status: mysqlEnum("status", ["active", "closed"]).default("active").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  ownerIdx: index("guilds_owner_idx").on(table.ownerUserId),
+}));
+export type Guild = typeof guilds.$inferSelect;
+export type InsertGuild = typeof guilds.$inferInsert;
+
+export const guildMembers = mysqlTable("guild_members", {
+  id: int("id").autoincrement().primaryKey(),
+  guildId: varchar("guildId", { length: 64 }).notNull().references(() => guilds.id),
+  userId: int("userId").notNull().references(() => users.id),
+  role: mysqlEnum("role", ["leader", "officer", "member"]).default("member").notNull(),
+  joinedAt: timestamp("joinedAt").defaultNow().notNull(),
+}, (table) => ({
+  guildUserUnique: uniqueIndex("guild_members_guild_user_unique").on(table.guildId, table.userId),
+  userIdx: index("guild_members_user_idx").on(table.userId),
+}));
+export type GuildMember = typeof guildMembers.$inferSelect;
+export type InsertGuildMember = typeof guildMembers.$inferInsert;
+
+export const teams = mysqlTable("teams", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  creatorUserId: int("creatorUserId").notNull().references(() => users.id),
+  name: varchar("name", { length: 64 }).notNull(),
+  status: mysqlEnum("status", ["active", "expired", "closed"]).default("active").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  creatorIdx: index("teams_creator_idx").on(table.creatorUserId),
+  expiryIdx: index("teams_expiry_idx").on(table.status, table.expiresAt),
+}));
+export type Team = typeof teams.$inferSelect;
+export type InsertTeam = typeof teams.$inferInsert;
+
+export const teamMembers = mysqlTable("team_members", {
+  id: int("id").autoincrement().primaryKey(),
+  teamId: varchar("teamId", { length: 64 }).notNull().references(() => teams.id),
+  userId: int("userId").notNull().references(() => users.id),
+  role: mysqlEnum("role", ["leader", "member"]).default("member").notNull(),
+  joinedAt: timestamp("joinedAt").defaultNow().notNull(),
+}, (table) => ({
+  teamUserUnique: uniqueIndex("team_members_team_user_unique").on(table.teamId, table.userId),
+  userIdx: index("team_members_user_idx").on(table.userId),
+}));
+export type TeamMember = typeof teamMembers.$inferSelect;
+export type InsertTeamMember = typeof teamMembers.$inferInsert;
+
+
+/**
+ * Unified in-game consumption allocation ledger.
+ * This is an internal accounting record; blockchain settlement is handled separately.
+ */
+export const gameConsumptionAllocations = mysqlTable("game_consumption_allocations", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  scene: varchar("scene", { length: 64 }).notNull(),
+  sourceTransactionId: varchar("sourceTransactionId", { length: 64 }),
+  grossAmount: int("grossAmount").notNull(),
+  treasuryAmount: int("treasuryAmount").notNull(),
+  marketingAmount: int("marketingAmount").notNull(),
+  treasuryAddress: varchar("treasuryAddress", { length: 42 }).notNull(),
+  marketingWalletAddress: varchar("marketingWalletAddress", { length: 42 }).notNull(),
+  idempotencyKey: varchar("idempotencyKey", { length: 128 }).notNull().unique(),
+  status: mysqlEnum("status", ["recorded", "settled", "failed"]).default("recorded").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  userSceneIdx: index("game_consumption_user_scene_idx").on(table.userId, table.scene, table.createdAt),
+  sourceIdx: index("game_consumption_source_idx").on(table.sourceTransactionId),
+}));
+export type GameConsumptionAllocation = typeof gameConsumptionAllocations.$inferSelect;
+export type InsertGameConsumptionAllocation = typeof gameConsumptionAllocations.$inferInsert;
+
+
+/**
+ * Wallet ownership bindings. A row is valid only after the user signs the exact challenge.
+ */
+export const walletBindings = mysqlTable("wallet_bindings", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  walletAddress: varchar("walletAddress", { length: 42 }).notNull(),
+  chainId: int("chainId").notNull(),
+  nonce: varchar("nonce", { length: 128 }).notNull(),
+  issuedAt: timestamp("issuedAt").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  verifiedAt: timestamp("verifiedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  walletChainKey: uniqueIndex("wallet_bindings_wallet_chain_key").on(table.walletAddress, table.chainId),
+  userIndex: index("wallet_bindings_user_idx").on(table.userId),
+}));
+export type WalletBinding = typeof walletBindings.$inferSelect;
+export type InsertWalletBinding = typeof walletBindings.$inferInsert;
+
+/**
+ * Chain-indexed NFT holdings. Rows must be populated by verified chain events or
+ * an explicit reconciliation job; the table is never seeded with demo holdings.
+ */
+export const playerNftHoldings = mysqlTable("player_nft_holdings", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  walletAddress: varchar("walletAddress", { length: 42 }).notNull(),
+  chainId: int("chainId").notNull(),
+  nftContract: varchar("nftContract", { length: 42 }).notNull(),
+  tokenId: varchar("tokenId", { length: 78 }).notNull(),
+  amount: varchar("amount", { length: 78 }).notNull(),
+  lastSyncedBlock: varchar("lastSyncedBlock", { length: 78 }).notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  ownershipKey: uniqueIndex("player_nft_holdings_ownership_key").on(table.walletAddress, table.chainId, table.nftContract, table.tokenId),
+  userIndex: index("player_nft_holdings_user_idx").on(table.userId, table.chainId),
+}));
+
+export type PlayerNftHolding = typeof playerNftHoldings.$inferSelect;
+export type InsertPlayerNftHolding = typeof playerNftHoldings.$inferInsert;
+
+/**
+ * Signed NFT orders submitted by players. This table is an order-book record only:
+ * it never signs, broadcasts, or settles a blockchain transaction on behalf of a user.
+ */
+export const signedNftOrders = mysqlTable("signed_nft_orders", {
+  orderHash: varchar("orderHash", { length: 66 }).primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  offerer: varchar("offerer", { length: 42 }).notNull(),
+  nftContract: varchar("nftContract", { length: 42 }).notNull(),
+  tokenId: varchar("tokenId", { length: 78 }).notNull(),
+  amount: varchar("amount", { length: 78 }).notNull(),
+  price: varchar("price", { length: 78 }).notNull(),
+  expiration: varchar("expiration", { length: 78 }).notNull(),
+  nonce: varchar("nonce", { length: 78 }).notNull(),
+  itemType: int("itemType").notNull(),
+  orderType: int("orderType").default(0).notNull(),
+  salt: varchar("salt", { length: 66 }).notNull(),
+  signature: varchar("signature", { length: 132 }).notNull(),
+  chainId: int("chainId").notNull(),
+  marketplaceAddress: varchar("marketplaceAddress", { length: 42 }).notNull(),
+  status: mysqlEnum("status", ["active", "cancelled", "fulfilled", "expired"]).default("active").notNull(),
+  cancelTxHash: varchar("cancelTxHash", { length: 66 }),
+  fulfillTxHash: varchar("fulfillTxHash", { length: 66 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  offererStatusIdx: index("signed_nft_orders_offerer_status_idx").on(table.offerer, table.status),
+  expiryIdx: index("signed_nft_orders_expiry_idx").on(table.status, table.expiration),
+  collectionIdx: index("signed_nft_orders_collection_idx").on(table.nftContract, table.tokenId),
+}));
+
+export type SignedNftOrder = typeof signedNftOrders.$inferSelect;
+export type InsertSignedNftOrder = typeof signedNftOrders.$inferInsert;
+
+/**
+ * Public launch-notification subscriptions. Stores only the email and lifecycle metadata;
+ * no marketing profile or message delivery is implied by this record.
+ */
+export const launchNotificationSubscriptions = mysqlTable("launch_notification_subscriptions", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  source: varchar("source", { length: 64 }).default("mainnet_read_only_preview").notNull(),
+  subscribedAt: timestamp("subscribedAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  emailUnique: uniqueIndex("launch_notification_subscriptions_email_unique").on(table.email),
+  activeIndex: index("launch_notification_subscriptions_active_idx").on(table.isActive),
+}));
+export type LaunchNotificationSubscription = typeof launchNotificationSubscriptions.$inferSelect;
+export type InsertLaunchNotificationSubscription = typeof launchNotificationSubscriptions.$inferInsert;

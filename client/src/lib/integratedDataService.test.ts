@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   BatchNPCDataFetcher,
   BatchEconomyDataFetcher,
@@ -11,6 +11,19 @@ describe("Integrated Data Service", () => {
 
     beforeEach(() => {
       fetcher = new BatchNPCDataFetcher();
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async (input: RequestInfo | URL) =>
+          new Response(
+            JSON.stringify({
+              id: String(input).split('/').pop(),
+              name: 'NPC test record',
+              level: 1,
+            }),
+            { headers: { 'Content-Type': 'application/json' } },
+          ),
+        ),
+      );
     });
 
     it("should fetch single NPC data", async () => {

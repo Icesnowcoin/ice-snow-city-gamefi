@@ -36,6 +36,10 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // The managed WebDev ingress adds one X-Forwarded-* hop. Trust only that
+  // single proxy so express-rate-limit can safely resolve the client IP.
+  app.set("trust proxy", 1);
   
   // Initialize rate limiters
   console.log("[Startup] Initializing rate limiters...");

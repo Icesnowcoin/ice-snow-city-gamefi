@@ -20,6 +20,7 @@ import {
   insertTreasuryTransaction,
 } from "./db";
 import { auditLogService } from "./_core/auditLog";
+import { getBlockchainService } from "./_core/blockchain";
 // Removed unused import: gameRouter from game.ts
 import { gameRouter as gameRouterFromCore, gameCoreRouter } from "./routers/gameCore";
 import { gameScenesRouter } from "./routers/gameScenes";
@@ -36,6 +37,11 @@ import { checkinRouter } from "./routers/checkin";
 import { walletRouter } from "./routers/wallet";
 import { shareStatisticsRouter } from "./routers/shareStatistics";
 import { referralsRouter } from "./routers/referrals";
+import { socialRouter } from "./routers/social";
+import { taxRouter } from "./routers/tax";
+import { signedNftOrdersRouter } from "./routers/signedNftOrders";
+import { walletBindingsRouter } from "./routers/walletBindings";
+import { launchNotificationsRouter } from "./routers/launchNotifications";
 
 export const appRouter = router({
   system: systemRouter,
@@ -54,6 +60,50 @@ export const appRouter = router({
   wallet: walletRouter,
   shareStatistics: shareStatisticsRouter,
   referrals: referralsRouter,
+  social: socialRouter,
+  tax: taxRouter,
+  signedNftOrders: signedNftOrdersRouter,
+  walletBindings: walletBindingsRouter,
+  launchNotifications: launchNotificationsRouter,
+  systemDiagnostics: router({
+    reportWebGLFailure: publicProcedure
+      .input(
+        z.object({
+          errorMessage: z.string().optional(),
+          rendererInfo: z.string().optional(),
+          userAgent: z.string().optional(),
+          screenResolution: z.string().optional(),
+          hasWebGL: z.boolean().optional(),
+          hasWebGL2: z.boolean().optional(),
+          hasWebGPU: z.boolean().optional(),
+          timestamp: z.number().optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const errorDetails = `[WebGL 兼容性错误报告]
+- 时间: ${new Date(input.timestamp || Date.now()).toLocaleString()}
+- 用户代理: ${input.userAgent || ctx.req.headers['user-agent'] || '未知'}
+- 屏幕分辨率: ${input.screenResolution || '未知'}
+- WebGL 1.0 支持: ${input.hasWebGL ? '是' : '否'}
+- WebGL 2.0 支持: ${input.hasWebGL2 ? '是' : '否'}
+- WebGPU 支持: ${input.hasWebGPU ? '是' : '否'}
+- GPU 渲染器: ${input.rendererInfo || '未知'}
+- 错误信息: ${input.errorMessage || '无详细错误'}`;
+
+        try {
+          const { notifyOwner } = await import('./_core/notification');
+          await notifyOwner({
+            title: '【Ice Snow City】收到新的 WebGL 渲染失败报告',
+            content: errorDetails,
+          });
+        } catch (err) {
+          console.error('Failed to notify owner about WebGL failure:', err);
+        }
+
+        return { success: true, message: '错误报告已成功提交给开发者团队。' } as const;
+      }),
+  }),
+
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
@@ -353,15 +403,19 @@ export const appRouter = router({
   // ─── Staking / Bank Status ──────────────────────────────────────────────
   staking: router({
     getStatus: ownerOnlyProcedure.query(async () => {
-      // In production, these would be fetched from the ISCStaking contract
       const poolIdParam = await getContractParam("stakingPoolId");
-      return {
-        poolId: poolIdParam ? parseInt(poolIdParam.paramValue) : 0,
-        currentAPY: "30.00%",
-        pendingRewards: "0",
-        totalStaked: "0",
-        unit: "ISC",
-      };
+      const poolId = poolIdParam ? parseInt(poolIdParam.paramValue, 10) : 0;
+      if (!poolIdParam) {
+        return { poolId, currentAPY: null, pendingRewards: null, totalStaked: null, rewardPerBlock: null, unit: "ISC", source: "unconfigured" as const };
+      }
+      try {
+        const blockchain = await getBlockchainService();
+        const pool = await blockchain.getStakingPoolInfo(poolId);
+        return { poolId, ...pool, pendingRewards: null, unit: "ISC", source: "chain" as const };
+      } catch (error) {
+        console.warn("[Staking] Read-only pool query unavailable:", error);
+        return { poolId, currentAPY: null, pendingRewards: null, totalStaked: null, rewardPerBlock: null, unit: "ISC", source: "unavailable" as const };
+      }
     }),
   }),
 
