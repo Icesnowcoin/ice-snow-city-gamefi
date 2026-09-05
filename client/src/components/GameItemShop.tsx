@@ -4,7 +4,6 @@ import {
   AlertTriangle,
   ArrowUpDown,
   CheckCircle2,
-  CircleDollarSign,
   Flame,
   Footprints,
   Glasses,
@@ -29,6 +28,7 @@ import {
   Share2,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ISCLogo } from "@/components/ISCLogo";
 import { useWeb3Wallet } from "@/hooks/useWeb3Wallet";
 import {
   useISCTokenBalance,
@@ -568,7 +568,7 @@ export function GameItemShop({
                 {lang === "zh" ? "实时 ISC 余额" : "Live ISC balance"}
               </p>
               <p className="mt-1 flex items-center gap-1 font-mono text-lg font-semibold text-cyan-200">
-                <CircleDollarSign className="h-4 w-4" />
+                <ISCLogo size="sm" className="drop-shadow-[0_0_6px_rgba(103,232,249,0.75)]" />
                 {isBalanceLoading ? "…" : `${formatISC(balance)} ISC`}
               </p>
             </div>

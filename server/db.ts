@@ -1,5 +1,6 @@
-import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, desc, eq, gte, gt, isNull, isNotNull, lte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import { randomBytes } from "node:crypto";
 
 import {
   InsertUser,
@@ -27,10 +28,36 @@ import {
   InsertGameTransaction,
   InsertBlockchainTransaction,
   InsertTransactionRecord,
+  signedNftOrders,
+  playerNftHoldings,
+  walletBindings,
+  InsertSignedNftOrder,
+  launchNotificationSubscriptions,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
+import { resolveHoldingMutation } from "./nftHoldingPersistence";
 
 let _db: ReturnType<typeof drizzle> | null = null;
+
+export async function subscribeToLaunchNotifications(email: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const normalizedEmail = email.trim().toLowerCase();
+  const existing = await db.select({ id: launchNotificationSubscriptions.id, isActive: launchNotificationSubscriptions.isActive })
+    .from(launchNotificationSubscriptions)
+    .where(eq(launchNotificationSubscriptions.email, normalizedEmail))
+    .limit(1);
+  if (existing[0]) {
+    if (!existing[0].isActive) {
+      await db.update(launchNotificationSubscriptions)
+        .set({ isActive: true })
+        .where(eq(launchNotificationSubscriptions.id, existing[0].id));
+    }
+    return { subscribed: true, alreadySubscribed: true } as const;
+  }
+  await db.insert(launchNotificationSubscriptions).values({ email: normalizedEmail });
+  return { subscribed: true, alreadySubscribed: false } as const;
+}
 
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
@@ -42,6 +69,41 @@ export async function getDb() {
     }
   }
   return _db;
+}
+
+export async function findVerifiedWalletBinding(walletAddress: string, chainId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select({ userId: walletBindings.userId, walletAddress: walletBindings.walletAddress, chainId: walletBindings.chainId })
+    .from(walletBindings)
+    .where(and(eq(walletBindings.walletAddress, walletAddress.toLowerCase()), eq(walletBindings.chainId, chainId), isNotNull(walletBindings.verifiedAt)))
+    .orderBy(desc(walletBindings.verifiedAt))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function createWalletBindingChallenge(userId: number, walletAddress: string, chainId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + 5 * 60 * 1000);
+  const nonce = randomBytes(24).toString("hex");
+  await db.insert(walletBindings).values({ userId, walletAddress: walletAddress.toLowerCase(), chainId, nonce, issuedAt: now, expiresAt });
+  return { nonce, issuedAt: now, expiresAt };
+}
+
+export async function getWalletBindingChallenge(userId: number, walletAddress: string, chainId: number, nonce: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const rows = await db.select().from(walletBindings).where(and(eq(walletBindings.userId, userId), eq(walletBindings.walletAddress, walletAddress.toLowerCase()), eq(walletBindings.chainId, chainId), eq(walletBindings.nonce, nonce))).orderBy(desc(walletBindings.createdAt)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function consumeWalletBindingChallenge(id: number, now = new Date()) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.update(walletBindings).set({ verifiedAt: now }).where(and(eq(walletBindings.id, id), isNull(walletBindings.verifiedAt), gt(walletBindings.expiresAt, now)));
+  return Number(result[0]?.affectedRows ?? 0) === 1;
 }
 
 // ─── User Helpers ───────────────────────────────────────────────────────────
@@ -109,6 +171,80 @@ export async function getUserByOpenId(openId: string) {
 }
 
 // ─── Contract Events Helpers ────────────────────────────────────────────────
+
+export async function getSignedNftOrder(orderHash: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.select().from(signedNftOrders).where(eq(signedNftOrders.orderHash, orderHash)).limit(1);
+  return result[0];
+}
+
+export async function insertSignedNftOrder(data: InsertSignedNftOrder) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(signedNftOrders).values(data);
+}
+
+export async function listActiveSignedNftOrders(limit = 50, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(signedNftOrders).where(eq(signedNftOrders.status, "active")).orderBy(desc(signedNftOrders.createdAt)).limit(limit).offset(offset);
+}
+
+export async function listReceivedBuyOffers(walletAddress: string, chainId: number, limit = 50, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({ order: signedNftOrders, holding: playerNftHoldings })
+    .from(signedNftOrders)
+    .innerJoin(playerNftHoldings, and(
+      eq(signedNftOrders.nftContract, playerNftHoldings.nftContract),
+      eq(signedNftOrders.tokenId, playerNftHoldings.tokenId),
+      eq(signedNftOrders.chainId, playerNftHoldings.chainId),
+    ))
+    .where(and(
+      eq(signedNftOrders.status, "active"),
+      eq(signedNftOrders.orderType, 1),
+      eq(playerNftHoldings.walletAddress, walletAddress.toLowerCase()),
+      eq(playerNftHoldings.chainId, chainId),
+    ))
+    .orderBy(desc(signedNftOrders.createdAt)).limit(limit).offset(offset);
+}
+
+export async function applyPlayerNftHoldingDelta(delta: { userId: number; walletAddress: string; chainId: number; nftContract: string; tokenId: string; amount: string; lastSyncedBlock: string }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const existing = await db.select().from(playerNftHoldings).where(and(
+    eq(playerNftHoldings.walletAddress, delta.walletAddress.toLowerCase()),
+    eq(playerNftHoldings.chainId, delta.chainId),
+    eq(playerNftHoldings.nftContract, delta.nftContract.toLowerCase()),
+    eq(playerNftHoldings.tokenId, delta.tokenId),
+  )).limit(1);
+  const mutation = resolveHoldingMutation(existing[0]?.amount, delta.amount);
+  if (existing[0] && mutation.kind === "delete") {
+    return db.delete(playerNftHoldings).where(eq(playerNftHoldings.id, existing[0].id));
+  }
+  if (existing[0]) {
+    return db.update(playerNftHoldings).set({ amount: mutation.amount, lastSyncedBlock: delta.lastSyncedBlock }).where(eq(playerNftHoldings.id, existing[0].id));
+  }
+  if (mutation.kind === "delete") return null;
+  return db.insert(playerNftHoldings).values({ ...delta, amount: mutation.amount, walletAddress: delta.walletAddress.toLowerCase(), nftContract: delta.nftContract.toLowerCase() });
+}
+
+export async function markSignedNftOrderCancelled(orderHash: string, cancelTxHash: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(signedNftOrders)
+    .set({ status: "cancelled", cancelTxHash, updatedAt: new Date() })
+    .where(eq(signedNftOrders.orderHash, orderHash));
+}
+
+export async function markSignedNftOrderFulfilled(orderHash: string, fulfillTxHash: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(signedNftOrders)
+    .set({ status: "fulfilled", fulfillTxHash, updatedAt: new Date() })
+    .where(and(eq(signedNftOrders.orderHash, orderHash), eq(signedNftOrders.status, "active")));
+}
 
 export async function getContractEvents(limit = 50, offset = 0) {
   const db = await getDb();

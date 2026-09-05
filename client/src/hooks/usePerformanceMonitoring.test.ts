@@ -181,8 +181,8 @@ describe('Performance Monitoring', () => {
 
       const batchStats = service.getNetworkStats();
 
-      // Total time should be much lower with batching
-      expect(Number(batchStats?.avgDuration)).toBeLessThan(Number(individualStats?.avgDuration));
+      // Total time should be much lower with batching; average duration is per request.
+      expect(Number(batchStats?.totalDuration)).toBeLessThan(Number(individualStats?.totalDuration));
     });
 
     it('should measure rendering performance improvements', () => {

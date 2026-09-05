@@ -16,6 +16,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
+import { ISCLogo } from '@/components/ISCLogo';
 
 export interface BalanceInfo {
   iscBalance: string;
@@ -193,6 +194,7 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
             <CardTitle className="text-sm text-gray-400 flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-cyan-400 rounded-full" />
+                <ISCLogo size="sm" className="drop-shadow-[0_0_6px_rgba(103,232,249,0.65)]" />
                 {lang === 'zh' ? 'ISC 余额' : 'ISC Balance'}
               </span>
               {showTrend && balanceChange.isc !== 0 && getTrendIcon(balanceChange.isc)}
@@ -206,12 +208,16 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
               </>
             ) : (
               <>
-                <div className="text-2xl font-bold text-cyan-400">
-                  {formatNumber(balance.iscBalance)}
+                <div className="flex items-center gap-2 text-2xl font-bold text-cyan-400">
+                  <ISCLogo size="md" />
+                  <span>{formatNumber(balance.iscBalance)}</span>
                 </div>
                 {showTrend && balanceChange.isc !== 0 && (
                   <div className={`text-xs font-semibold ${getTrendColor(balanceChange.isc)}`}>
-                    {balanceChange.isc > 0 ? '+' : ''}{formatNumber(balanceChange.isc.toString())}
+                    <span className="inline-flex items-center gap-1">
+                      <ISCLogo size="xs" />
+                      {balanceChange.isc > 0 ? '+' : ''}{formatNumber(balanceChange.isc.toString())}
+                    </span>
                   </div>
                 )}
                 <div className="space-y-1">

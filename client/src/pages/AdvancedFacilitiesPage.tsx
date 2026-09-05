@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { ISCAmount } from "@/components/ISCLogo";
 import {
   Building2,
   Utensils,
@@ -14,7 +15,6 @@ import {
   Megaphone,
   Flower2,
   Gamepad2,
-  Coins,
   Users,
   TrendingUp,
 } from "lucide-react";
@@ -119,7 +119,7 @@ export default function AdvancedFacilitiesPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{facilities.length}</div>
-            <p className="text-xs text-gray-500">Revenue: {totalFacilityRevenue} ISC</p>
+            <ISCAmount amount={String(totalFacilityRevenue)} size="xs" className="text-gray-500" />
           </CardContent>
         </Card>
 
@@ -138,7 +138,7 @@ export default function AdvancedFacilitiesPage() {
             <CardTitle className="text-sm font-medium text-gray-600">Game Winnings</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalGameWinnings} ISC</div>
+            <ISCAmount amount={String(totalGameWinnings)} size="lg" className="font-bold" />
             <p className="text-xs text-gray-500">Total earnings</p>
           </CardContent>
         </Card>
@@ -187,7 +187,7 @@ export default function AdvancedFacilitiesPage() {
                     </div>
                     <div>
                       <p className="text-gray-600">Revenue</p>
-                      <p className="font-bold">{facility.revenue} ISC</p>
+                      <ISCAmount amount={String(facility.revenue)} size="sm" className="font-bold" />
                     </div>
                     <div>
                       <p className="text-gray-600">Capacity</p>

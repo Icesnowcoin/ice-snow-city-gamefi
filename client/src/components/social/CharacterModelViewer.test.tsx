@@ -148,6 +148,9 @@ describe("CharacterModelViewer snapshot sharing", () => {
     await waitFor(() => expect(captureButton).not.toBeDisabled());
     fireEvent.click(captureButton);
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("生成角色快照失败，请重试");
+    await waitFor(() => {
+      const alerts = screen.getAllByRole("alert");
+      expect(alerts.some((alert) => alert.textContent?.includes("生成角色快照失败，请重试"))).toBe(true);
+    });
   });
 });

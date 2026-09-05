@@ -193,8 +193,9 @@ describe('RefreshControl Component', () => {
       });
       const mockRefreshFn = vi.fn().mockReturnValue(refreshPromise);
 
-      const refreshPromise2 = act(async () => {
-        result.current.handleRefresh(mockRefreshFn);
+      let refreshPromise2: Promise<void>;
+      act(() => {
+        refreshPromise2 = result.current.handleRefresh(mockRefreshFn);
       });
 
       await waitFor(() => {
@@ -202,7 +203,9 @@ describe('RefreshControl Component', () => {
       });
 
       resolveRefresh!();
-      await refreshPromise2;
+      await act(async () => {
+        await refreshPromise2!;
+      });
 
       expect(result.current.isRefreshing).toBe(false);
     });
@@ -262,16 +265,11 @@ describe('RefreshControl Component', () => {
       const { result } = renderHook(() => useRefreshControl());
       const mockRefreshFn = vi.fn().mockResolvedValue(undefined);
 
-      const promises = [];
-      for (let i = 0; i < 5; i++) {
-        promises.push(
-          act(async () => {
-            await result.current.handleRefresh(mockRefreshFn);
-          })
+      await act(async () => {
+        await Promise.all(
+          Array.from({ length: 5 }, () => result.current.handleRefresh(mockRefreshFn))
         );
-      }
-
-      await Promise.all(promises);
+      });
 
       expect(mockRefreshFn).toHaveBeenCalledTimes(5);
       expect(result.current.isRefreshing).toBe(false);

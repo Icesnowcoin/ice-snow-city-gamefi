@@ -323,7 +323,7 @@ export async function generateBenchmarkHTMLReport(): Promise<string> {
 <body>
   <div class="container">
     <div class="header">
-      <h1>❄️ Ice Snow City</h1>
+      <h1><img src="/manus-storage/isc_token_icon_256_ed4ff47d.png" alt="ISC" style="width:32px;height:32px;vertical-align:middle;object-fit:contain;" /> Ice Snow City</h1>
       <h2>性能基准测试报告</h2>
       <p>Performance Benchmark Report</p>
       <div class="timestamp">生成时间: ${new Date(suite.timestamp).toLocaleString('zh-CN')}</div>

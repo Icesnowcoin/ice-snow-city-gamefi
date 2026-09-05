@@ -262,7 +262,7 @@ describe('QuestLogManager', () => {
       };
 
       questLogManager.acceptQuest(quest);
-      questLogManager.updateQuestProgress('quest-1', 'obj-1', 5);
+      questLogManager.updateQuestProgress('quest-1', 'obj-1', 10);
       questLogManager.completeQuest('quest-1');
 
       const log = questLogManager.getQuestLog();

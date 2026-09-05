@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Building2,
   Check,
-  Coins,
   Eraser,
   Grip,
   RotateCw,
@@ -25,6 +24,7 @@ import {
   type PlacementRotation,
 } from '@/lib/buildingPlacementUtils';
 import { AssetCache } from '@/lib/assetCacheUtils';
+import { ISCLogo, ISCAmount } from '@/components/ISCLogo';
 
 export interface PlacementLandPlot {
   id: string;
@@ -308,10 +308,10 @@ export default function RealEstatePlacementManager({
               <div className="flex justify-between"><span>坐标</span><strong>({candidate.position.x}, {candidate.position.y})</strong></div>
               <div className="flex justify-between"><span>占地</span><strong>{candidate.footprint.width}×{candidate.footprint.height}</strong></div>
               <div className="flex justify-between"><span>旋转</span><strong>{candidate.rotation}°</strong></div>
-              <div className="flex justify-between"><span>建造成本</span><strong className="text-cyan-200">{candidate.cost.toLocaleString()} ISC</strong></div>
+              <div className="flex justify-between"><span>建造成本</span><strong className="text-cyan-200"><ISCAmount amount={candidate.cost.toLocaleString()} size="xs" /></strong></div>
             </div>
             <div className="rounded-md border border-white/10 bg-slate-950/70 p-2 text-xs text-slate-400">
-              <Coins className="mr-1 inline h-3 w-3 text-cyan-300" />
+              <ISCLogo size="xs" className="mr-1 align-middle" />
               {isBalanceLoading ? '正在读取 ISC 余额…' : iscBalance === undefined ? '请连接钱包读取 ISC 余额' : `可用余额：${iscBalance.toLocaleString()} ISC`}
             </div>
             <div className="rounded-md border border-white/10 bg-slate-950/70 p-2 text-xs" role="status" aria-live="polite">

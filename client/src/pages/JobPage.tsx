@@ -5,7 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
-import { Briefcase, TrendingUp, Clock, DollarSign } from "lucide-react";
+import { Briefcase, TrendingUp, Clock } from "lucide-react";
+import { ISCAmount } from "@/components/ISCLogo";
 
 export function JobPage() {
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
@@ -81,11 +82,7 @@ export function JobPage() {
             <CardTitle className="text-sm font-medium text-muted-foreground">总收入</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold flex items-center gap-1">
-              <DollarSign className="w-5 h-5" />
-              {jobStats?.totalEarnings || 0}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">ISC</p>
+            <ISCAmount amount={String(jobStats?.totalEarnings || 0)} size="lg" className="font-bold" />
           </CardContent>
         </Card>
 
@@ -157,10 +154,7 @@ export function JobPage() {
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
                       <p className="text-muted-foreground">时薪</p>
-                      <p className="font-semibold flex items-center gap-1">
-                        <DollarSign className="w-4 h-4" />
-                        {job.salary}
-                      </p>
+                      <ISCAmount amount={String(job.salary)} size="sm" className="font-semibold" />
                     </div>
                     <div>
                       <p className="text-muted-foreground">经验/小时</p>
@@ -189,7 +183,7 @@ export function JobPage() {
                   <div className="text-sm">
                     <p className="text-muted-foreground">预计收入</p>
                     <p className="font-semibold text-lg">
-                      {job.salary * workHours} ISC
+                      <ISCAmount amount={String(job.salary * workHours)} size="sm" className="font-semibold text-lg" />
                     </p>
                   </div>
 
@@ -224,10 +218,7 @@ export function JobPage() {
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
                       <p className="text-muted-foreground">时薪</p>
-                      <p className="font-semibold text-lg flex items-center gap-1">
-                        <DollarSign className="w-4 h-4" />
-                        {job.salary}
-                      </p>
+                      <ISCAmount amount={String(job.salary)} size="sm" className="font-semibold text-lg" />
                     </div>
                     <div>
                       <p className="text-muted-foreground">经验/小时</p>
@@ -266,10 +257,7 @@ export function JobPage() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold flex items-center gap-1">
-                          <DollarSign className="w-4 h-4" />
-                          +{job.totalEarnings}
-                        </p>
+                        <ISCAmount amount={`+${job.totalEarnings}`} size="sm" className="font-semibold" />
                         <p className="text-sm text-muted-foreground">
                           {new Date(job.completedAt).toLocaleDateString()}
                         </p>

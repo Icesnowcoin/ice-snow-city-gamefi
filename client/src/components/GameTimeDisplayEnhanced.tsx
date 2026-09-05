@@ -4,6 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Cloud, Wind, Loader2, Clock, Calendar } from "lucide-react";
+import { ISCLogo } from "@/components/ISCLogo";
 
 export default function GameTimeDisplayEnhanced() {
   const { lang } = useLanguage();
@@ -103,7 +104,7 @@ export default function GameTimeDisplayEnhanced() {
     spring: "🌸",
     summer: "☀️",
     autumn: "🍂",
-    winter: "❄️",
+    winter: "", // Winter uses the official ISCLogo render branch below.
   };
 
   const daysInMonth = (month: number, year: number) => {
@@ -125,7 +126,13 @@ export default function GameTimeDisplayEnhanced() {
             <div className="flex items-center gap-4 flex-1">
               <div className="relative">
                 <TimeIcon className={`w-10 h-10 ${timeOfDay.color}`} />
-                <span className="text-2xl absolute -top-1 -right-1">{seasonEmojis[gameTime.season]}</span>
+                <span className="absolute -top-1 -right-1">
+                  {gameTime.season === "winter" ? (
+                    <ISCLogo size="sm" className="drop-shadow-[0_0_6px_rgba(103,232,249,0.8)]" aria-label="ISC winter mark" />
+                  ) : (
+                    <span className="text-2xl">{seasonEmojis[gameTime.season]}</span>
+                  )}
+                </span>
               </div>
               <div className="flex-1">
                 <p className="text-sm opacity-90 flex items-center gap-2">

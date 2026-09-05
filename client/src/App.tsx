@@ -1,11 +1,12 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { TransactionNotificationProvider } from "./contexts/TransactionNotificationContext";
+import { SimulatedTradeNotificationProvider } from "./contexts/SimulatedTradeNotificationContext";
 import GameLayout from "./components/layout/GameLayout";
 import { Suspense, lazy } from "react";
 import { Spinner } from "./components/ui/spinner";
@@ -20,6 +21,7 @@ const PageLoader = () => (
 // Immediate imports (frequently accessed pages)
 import GameDashboard from "./pages/GameDashboard";
 import OpeningPage from "./pages/OpeningPage";
+import GameHub from "./components/game/GameHub";
 import { SplashScreen } from "./components/SplashScreen";
 import ReferralAttributionBridge from "./components/social/ReferralAttributionBridge";
 
@@ -34,7 +36,6 @@ const ShopPage = lazy(() => import("./pages/ShopPage"));
 const RealEstatePage = lazy(() => import("./pages/RealEstatePage"));
 const AgriculturePage = lazy(() => import("./pages/AgriculturePage"));
 const RTSGameEngine = lazy(() => import("./components/game/RTSGameEngine"));
-const GameHub = lazy(() => import("./components/game/GameHub"));
 const BankPage = lazy(() => import("./pages/BankPage"));
 const BankingPage = lazy(() => import("./pages/BankingPage"));
 const MiningPage = lazy(() => import("./pages/MiningPage"));
@@ -49,6 +50,7 @@ const GameScenesPage = lazy(() => import("./pages/GameScenesPage"));
 const AchievementsPage = lazy(() => import("./pages/AchievementsPage"));
 const LeaderboardPage = lazy(() => import("./pages/LeaderboardPage"));
 const CharacterModelViewer = lazy(() => import("./pages/CharacterModelViewer"));
+const AssetReadinessPage = lazy(() => import("./pages/AssetReadinessPage"));
 
 // Lazy-loaded admin pages
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -66,7 +68,8 @@ function GameRouter() {
       <Suspense fallback={<PageLoader />}>
         <Switch>
         <Route path="/opening" component={OpeningPage} />
-        <Route path="/" component={GameDashboard} />
+        <Route path={/^\/$/} component={GameHub} />
+        <Route path="/dashboard" component={GameDashboard} />
         <Route path="/profile/:userId" component={PlayerProfile} />
         <Route path="/profile" component={PlayerProfile} />
         <Route path="/wallet" component={WalletPage} />
@@ -121,9 +124,20 @@ function AdminRouter() {
   );
 }
 
+function AssetReadinessShell() {
+  return (
+    <GameLayout>
+      <Suspense fallback={<PageLoader />}>
+        <AssetReadinessPage />
+      </Suspense>
+    </GameLayout>
+  );
+}
+
 function Router() {
   return (
     <Switch>
+      <Route path={/^\/asset-readiness\/?$/} component={AssetReadinessShell} />
       <Route path="/admin/*" nest component={AdminRouter} />
       <Route path="/*" nest component={GameRouter} />
     </Switch>
@@ -131,17 +145,28 @@ function Router() {
 }
 
 function App() {
+  const [, setLocation] = useLocation();
+  const skipSplash = import.meta.env.DEV && new URLSearchParams(window.location.search).get("skipSplash") === "1";
+
+  const handleSplashComplete = () => {
+    if (window.location.pathname === "/opening") {
+      setLocation("/");
+    }
+  };
+
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
         <LanguageProvider>
           <TransactionNotificationProvider>
+            <SimulatedTradeNotificationProvider>
             <TooltipProvider>
-              <SplashScreen />
+              {!skipSplash && <SplashScreen onComplete={handleSplashComplete} />}
               <Toaster />
               <ReferralAttributionBridge />
               <Router />
             </TooltipProvider>
+            </SimulatedTradeNotificationProvider>
           </TransactionNotificationProvider>
         </LanguageProvider>
       </ThemeProvider>

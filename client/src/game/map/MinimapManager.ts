@@ -9,9 +9,12 @@ export interface MinimapMarker {
   name: string;
   x: number;
   z: number;
-  type: 'building' | 'vegetation' | 'poi' | 'player';
+  type: 'building' | 'vegetation' | 'poi' | 'player' | 'npc';
   color: Color3;
   radius: number;
+  /** Optional short label shown beside important landmark markers. */
+  label?: string;
+  landmark?: boolean;
 }
 
 /**
@@ -37,10 +40,10 @@ export class MinimapManager {
   private cameraPosition: { x: number; z: number } = { x: 0, z: 0 };
   private cameraRotation: number = 0;
   private mapBounds: { minX: number; maxX: number; minZ: number; maxZ: number } = {
-    minX: -100,
-    maxX: 100,
-    minZ: -100,
-    maxZ: 100,
+    minX: -140,
+    maxX: 150,
+    minZ: -140,
+    maxZ: 150,
   };
 
   constructor(config: Partial<MinimapConfig> = {}) {
@@ -74,6 +77,11 @@ export class MinimapManager {
    * 添加标记
    */
   public addMarker(marker: MinimapMarker): void {
+    this.markers.set(marker.id, marker);
+  }
+
+  /** Replace one marker without changing the map's marker order. */
+  public upsertMarker(marker: MinimapMarker): void {
     this.markers.set(marker.id, marker);
   }
 

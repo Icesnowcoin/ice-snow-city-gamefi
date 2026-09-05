@@ -136,8 +136,14 @@ export class RequestDeduplicationCache<T> {
  * Query coalescer for combining multiple similar queries
  * Useful for combining multiple NPC queries into a single batch query
  */
+type PendingQuery<T> = {
+  promise: Promise<T>;
+  resolve: (value: T | PromiseLike<T>) => void;
+  reject: (reason?: unknown) => void;
+};
+
 export class QueryCoalescer<T> {
-  private pendingQueries: Map<string, Promise<T>> = new Map();
+  private pendingQueries: Map<string, PendingQuery<T>> = new Map();
   private batchExecutor: (ids: string[]) => Promise<Record<string, T>>;
   private batchSize: number;
   private delayMs: number;
@@ -156,25 +162,29 @@ export class QueryCoalescer<T> {
    */
   query(id: string): Promise<T> {
     // Return existing pending query if available
-    if (this.pendingQueries.has(id)) {
-      return this.pendingQueries.get(id)!;
+    const existing = this.pendingQueries.get(id);
+    if (existing) {
+      return existing.promise;
     }
 
-    // Create new pending query
-    const promise = new Promise<T>((resolve, reject) => {
-      // Schedule batch execution
-      setTimeout(() => {
-        this.executePendingBatch().catch(reject);
-      }, this.delayMs);
-
-      // Store promise temporarily
-      this.pendingQueries.set(id, promise);
-
-      // Execute batch if size limit reached
-      if (this.pendingQueries.size >= this.batchSize) {
-        this.executePendingBatch().catch(reject);
-      }
+    let resolve!: PendingQuery<T>['resolve'];
+    let reject!: PendingQuery<T>['reject'];
+    const promise = new Promise<T>((promiseResolve, promiseReject) => {
+      resolve = promiseResolve;
+      reject = promiseReject;
     });
+    const pendingQuery: PendingQuery<T> = { promise, resolve, reject };
+    this.pendingQueries.set(id, pendingQuery);
+
+    // Schedule batch execution after the coalescing window.
+    setTimeout(() => {
+      this.executePendingBatch().catch(reject);
+    }, this.delayMs);
+
+    // Execute immediately once the batch reaches its size limit.
+    if (this.pendingQueries.size >= this.batchSize) {
+      this.executePendingBatch().catch(reject);
+    }
 
     return promise;
   }
@@ -183,7 +193,7 @@ export class QueryCoalescer<T> {
     if (this.pendingQueries.size === 0) return;
 
     const ids = Array.from(this.pendingQueries.keys());
-    const promises = Array.from(this.pendingQueries.values());
+    const pendingQueries = Array.from(this.pendingQueries.values());
 
     try {
       const results = await this.batchExecutor(ids);
@@ -192,14 +202,13 @@ export class QueryCoalescer<T> {
         const result = results[id];
         if (result !== undefined) {
           // Resolve the promise
-          const promise = promises[index];
-          (promise as any).resolve?.(result);
+          pendingQueries[index].resolve(result);
         }
       });
     } catch (error) {
       // Reject all pending promises
-      promises.forEach((promise) => {
-        (promise as any).reject?.(error);
+      pendingQueries.forEach((pendingQuery) => {
+        pendingQuery.reject(error);
       });
     } finally {
       // Clear pending queries

@@ -454,3 +454,50 @@ export function analyzeBenchmarkResults(suite: BenchmarkSuite): {
 
   return { bottlenecks, improvements, recommendations };
 }
+
+
+export interface PerformanceBudgetResult {
+  passed: boolean;
+  successRate: number;
+  memoryGrowthCount: number;
+  optimizationChecks: Record<string, boolean>;
+  warnings: string[];
+}
+
+/**
+ * Evaluate deterministic quality gates for a benchmark suite.
+ * This validates the benchmark harness only; it is not a substitute for device FPS profiling.
+ */
+export function evaluatePerformanceBudget(suite: BenchmarkSuite): PerformanceBudgetResult {
+  const warnings: string[] = [];
+  const optimizationChecks = {
+    npcOptimization: false,
+    economyOptimization: false,
+    requestDeduplication: false,
+  };
+  const findPair = (keyword: string) => ({
+    without: suite.results.find((result) => result.name.includes(keyword) && result.name.includes("Without")),
+    with: suite.results.find((result) => result.name.includes(keyword) && result.name.includes("With") && !result.name.includes("Without")),
+  });
+  const npc = findPair("NPC");
+  const economy = findPair("Economy");
+  const concurrent = findPair("Concurrent");
+  optimizationChecks.npcOptimization = Boolean(npc.without && npc.with && npc.with.duration < npc.without.duration);
+  optimizationChecks.economyOptimization = Boolean(economy.without && economy.with && economy.with.duration < economy.without.duration);
+  optimizationChecks.requestDeduplication = Boolean(concurrent.without && concurrent.with && concurrent.with.duration < concurrent.without.duration);
+
+  const memoryGrowthCount = suite.results.filter((result) => result.memoryAfter > result.memoryBefore).length;
+  if (suite.summary.successRate < 100) warnings.push("Benchmark suite contains failed operations.");
+  if (memoryGrowthCount > 0) warnings.push(`${memoryGrowthCount} benchmark operation(s) increased measured memory usage.`);
+  if (!optimizationChecks.npcOptimization) warnings.push("NPC batching did not beat the baseline in this run.");
+  if (!optimizationChecks.economyOptimization) warnings.push("Economy caching did not beat the baseline in this run.");
+  if (!optimizationChecks.requestDeduplication) warnings.push("Request deduplication did not beat the baseline in this run.");
+
+  return {
+    passed: warnings.length === 0,
+    successRate: suite.summary.successRate,
+    memoryGrowthCount,
+    optimizationChecks,
+    warnings,
+  };
+}
