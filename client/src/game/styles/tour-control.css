@@ -1,0 +1,310 @@
+/* 导覍控制容器 */
+.tour-control-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    sans-serif;
+}
+
+/* 导覍控制切换按钮 */
+.tour-control-toggle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tour-control-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.tour-control-toggle:active {
+  transform: scale(0.95);
+}
+
+/* 导覍控制面板 */
+.tour-control-panel {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  width: 320px;
+  background: rgba(20, 20, 30, 0.95);
+  border: 2px solid rgba(102, 126, 234, 0.5);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  color: white;
+  animation: slideUp 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 导覍控制头部 */
+.tour-control-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+  padding-bottom: 12px;
+}
+
+.tour-control-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.tour-control-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.tour-control-close:hover {
+  color: white;
+}
+
+/* 导覍控制部分 */
+.tour-control-section {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.tour-control-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.tour-control-section label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 路线选择下拉框 */
+.tour-route-select {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tour-route-select:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(102, 126, 234, 0.6);
+}
+
+.tour-route-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 路线信息 */
+.tour-info {
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.tour-info p {
+  margin: 6px 0;
+}
+
+.tour-info strong {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 导覍状态 */
+.tour-status {
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.tour-status p {
+  margin: 6px 0;
+}
+
+.tour-status strong {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.status-idle {
+  color: #4ade80;
+}
+
+.status-playing {
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+.status-paused {
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.status-stopped {
+  color: #f87171;
+}
+
+/* 进度条 */
+.tour-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.tour-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+/* 控制按钮 */
+.tour-control-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tour-btn {
+  padding: 10px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.tour-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tour-btn-start {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.tour-btn-start:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.tour-btn-pause {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.5);
+}
+
+.tour-btn-pause:hover:not(:disabled) {
+  background: rgba(251, 191, 36, 0.3);
+  border-color: #fbbf24;
+}
+
+.tour-btn-resume {
+  background: rgba(96, 165, 250, 0.2);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.5);
+}
+
+.tour-btn-resume:hover:not(:disabled) {
+  background: rgba(96, 165, 250, 0.3);
+  border-color: #60a5fa;
+}
+
+.tour-btn-stop {
+  background: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.5);
+}
+
+.tour-btn-stop:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.3);
+  border-color: #f87171;
+}
+
+/* 帮助信息 */
+.tour-control-help {
+  margin-top: 12px;
+  padding: 8px;
+  background: rgba(96, 165, 250, 0.1);
+  border-left: 3px solid rgba(96, 165, 250, 0.5);
+  border-radius: 4px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
+.tour-control-help p {
+  margin: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .tour-control-container {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .tour-control-panel {
+    width: 280px;
+    bottom: 60px;
+  }
+
+  .tour-control-toggle {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+}
