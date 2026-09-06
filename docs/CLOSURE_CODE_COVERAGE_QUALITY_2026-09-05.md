@@ -101,6 +101,12 @@ NPC 预览/地图懒加载定向 5 项测试、TypeScript 和生产构建通过�
 
 ## 固定 Coverage 门禁
 
-项目新增 `pnpm test:coverage:closure`，由 `scripts/runClosureCoverage.mjs` 固定选择资产门禁、资产 manifest、AssetReadinessPage、雪层报告/harness/plugin、限流器和 GameScene 测试，并使用 V8 provider 输出 `coverage/closure/coverage-summary.json`。当前收口汇总为：行 **75.49%**、语句 **73.90%**、分支 **73.51%**、函数 **81.39%**；最低阈值固定为行 50%、语句 50%、分支 50%、函数 55%。该命令只建立收口模块的可复现门禁，不宣称整个项目或真实 WebGL/真机覆盖率。
+项目新增 `pnpm test:coverage:closure`，由 `scripts/runClosureCoverage.mjs` 固定选择资产门禁、资产 manifest、AssetReadinessPage、雪层报告/harness/plugin、限流器和 GameScene 测试，并使用 V8 provider 输出 `coverage/closure/coverage-summary.json` 与 `coverage/closure/coverage-final.json`。当前收口汇总为：行 **82.00%**、语句 **80.05%**、分支 **78.26%**、函数 **88.37%**；最低阈值固定为行 50%、语句 50%、分支 50%、函数 55%。该命令只建立收口模块的可复现门禁，不宣称整个项目或真实 WebGL/真机覆盖率。
 
 统一入口为 `pnpm test:release-gates`，依次执行固定 closure coverage、外部 pending 分类校验和 release-gate 定向测试。该命令成功只表示本地质量与证据边界一致；当前剩余 18 项真实资产、真机和账户侧外部门禁仍保持 pending。
+
+## 覆盖率提升复核
+
+本轮从行覆盖率 75.49% 的基线出发，优先补测可在本地稳定复现的路径：修复 `rateLimiter.ts` 的 Redis 未初始化状态，使首次初始化能够真正进入 memory-store 分支；新增无 Redis、健康检查跳过、认证用户 keyGenerator 和 IP limiter 测试；新增雪层插件 helper 导出、active texture 契约、配置默认值与同值质量更新测试；新增 GameScene 慢完成惩罚、无概率奖励兜底和统计返回测试。最终收口结果提升为行 **82.00%**、语句 **80.05%**、函数 **88.37%**，定向新增/调整测试与完整回归均通过。
+
+当前仍未覆盖的主要代码集中在三类。第一类是 `snowLayerPerfHarness.ts` 的真实浏览器 WebGL benchmark：Engine 创建、材质/网格批量生成、baseline-vs-snow render loop 和真实稳定帧等待共 33 行，不能用 NullEngine 假数据替代；建议在 Playwright 真浏览器或 iOS/Android 设备云中执行短时 benchmark，并将结果作为独立性能证据。第二类是 `rateLimiter.ts` 的 Redis 连接成功、连接超时、error listener、`closeRedisClient` 和 `getRedisClient` 生命周期，约 27 行；建议使用模块隔离的 Redis mock 覆盖成功/失败/超时三态，但不要连接真实 Redis。第三类是 `assetManifest.ts`、`assetDeliveryGate.ts` 与 `AssetReadinessPage.tsx` 的 rejected/verified/optional baseline 分支，行覆盖率影响较小但分支覆盖仍不足，建议补充合成 evidence 的纯逻辑测试，同时保持真实资产仍为 `pending-import`。
