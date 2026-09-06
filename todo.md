@@ -1277,3 +1277,5 @@
 - [x] 将固定 closure coverage 的报告路径、指标和阈值纳入 release-gate 汇总与外部发布文档，保持 coverage 未通过时不得显示 local-ready：releaseGateSummary 与 `scripts/generateReleaseGateReport.mjs` 均新增 closureCoverage gate，低于 50/50/50/55 时整体为 blocked；3 项定向测试、归档脚本临时输出验证与 TypeScript 检查通过
 - [x] 增加外部阻塞项一致性校验脚本，验证所有剩余未完成 TODO 均映射到真实资产、真机设备或账户侧 Token 门禁，并输出可归档 JSON：`coverage/external-pending-summary.json` 为 `external-pending-only`，分类为 14 项资产、1 项真机、3 项账户，unknown=0
 - [x] 在 package scripts 增加统一 `test:release-gates` 命令，串联 closure coverage、外部阻塞分类校验和 release-gate 单元测试：统一入口已注册，前次失败原因是新增 TODO 自身尚未标记完成；标记后重新验证
+- [x] 分析 closure coverage 75.49% 的未覆盖行并补充高收益测试，将固定收口覆盖率提升到 80% 以上；真实 Babylon/WebGL 和真机路径若仍无法覆盖，需在报告中明确边界：当前行 82.00%、语句 80.05%、函数 88.37%、分支 78.26%；新增 rateLimiter/plugin/GameScene 测试，完整回归与生产构建通过，未覆盖 WebGL/Redis 路径已写入质量报告
+- [x] 验证 GitHub PR #16 新增测试的稳定性：运行定向、完整、多轮重复和隔离回归，记录 flaky 风险并在发现问题时修复：补入 PR 缺失的 `IceSnowSnowLayerMaterialPlugin.ts`；三个新增/修改测试各单文件 10/10 通过，三文件组合 10/10 通过，统一 release-gates 与 TypeScript 通过；完整回归受 sanitized v6 基线其他模块/环境失败影响，已记录边界

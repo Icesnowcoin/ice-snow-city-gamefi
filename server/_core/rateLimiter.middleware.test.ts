@@ -4,14 +4,26 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   createApiRateLimiter,
   createGlobalRateLimiter,
+  createIpRateLimiter,
   createUserRateLimiter,
 } from "./rateLimiter";
 
 const originalNodeEnv = process.env.NODE_ENV;
 const originalRedisUrl = process.env.REDIS_URL;
 
-async function requestThroughLimiter(middleware: RequestHandler, path: string, headers: Record<string, string> = {}) {
+async function requestThroughLimiter(
+  middleware: RequestHandler,
+  path: string,
+  headers: Record<string, string> = {},
+  userId?: string,
+) {
   const app = express();
+  if (userId) {
+    app.use((req, _res, next) => {
+      (req as any).user = { id: userId };
+      next();
+    });
+  }
   app.use(middleware);
   app.use((_req, res) => res.status(200).send("ok"));
   const server = createServer(app);
@@ -68,9 +80,21 @@ describe("rate limiter Express middleware paths", () => {
     process.env.NODE_ENV = "production";
     const middleware = await createUserRateLimiter();
     const callback = await requestThroughLimiter(middleware, "/api/oauth/callback");
-    const ordinary = await requestThroughLimiter(middleware, "/api/trpc/profile");
+    const ordinary = await requestThroughLimiter(middleware, "/api/trpc/profile", {}, "user-42");
 
     expect(callback.headers.get("ratelimit")).toBeNull();
     expect(ordinary.headers.get("ratelimit-limit")).toBe("200");
+  });
+
+  it("uses the memory store when Redis is not configured and skips health checks", async () => {
+    process.env.NODE_ENV = "production";
+    delete process.env.REDIS_URL;
+    const middleware = await createIpRateLimiter();
+    const health = await requestThroughLimiter(middleware, "/health");
+    const ordinary = await requestThroughLimiter(middleware, "/api/trpc/profile");
+
+    expect(health.status).toBe(200);
+    expect(health.headers.get("ratelimit")).toBeNull();
+    expect(ordinary.headers.get("ratelimit-limit")).toBe("300");
   });
 });

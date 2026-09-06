@@ -3,7 +3,11 @@ import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { Scene } from "@babylonjs/core/scene";
-import { IceSnowSnowLayerMaterialPlugin } from "./IceSnowSnowLayerMaterialPlugin";
+import {
+  IceSnowSnowLayerMaterialPlugin,
+  attachIceSnowLayer,
+  configureIceSnowPbrMaterial,
+} from "./IceSnowSnowLayerMaterialPlugin";
 
 describe("IceSnowSnowLayerMaterialPlugin", () => {
   function createPlugin(options: ConstructorParameters<typeof IceSnowSnowLayerMaterialPlugin>[1] = {}) {
@@ -66,6 +70,25 @@ describe("IceSnowSnowLayerMaterialPlugin", () => {
     plugin.prepareDefines(defines as never, scene, material as never);
     expect(defines.ISC_SNOW_HIGH).toBe(false);
     expect(defines.ISC_SNOW_MEDIUM).toBe(false);
+
+    material.dispose();
+    scene.dispose();
+    engine.dispose();
+  });
+
+  it("covers helper exports, active texture contract, and no-op quality updates", () => {
+    const { engine, scene, material, plugin } = createPlugin({ quality: "medium" });
+
+    expect(plugin.getActiveTextures()).toEqual([]);
+    plugin.setQuality("medium");
+    const attached = attachIceSnowLayer(material, { quality: "high", amount: -1 });
+    expect(attached).toBeInstanceOf(IceSnowSnowLayerMaterialPlugin);
+
+    const configured = configureIceSnowPbrMaterial(material, "low");
+    expect(configured).toBeInstanceOf(IceSnowSnowLayerMaterialPlugin);
+    expect(material.roughness).toBe(0.72);
+    expect(material.metallic).toBe(0);
+    expect(material.maxSimultaneousLights).toBe(1);
 
     material.dispose();
     scene.dispose();

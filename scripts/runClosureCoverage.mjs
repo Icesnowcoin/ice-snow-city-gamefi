@@ -33,6 +33,7 @@ const args = [
   "--coverage.provider=v8",
   "--coverage.reporter=text",
   "--coverage.reporter=json-summary",
+  "--coverage.reporter=json",
   "--coverage.reportsDirectory=coverage/closure",
   "--coverage.thresholds.lines=50",
   "--coverage.thresholds.statements=50",

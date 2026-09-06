@@ -16,7 +16,7 @@ import { createClient } from 'redis';
 import type { Request, Response } from 'express';
 
 // Redis client for rate limiting
-let redisClient: ReturnType<typeof createClient> | null = null;
+let redisClient: ReturnType<typeof createClient> | null | undefined;
 
 /**
  * Development preview pages can issue many asset/HMR requests while a scene is
