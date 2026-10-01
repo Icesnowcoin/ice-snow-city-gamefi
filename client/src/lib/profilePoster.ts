@@ -175,7 +175,7 @@ export function generateProfilePosterDataUrl(options: PosterOptions): string {
   ctx.strokeRect(90, statBoxY, statBoxWidth, statBoxHeight);
   ctx.fillStyle = '#94a3b8';
   ctx.font = '13px sans-serif';
-  ctx.fillText('拥有土地 NFT', 110, statBoxY + 28);
+  ctx.fillText('游戏内地块', 110, statBoxY + 28);
   ctx.fillStyle = '#38bdf8';
   ctx.font = 'bold 26px sans-serif';
   ctx.fillText(`${lands} 宗`, 110, statBoxY + 65);
@@ -187,7 +187,7 @@ export function generateProfilePosterDataUrl(options: PosterOptions): string {
   ctx.strokeRect(300, statBoxY, statBoxWidth, statBoxHeight);
   ctx.fillStyle = '#94a3b8';
   ctx.font = '13px sans-serif';
-  ctx.fillText('拥有建筑 NFT', 320, statBoxY + 28);
+  ctx.fillText('游戏内建筑', 320, statBoxY + 28);
   ctx.fillStyle = '#a855f7';
   ctx.font = 'bold 26px sans-serif';
   ctx.fillText(`${buildings} 栋`, 320, statBoxY + 65);
@@ -199,7 +199,7 @@ export function generateProfilePosterDataUrl(options: PosterOptions): string {
   ctx.strokeRect(510, statBoxY, statBoxWidth, statBoxHeight);
   ctx.fillStyle = '#94a3b8';
   ctx.font = '13px sans-serif';
-  ctx.fillText('链上资产合计', 530, statBoxY + 28);
+  ctx.fillText('游戏内资产合计', 530, statBoxY + 28);
   ctx.fillStyle = '#f59e0b';
   ctx.font = 'bold 26px sans-serif';
   ctx.fillText(`${total} 项`, 530, statBoxY + 65);
@@ -328,6 +328,7 @@ export function drawCharacterPosterStickers(
   placements: CharacterPosterStickerPlacement[] = [],
   width = 900,
   height = 1200,
+  logoImage?: HTMLImageElement,
 ): void {
   placements.forEach((placement) => {
     const sticker = getCharacterPosterSticker(placement.stickerId);
@@ -342,7 +343,12 @@ export function drawCharacterPosterStickers(
     ctx.font = `${fontSize}px "Apple Color Emoji", "Segoe UI Emoji", sans-serif`;
     ctx.shadowColor = 'rgba(2, 6, 23, 0.55)';
     ctx.shadowBlur = 12;
-    ctx.fillText(sticker.glyph, 0, 0);
+    if (sticker.assetUrl && logoImage) {
+      const logoSize = fontSize * 1.12;
+      ctx.drawImage(logoImage, -logoSize / 2, -logoSize / 2, logoSize, logoSize);
+    } else {
+      ctx.fillText(sticker.glyph, 0, 0);
+    }
     if (sticker.category === 'badge') {
       ctx.shadowBlur = 0;
       ctx.fillStyle = sticker.tint;
@@ -470,6 +476,14 @@ export async function generateCharacterSnapshotPosterDataUrlAsync(options: Chara
     candidate.onerror = () => resolve(null);
     candidate.src = options.canvasDataUrl;
   });
+  const logoImage = await new Promise<HTMLImageElement | null>((resolve) => {
+    const hasBrandedSticker = options.stickerPlacements?.some((placement) => getCharacterPosterSticker(placement.stickerId).assetUrl);
+    if (!hasBrandedSticker) return resolve(null);
+    const candidate = new Image();
+    candidate.onload = () => resolve(candidate);
+    candidate.onerror = () => resolve(null);
+    candidate.src = getCharacterPosterSticker('winter-pioneer').assetUrl ?? '';
+  });
 
   const gradient = ctx.createLinearGradient(0, 0, 900, 1200);
   gradient.addColorStop(0, '#0e7490');
@@ -499,7 +513,7 @@ export async function generateCharacterSnapshotPosterDataUrlAsync(options: Chara
     ctx.font = '20px sans-serif';
     ctx.fillText('角色截图暂不可用，已保留状态信息', 190, 500);
   }
-  drawCharacterPosterStickers(ctx, options.stickerPlacements);
+  drawCharacterPosterStickers(ctx, options.stickerPlacements, 900, 1200, logoImage ?? undefined);
   ctx.fillStyle = '#cbd5e1';
   ctx.font = '22px sans-serif';
   ctx.fillText(`环境：${options.environmentLabel}`, 95, 820);
@@ -607,7 +621,7 @@ export function getTwitterDefaultShareText(options: PosterOptions): string {
   const profileUrl = getProfileUrl(player.userId);
   const lands = assetSummary?.landCount ?? 0;
   const buildings = assetSummary?.buildingCount ?? 0;
-  return `我在《冰雪城市》(Ice Snow City) 打造了现代化都市！拥有 ${lands} 宗土地和 ${buildings} 栋建筑 NFT。快来我的个人主页围观并扫码互动：${profileUrl} #IceSnowCity #GameFi #Web3`;
+  return `我在《冰雪城市》(Ice Snow City) 打造了现代化都市！拥有 ${lands} 宗游戏内地块和 ${buildings} 栋建筑。快来我的个人主页围观并扫码互动：${profileUrl} #IceSnowCity #GameFi`;
 }
 
 export function getRandomTwitterShareText(options: PosterOptions): string {
@@ -617,10 +631,10 @@ export function getRandomTwitterShareText(options: PosterOptions): string {
   const buildings = assetSummary?.buildingCount ?? 0;
 
   const templates = [
-    `❄️ 冰雪风暴降临，我的 Web3 帝国坚不可摧！在《冰雪城市》已集结 ${lands} 宗核心土地与 ${buildings} 座高能建筑。欢迎大佬们来参观主页并扫码串门：${profileUrl} #IceSnowCity #Web3Gaming #Metaverse`,
-    `🚀 沉浸式体验《冰雪城市》现代都市建设！目前资产已达 ${lands} 块土地 + ${buildings} 栋建筑，ISC 经济生态太给力了。主页速来围观：${profileUrl} #CryptoGaming #NFTCommunity #IceSnowCity`,
-    `💎 打造属于你的冬季商业奇迹！我在 Ice Snow City 拥有 ${lands} 宗土地与 ${buildings} 栋建筑 NFT。点击下方主页链接直达我的专属都市：${profileUrl} #Solana #Web3 #IceSnowCity`,
-    `🏙️ 拒绝内卷，在《冰雪城市》开启链上地产大亨之路！目前已解锁 ${lands} 宗土地和 ${buildings} 栋建筑。快来围观我的个人主页：${profileUrl} #Metaverse #GameFi #IceSnowCity`
+    `ISC 冰雪都市风暴降临！在《冰雪城市》已配置 ${lands} 宗核心地块与 ${buildings} 座高能建筑。欢迎来参观主页并扫码串门：${profileUrl} #IceSnowCity #GameFi`,
+    `🚀 沉浸式体验《冰雪城市》现代都市建设！目前已配置 ${lands} 块游戏内地块 + ${buildings} 栋建筑，ISC 经济生态太给力了。主页速来围观：${profileUrl} #GameFi #IceSnowCity`,
+    `💎 打造属于你的冬季商业奇迹！我在 Ice Snow City 拥有 ${lands} 宗游戏内地块与 ${buildings} 栋建筑。点击下方主页链接直达我的专属都市：${profileUrl} #Web3Gaming #IceSnowCity`,
+    `🏙️ 拒绝内卷，在《冰雪城市》开启城市经营之路！目前已解锁 ${lands} 宗游戏内地块和 ${buildings} 栋建筑。快来围观我的个人主页：${profileUrl} #Metaverse #GameFi #IceSnowCity`
   ];
 
   const randomIndex = Math.floor(Math.random() * templates.length);
@@ -681,5 +695,3 @@ export async function copyProfileUrlToClipboard(userId: string): Promise<boolean
     return false;
   }
 }
-
-

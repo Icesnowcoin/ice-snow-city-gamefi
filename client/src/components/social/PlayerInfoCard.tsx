@@ -11,7 +11,6 @@ import { downloadProfilePoster, shareProfilePoster, generateProfilePosterDataUrl
 import { getVisiblePlayerStats, type PlayerInfoStats } from '@/lib/playerInfoStats';
 import PublicNFTAssetsOverview from './PublicNFTAssetsOverview';
 import { useProfileBackground, type ProfileBackground } from '@/hooks/useProfileBackground';
-import type { PublicNFTAsset } from '@/hooks/usePublicNFTAssets';
 import './player-info-card.css';
 
 export interface PlayerInfo {
@@ -93,19 +92,12 @@ export const PlayerInfoCard: React.FC<PlayerInfoCardProps> = ({
     }, 0);
   };
   const isOwnProfile = player.userId === currentUserId;
-  const { background: ownBackground, setBackgroundFromAsset } = useProfileBackground(player.userId);
+  const { background: ownBackground } = useProfileBackground(player.userId);
   const displayedBackground = isOwnProfile ? ownBackground : player.profileBackground ?? null;
 
   if (!isOpen) return null;
   const statusText = player.status === 'online' ? '在线' : '离线';
   const statusColor = player.status === 'online' ? 'online' : 'offline';
-
-  const handleSetBackground = (asset: PublicNFTAsset) => {
-    if (!isOwnProfile) return;
-    setBackgroundFromAsset(asset);
-    setSuccessMessage(`已将 ${asset.name} 设为个人主页背景`);
-    setTimeout(() => setSuccessMessage(null), 2500);
-  };
 
   const getPosterOptions = () => {
     const statsRec = (player.stats || {}) as Record<string, any>;
@@ -278,7 +270,7 @@ export const PlayerInfoCard: React.FC<PlayerInfoCardProps> = ({
         >
           {displayedBackground && (
             <span className="card-header-bg-label">
-              {displayedBackground.kind === 'land' ? '土地背景' : '建筑背景'} · #{displayedBackground.tokenId}
+              {displayedBackground.kind === 'land' ? '地块背景' : '建筑背景'} · 游戏资产 #{displayedBackground.tokenId}
             </span>
           )}
         </div>
@@ -324,7 +316,7 @@ export const PlayerInfoCard: React.FC<PlayerInfoCardProps> = ({
               className={`profile-tab ${activeTab === 'assets' ? 'active' : ''}`}
               onClick={() => setActiveTab('assets')}
             >
-              拥有的 NFT 资产
+              游戏内资产
             </button>
           </div>
 
@@ -495,11 +487,6 @@ export const PlayerInfoCard: React.FC<PlayerInfoCardProps> = ({
           {activeTab === 'assets' && (
             <PublicNFTAssetsOverview
               playerName={player.userName}
-              walletAddress={player.walletAddress}
-              publicAssetsEnabled={player.publicAssetsEnabled}
-              canSetAsBackground={isOwnProfile}
-              currentBackground={displayedBackground}
-              onSetAsBackground={isOwnProfile ? handleSetBackground : undefined}
             />
           )}
         </div>
@@ -529,7 +516,7 @@ export const PlayerInfoCard: React.FC<PlayerInfoCardProps> = ({
                 <div className="flex flex-col gap-1.5 pt-1">
                   <span className="text-[11px] text-slate-400 font-medium">快捷插入热门话题与表情：</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {['#CryptoGaming', '#Metaverse', '#NFTCommunity', '#Solana', '#Web3Gaming', '🏙️', '❄️', '🚀', '💎', '🔥'].map((item) => (
+                    {['#CryptoGaming', '#Metaverse', '#NFTCommunity', '#Solana', '#Web3Gaming', '#ISC', '🏙️', '🚀', '💎', '🔥'].map((item) => (
                       <button
                         key={item}
                         type="button"
