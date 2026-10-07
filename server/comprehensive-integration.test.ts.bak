@@ -1,0 +1,235 @@
+/**
+ * Comprehensive System Integration Tests
+ * Tests all major game systems and their interactions
+ */
+
+import { describe, it, expect, beforeAll } from "vitest";
+import { BankingSystem } from "./game-logic/bankingSystem";
+import { AdvancedFacilitiesSystem } from "./game-logic/advancedFacilitiesSystem";
+import { EntertainmentGamesSystem } from "./game-logic/entertainmentGamesSystem";
+import { JobSystem } from "./game-logic/jobSystem";
+
+describe("Comprehensive System Integration Tests", () => {
+  describe("Banking System Integration", () => {
+    it("should create account and deposit ISC", () => {
+      const account = BankingSystem.createAccount("player1");
+      expect(account).toBeDefined();
+      expect(account.balance).toBe(0);
+
+      const deposited = BankingSystem.deposit(account, 1000);
+      expect(deposited).toBe(true);
+      expect(account.balance).toBe(1000);
+    });
+
+    it("should calculate interest correctly", () => {
+      const account = BankingSystem.createAccount("player2");
+      BankingSystem.deposit(account, 10000);
+
+      const interest = BankingSystem.calculateInterest(account);
+      expect(interest).toBeGreaterThan(0);
+      expect(interest).toBeLessThanOrEqual(10000 * 0.07); // 7% APY max
+    });
+
+    it("should handle multiple transactions", () => {
+      const account = BankingSystem.createAccount("player3");
+      BankingSystem.deposit(account, 5000);
+      BankingSystem.withdraw(account, 1000);
+      BankingSystem.deposit(account, 2000);
+
+      expect(account.balance).toBe(6000);
+      expect(account.transactions.length).toBe(3);
+    });
+  });
+
+  describe("Advanced Facilities System Integration", () => {
+    it("should create and manage facilities", () => {
+      const restaurant = AdvancedFacilitiesSystem.createFacility("restaurant");
+      expect(restaurant.type).toBe("restaurant");
+      expect(restaurant.level).toBe(1);
+
+      const revenue = AdvancedFacilitiesSystem.collectRevenue(restaurant);
+      expect(revenue).toBeGreaterThan(0);
+    });
+
+    it("should upgrade facilities correctly", () => {
+      const cafe = AdvancedFacilitiesSystem.createFacility("cafe");
+      const initialCapacity = cafe.capacity;
+
+      const upgraded = AdvancedFacilitiesSystem.upgradeFacility(cafe, 50000);
+      expect(upgraded).toBe(true);
+      expect(cafe.level).toBe(2);
+      expect(cafe.capacity).toBeGreaterThan(initialCapacity);
+    });
+
+    it("should manage workers and inventory", () => {
+      const library = AdvancedFacilitiesSystem.createFacility("library");
+      
+      AdvancedFacilitiesSystem.hireWorker(library, 100);
+      expect(library.workers).toBe(1);
+
+      AdvancedFacilitiesSystem.addInventory(library, "book", 10);
+      expect(library.inventory["book"]).toBe(10);
+
+      const removed = AdvancedFacilitiesSystem.removeInventory(library, "book", 5);
+      expect(removed).toBe(true);
+      expect(library.inventory["book"]).toBe(5);
+    });
+  });
+
+  describe("Entertainment Games System Integration", () => {
+    it("should play all game types", () => {
+      const slotResult = EntertainmentGamesSystem.playSlotMachine(100);
+      expect(slotResult.result).toBeDefined();
+      expect(slotResult.winnings).toBeGreaterThanOrEqual(0);
+
+      const diceResult = EntertainmentGamesSystem.playDiceMachine(100);
+      expect(diceResult.dice.length).toBe(3);
+      expect(diceResult.winnings).toBeGreaterThanOrEqual(0);
+
+      const match3Result = EntertainmentGamesSystem.playMatch3(100, 10);
+      expect(match3Result.result).toBeDefined();
+      expect(match3Result.score).toBeGreaterThanOrEqual(0);
+    });
+
+    it("should track game sessions correctly", () => {
+      const session = EntertainmentGamesSystem.createSession("player1", "slot", 100);
+      expect(session.status).toBe("playing");
+
+      const completed = EntertainmentGamesSystem.completeSession(session, 200, true);
+      expect(completed.status).toBe("won");
+      expect(completed.winnings).toBe(200);
+    });
+
+    it("should calculate player stats", () => {
+      const sessions = [
+        EntertainmentGamesSystem.createSession("player1", "slot", 100),
+        EntertainmentGamesSystem.createSession("player1", "dice", 100),
+        EntertainmentGamesSystem.createSession("player1", "match3", 100),
+      ];
+
+      EntertainmentGamesSystem.completeSession(sessions[0], 200, true);
+      EntertainmentGamesSystem.completeSession(sessions[1], 0, false);
+      EntertainmentGamesSystem.completeSession(sessions[2], 150, true);
+
+      const stats = EntertainmentGamesSystem.calculateStats(sessions);
+      expect(stats.totalGames).toBe(3);
+      expect(stats.wins).toBe(2);
+      expect(stats.losses).toBe(1);
+      expect(stats.winRate).toBeGreaterThan(50);
+    });
+  });
+
+  describe("Job System Integration", () => {
+    it("should create and complete jobs", () => {
+      const job = JobSystem.createJob("player1", "waiter", 100);
+      expect(job).toBeDefined();
+      expect(job.status).toBe("active");
+
+      const completed = JobSystem.completeJob(job, 50);
+      expect(completed.status).toBe("completed");
+      expect(completed.earnings).toBe(50);
+    });
+
+    it("should track job history", () => {
+      const jobs = [
+        JobSystem.createJob("player1", "waiter", 100),
+        JobSystem.createJob("player1", "security", 150),
+        JobSystem.createJob("player1", "chef", 200),
+      ];
+
+      jobs.forEach((job, idx) => {
+        JobSystem.completeJob(job, (idx + 1) * 50);
+      });
+
+      const stats = JobSystem.getJobStats(jobs);
+      expect(stats.totalJobs).toBe(3);
+      expect(stats.totalEarnings).toBe(300);
+    });
+  });
+
+  describe("Cross-System Integration", () => {
+    it("should handle facility revenue and banking", () => {
+      // Create facility and collect revenue
+      const facility = AdvancedFacilitiesSystem.createFacility("restaurant");
+      const revenue = AdvancedFacilitiesSystem.collectRevenue(facility);
+
+      // Deposit to bank
+      const account = BankingSystem.createAccount("player1");
+      BankingSystem.deposit(account, revenue);
+
+      expect(account.balance).toBe(revenue);
+    });
+
+    it("should handle job earnings and gaming", () => {
+      // Complete job and earn money
+      const job = JobSystem.createJob("player1", "waiter", 100);
+      JobSystem.completeJob(job, 500);
+
+      // Use earnings to play games
+      const gameResult = EntertainmentGamesSystem.playSlotMachine(500);
+      expect(gameResult.winnings).toBeGreaterThanOrEqual(0);
+    });
+
+    it("should handle facility upgrades with banking", () => {
+      // Deposit to bank
+      const account = BankingSystem.createAccount("player1");
+      BankingSystem.deposit(account, 100000);
+
+      // Use bank funds to upgrade facility
+      const facility = AdvancedFacilitiesSystem.createFacility("cafe");
+      const upgraded = AdvancedFacilitiesSystem.upgradeFacility(facility, account.balance);
+
+      expect(upgraded).toBe(true);
+      expect(facility.level).toBe(2);
+    });
+  });
+
+  describe("Data Consistency Tests", () => {
+    it("should maintain data consistency across operations", () => {
+      const account = BankingSystem.createAccount("player1");
+      BankingSystem.deposit(account, 10000);
+
+      const facility = AdvancedFacilitiesSystem.createFacility("restaurant");
+      const revenue1 = AdvancedFacilitiesSystem.collectRevenue(facility);
+      const revenue2 = AdvancedFacilitiesSystem.collectRevenue(facility);
+
+      expect(facility.lastCollected).toBeDefined();
+      expect(revenue1).toBeGreaterThan(0);
+      expect(revenue2).toBeGreaterThan(0);
+    });
+
+    it("should handle concurrent operations safely", () => {
+      const account = BankingSystem.createAccount("player1");
+      
+      // Simulate concurrent deposits
+      for (let i = 0; i < 10; i++) {
+        BankingSystem.deposit(account, 100);
+      }
+
+      expect(account.balance).toBe(1000);
+      expect(account.transactions.length).toBe(10);
+    });
+  });
+
+  describe("Error Handling Tests", () => {
+    it("should handle invalid operations", () => {
+      const account = BankingSystem.createAccount("player1");
+      
+      // Try to withdraw more than balance
+      const result = BankingSystem.withdraw(account, 1000);
+      expect(result).toBe(false);
+      expect(account.balance).toBe(0);
+    });
+
+    it("should handle facility limits", () => {
+      const facility = AdvancedFacilitiesSystem.createFacility("restaurant");
+      
+      // Try to hire more than max workers
+      for (let i = 0; i < 10; i++) {
+        AdvancedFacilitiesSystem.hireWorker(facility, 100);
+      }
+
+      expect(facility.workers).toBeLessThanOrEqual(5);
+    });
+  });
+});

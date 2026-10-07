@@ -1,0 +1,4342 @@
+[
+  {
+    "npcId": "NPC_060",
+    "name": "沈·萍",
+    "alias": "冰雪厨师",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "厨师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "智慧",
+      "乐观",
+      "善良"
+    ],
+    "backgroundStory": "沈·萍是 Ice Snow City 的一名厨师，致力于烹饪食物、销售菜肴。",
+    "economicRole": "烹饪食物、销售菜肴",
+    "skills": [
+      "烹饪",
+      "食材搭配"
+    ],
+    "hobbies": [
+      "园艺",
+      "钓鱼",
+      "阅读"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪餐厅",
+    "dailyRoutine": "白天在冰雪餐厅工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性厨师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 厨师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_061",
+    "name": "沈·军",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "探险家",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "热情",
+      "热情",
+      "悲观"
+    ],
+    "backgroundStory": "沈·军是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "阅读",
+      "音乐"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_062",
+    "name": "杨·丽",
+    "alias": "冰雪药剂师",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "药剂师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "悲观",
+      "忠诚",
+      "智慧"
+    ],
+    "backgroundStory": "杨·丽是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "阅读",
+      "烹饪",
+      "园艺"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_063",
+    "name": "蒋·波",
+    "alias": "冰雪卫兵",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "卫兵",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "热情",
+      "狡猾",
+      "忠诚"
+    ],
+    "backgroundStory": "蒋·波是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "编程",
+      "阅读",
+      "写作"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_064",
+    "name": "钱·涛",
+    "alias": "冰雪厨师",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "厨师",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "善良",
+      "勇敢",
+      "冷静"
+    ],
+    "backgroundStory": "钱·涛是 Ice Snow City 的一名厨师，致力于烹饪食物、销售菜肴。",
+    "economicRole": "烹饪食物、销售菜肴",
+    "skills": [
+      "烹饪",
+      "食材搭配"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "运动",
+      "园艺"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪餐厅",
+    "dailyRoutine": "白天在冰雪餐厅工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性厨师，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 厨师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_065",
+    "name": "陈·磊",
+    "alias": "冰雪矿工",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "矿工",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "狡猾",
+      "乐观",
+      "忠诚"
+    ],
+    "backgroundStory": "陈·磊是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "绘画",
+      "音乐",
+      "编程"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_066",
+    "name": "沈·勇",
+    "alias": "冰雪学者",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "学者",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "勇敢",
+      "勇敢",
+      "狡猾"
+    ],
+    "backgroundStory": "沈·勇是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "绘画",
+      "绘画"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_067",
+    "name": "周·玲",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "矿工",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "悲观",
+      "悲观"
+    ],
+    "backgroundStory": "周·玲是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "音乐",
+      "烹饪",
+      "园艺"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_068",
+    "name": "郑·玲",
+    "alias": "冰雪铁匠",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "铁匠",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "冷静",
+      "忠诚",
+      "狡猾"
+    ],
+    "backgroundStory": "郑·玲是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "阅读",
+      "绘画",
+      "烹饪"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_069",
+    "name": "郑·静",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "矿工",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "乐观",
+      "热情",
+      "善良"
+    ],
+    "backgroundStory": "郑·静是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "园艺",
+      "园艺",
+      "园艺"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_070",
+    "name": "褚·波",
+    "alias": "冰雪卫兵",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "卫兵",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "热情",
+      "善良",
+      "冷静"
+    ],
+    "backgroundStory": "褚·波是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "钓鱼",
+      "钓鱼"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_071",
+    "name": "孙·燕",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "矿工",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "勇敢",
+      "善良",
+      "勇敢"
+    ],
+    "backgroundStory": "孙·燕是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "写作",
+      "音乐",
+      "音乐"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_072",
+    "name": "褚·伟",
+    "alias": "冰雪商人",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "商人",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "冷静",
+      "善良",
+      "善良"
+    ],
+    "backgroundStory": "褚·伟是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "运动",
+      "运动",
+      "编程"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_073",
+    "name": "褚·伟",
+    "alias": "冰雪学者",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "学者",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "乐观",
+      "善良",
+      "冷静"
+    ],
+    "backgroundStory": "褚·伟是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "园艺",
+      "写作",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_074",
+    "name": "钱·娟",
+    "alias": "冰雪商人",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "商人",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "忠诚",
+      "狡猾",
+      "冷静"
+    ],
+    "backgroundStory": "钱·娟是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "烹饪",
+      "音乐",
+      "园艺"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_075",
+    "name": "陈·娜",
+    "alias": "冰雪商人",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "商人",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "勇敢",
+      "乐观",
+      "智慧"
+    ],
+    "backgroundStory": "陈·娜是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "编程",
+      "绘画",
+      "写作"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_076",
+    "name": "王·丽",
+    "alias": "冰雪厨师",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "厨师",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "勤劳",
+      "智慧",
+      "乐观"
+    ],
+    "backgroundStory": "王·丽是 Ice Snow City 的一名厨师，致力于烹饪食物、销售菜肴。",
+    "economicRole": "烹饪食物、销售菜肴",
+    "skills": [
+      "烹饪",
+      "食材搭配"
+    ],
+    "hobbies": [
+      "园艺",
+      "音乐",
+      "写作"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪餐厅",
+    "dailyRoutine": "白天在冰雪餐厅工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性厨师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 厨师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_077",
+    "name": "蒋·玲",
+    "alias": "冰雪裁缝",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "裁缝",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "乐观",
+      "乐观",
+      "乐观"
+    ],
+    "backgroundStory": "蒋·玲是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "园艺",
+      "绘画",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_078",
+    "name": "郑·刚",
+    "alias": "冰雪药剂师",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "药剂师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "忠诚",
+      "悲观",
+      "热情"
+    ],
+    "backgroundStory": "郑·刚是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "写作",
+      "园艺",
+      "绘画"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_079",
+    "name": "冯·敏",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "矿工",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "乐观",
+      "乐观",
+      "勇敢"
+    ],
+    "backgroundStory": "冯·敏是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "烹饪",
+      "阅读",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_080",
+    "name": "杨·玲",
+    "alias": "冰雪裁缝",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "裁缝",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "狡猾",
+      "勤劳",
+      "勤劳"
+    ],
+    "backgroundStory": "杨·玲是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "旅行",
+      "园艺",
+      "园艺"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_081",
+    "name": "韩·芳",
+    "alias": "冰雪药剂师",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "药剂师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "热情",
+      "狡猾",
+      "勤劳"
+    ],
+    "backgroundStory": "韩·芳是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "绘画",
+      "绘画",
+      "写作"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_082",
+    "name": "杨·波",
+    "alias": "冰雪药剂师",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "药剂师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "悲观",
+      "狡猾",
+      "狡猾"
+    ],
+    "backgroundStory": "杨·波是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "旅行",
+      "园艺",
+      "运动"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_083",
+    "name": "卫·玲",
+    "alias": "冰雪铁匠",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "铁匠",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "狡猾",
+      "善良",
+      "善良"
+    ],
+    "backgroundStory": "卫·玲是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "园艺",
+      "钓鱼",
+      "编程"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_084",
+    "name": "郑·娟",
+    "alias": "冰雪铁匠",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "铁匠",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "善良",
+      "忠诚",
+      "冷静"
+    ],
+    "backgroundStory": "郑·娟是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "写作",
+      "园艺",
+      "钓鱼"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_085",
+    "name": "冯·静",
+    "alias": "冰雪卫兵",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "卫兵",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "悲观",
+      "热情",
+      "热情"
+    ],
+    "backgroundStory": "冯·静是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "写作",
+      "园艺",
+      "编程"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_086",
+    "name": "蒋·静",
+    "alias": "冰雪牧师",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "牧师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "悲观",
+      "悲观",
+      "乐观"
+    ],
+    "backgroundStory": "蒋·静是 Ice Snow City 的一名牧师，致力于治疗伤病、提供祝福。",
+    "economicRole": "治疗伤病、提供祝福",
+    "skills": [
+      "治疗",
+      "神学"
+    ],
+    "hobbies": [
+      "写作",
+      "阅读",
+      "运动"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪教堂",
+    "dailyRoutine": "白天在冰雪教堂工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性牧师，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 牧师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_087",
+    "name": "王·波",
+    "alias": "冰雪厨师",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "厨师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "善良",
+      "忠诚",
+      "勤劳"
+    ],
+    "backgroundStory": "王·波是 Ice Snow City 的一名厨师，致力于烹饪食物、销售菜肴。",
+    "economicRole": "烹饪食物、销售菜肴",
+    "skills": [
+      "烹饪",
+      "食材搭配"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "运动",
+      "写作"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪餐厅",
+    "dailyRoutine": "白天在冰雪餐厅工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性厨师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 厨师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_088",
+    "name": "韩·玲",
+    "alias": "冰雪学者",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "学者",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "智慧",
+      "冷静",
+      "乐观"
+    ],
+    "backgroundStory": "韩·玲是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "编程",
+      "编程"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_089",
+    "name": "冯·杰",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "探险家",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "狡猾",
+      "热情",
+      "热情"
+    ],
+    "backgroundStory": "冯·杰是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "旅行",
+      "编程",
+      "写作"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_090",
+    "name": "赵·静",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "矿工",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "智慧",
+      "勇敢"
+    ],
+    "backgroundStory": "赵·静是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "烹饪",
+      "烹饪",
+      "钓鱼"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_091",
+    "name": "蒋·勇",
+    "alias": "冰雪裁缝",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "裁缝",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "热情",
+      "忠诚",
+      "善良"
+    ],
+    "backgroundStory": "蒋·勇是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "旅行",
+      "编程",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_092",
+    "name": "冯·燕",
+    "alias": "冰雪铁匠",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "铁匠",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "智慧",
+      "狡猾",
+      "悲观"
+    ],
+    "backgroundStory": "冯·燕是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "园艺",
+      "阅读",
+      "写作"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_093",
+    "name": "孙·丽",
+    "alias": "冰雪探险家",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "探险家",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "悲观",
+      "勤劳",
+      "热情"
+    ],
+    "backgroundStory": "孙·丽是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "编程",
+      "运动",
+      "写作"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_094",
+    "name": "褚·明",
+    "alias": "冰雪药剂师",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "药剂师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "勇敢",
+      "善良",
+      "勇敢"
+    ],
+    "backgroundStory": "褚·明是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "旅行",
+      "音乐",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_095",
+    "name": "王·萍",
+    "alias": "冰雪药剂师",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "药剂师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "冷静",
+      "忠诚",
+      "善良"
+    ],
+    "backgroundStory": "王·萍是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "音乐",
+      "钓鱼",
+      "园艺"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_096",
+    "name": "韩·强",
+    "alias": "冰雪牧师",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "牧师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "善良",
+      "善良",
+      "智慧"
+    ],
+    "backgroundStory": "韩·强是 Ice Snow City 的一名牧师，致力于治疗伤病、提供祝福。",
+    "economicRole": "治疗伤病、提供祝福",
+    "skills": [
+      "治疗",
+      "神学"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "烹饪",
+      "旅行"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪教堂",
+    "dailyRoutine": "白天在冰雪教堂工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性牧师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 牧师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_097",
+    "name": "陈·强",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "铁匠",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "狡猾",
+      "悲观",
+      "狡猾"
+    ],
+    "backgroundStory": "陈·强是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "音乐",
+      "园艺",
+      "音乐"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_098",
+    "name": "冯·强",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "铁匠",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "忠诚",
+      "乐观",
+      "忠诚"
+    ],
+    "backgroundStory": "冯·强是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "写作",
+      "烹饪",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_099",
+    "name": "褚·芳",
+    "alias": "冰雪探险家",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "探险家",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "冷静",
+      "乐观",
+      "善良"
+    ],
+    "backgroundStory": "褚·芳是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "绘画",
+      "音乐",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_100",
+    "name": "赵·伟",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "探险家",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "热情",
+      "悲观",
+      "热情"
+    ],
+    "backgroundStory": "赵·伟是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "绘画",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_101",
+    "name": "赵·军",
+    "alias": "冰雪商人",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "商人",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "忠诚",
+      "乐观"
+    ],
+    "backgroundStory": "赵·军是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "烹饪",
+      "园艺",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_102",
+    "name": "钱·波",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "探险家",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "热情",
+      "勤劳",
+      "悲观"
+    ],
+    "backgroundStory": "钱·波是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "烹饪",
+      "阅读",
+      "写作"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_103",
+    "name": "郑·杰",
+    "alias": "冰雪裁缝",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "裁缝",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "忠诚",
+      "冷静",
+      "乐观"
+    ],
+    "backgroundStory": "郑·杰是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "写作",
+      "编程",
+      "钓鱼"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_104",
+    "name": "赵·勇",
+    "alias": "冰雪裁缝",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "裁缝",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "勤劳",
+      "狡猾",
+      "勇敢"
+    ],
+    "backgroundStory": "赵·勇是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "写作",
+      "园艺",
+      "阅读"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_105",
+    "name": "李·芳",
+    "alias": "冰雪学者",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "学者",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "乐观",
+      "勇敢",
+      "悲观"
+    ],
+    "backgroundStory": "李·芳是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "运动",
+      "园艺",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_106",
+    "name": "冯·刚",
+    "alias": "冰雪矿工",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "矿工",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "冷静",
+      "勇敢",
+      "勇敢"
+    ],
+    "backgroundStory": "冯·刚是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "绘画",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_107",
+    "name": "褚·玲",
+    "alias": "冰雪牧师",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "牧师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "热情",
+      "勤劳",
+      "勇敢"
+    ],
+    "backgroundStory": "褚·玲是 Ice Snow City 的一名牧师，致力于治疗伤病、提供祝福。",
+    "economicRole": "治疗伤病、提供祝福",
+    "skills": [
+      "治疗",
+      "神学"
+    ],
+    "hobbies": [
+      "运动",
+      "音乐",
+      "钓鱼"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪教堂",
+    "dailyRoutine": "白天在冰雪教堂工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性牧师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 牧师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_108",
+    "name": "孙·杰",
+    "alias": "冰雪商人",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "商人",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "忠诚",
+      "智慧",
+      "忠诚"
+    ],
+    "backgroundStory": "孙·杰是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "园艺",
+      "烹饪",
+      "阅读"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_109",
+    "name": "吴·芳",
+    "alias": "冰雪商人",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "商人",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "智慧",
+      "狡猾",
+      "智慧"
+    ],
+    "backgroundStory": "吴·芳是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "园艺",
+      "编程"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_110",
+    "name": "冯·燕",
+    "alias": "冰雪探险家",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "探险家",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "勇敢",
+      "勤劳",
+      "狡猾"
+    ],
+    "backgroundStory": "冯·燕是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "绘画",
+      "绘画",
+      "阅读"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_111",
+    "name": "钱·军",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "铁匠",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "勤劳",
+      "善良",
+      "乐观"
+    ],
+    "backgroundStory": "钱·军是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "写作",
+      "编程",
+      "音乐"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_112",
+    "name": "褚·娟",
+    "alias": "冰雪药剂师",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "药剂师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "冷静",
+      "勇敢",
+      "善良"
+    ],
+    "backgroundStory": "褚·娟是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "阅读",
+      "绘画",
+      "旅行"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_113",
+    "name": "孙·敏",
+    "alias": "冰雪卫兵",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "卫兵",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "悲观",
+      "勤劳",
+      "忠诚"
+    ],
+    "backgroundStory": "孙·敏是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "音乐",
+      "绘画",
+      "阅读"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_114",
+    "name": "冯·芳",
+    "alias": "冰雪学者",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "学者",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "善良",
+      "冷静",
+      "乐观"
+    ],
+    "backgroundStory": "冯·芳是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "绘画",
+      "钓鱼",
+      "钓鱼"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_115",
+    "name": "冯·萍",
+    "alias": "冰雪商人",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "商人",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "乐观",
+      "冷静",
+      "勤劳"
+    ],
+    "backgroundStory": "冯·萍是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "运动",
+      "写作",
+      "阅读"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_116",
+    "name": "赵·燕",
+    "alias": "冰雪商人",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "商人",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "勤劳",
+      "善良",
+      "勇敢"
+    ],
+    "backgroundStory": "赵·燕是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "写作",
+      "钓鱼",
+      "绘画"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_117",
+    "name": "孙·静",
+    "alias": "冰雪铁匠",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "铁匠",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "勤劳",
+      "乐观",
+      "勇敢"
+    ],
+    "backgroundStory": "孙·静是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "编程",
+      "钓鱼",
+      "音乐"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_118",
+    "name": "周·丽",
+    "alias": "冰雪商人",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "商人",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "乐观",
+      "智慧",
+      "智慧"
+    ],
+    "backgroundStory": "周·丽是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "阅读",
+      "运动",
+      "音乐"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_119",
+    "name": "沈·军",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "铁匠",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "热情",
+      "智慧",
+      "悲观"
+    ],
+    "backgroundStory": "沈·军是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "编程",
+      "写作",
+      "旅行"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_120",
+    "name": "蒋·军",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "探险家",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "勤劳",
+      "勤劳",
+      "勤劳"
+    ],
+    "backgroundStory": "蒋·军是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "阅读",
+      "运动",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_121",
+    "name": "沈·萍",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "矿工",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "忠诚",
+      "冷静",
+      "狡猾"
+    ],
+    "backgroundStory": "沈·萍是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "烹饪",
+      "编程"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_122",
+    "name": "蒋·燕",
+    "alias": "冰雪裁缝",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "裁缝",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "热情",
+      "勤劳",
+      "勤劳"
+    ],
+    "backgroundStory": "蒋·燕是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "阅读",
+      "编程",
+      "旅行"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_123",
+    "name": "赵·勇",
+    "alias": "冰雪矿工",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "矿工",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "悲观",
+      "悲观",
+      "冷静"
+    ],
+    "backgroundStory": "赵·勇是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "写作",
+      "钓鱼",
+      "运动"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_124",
+    "name": "陈·静",
+    "alias": "冰雪学者",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "学者",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "忠诚",
+      "忠诚",
+      "冷静"
+    ],
+    "backgroundStory": "陈·静是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "旅行",
+      "音乐",
+      "编程"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_125",
+    "name": "孙·磊",
+    "alias": "冰雪矿工",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "矿工",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "智慧",
+      "悲观",
+      "狡猾"
+    ],
+    "backgroundStory": "孙·磊是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "旅行",
+      "园艺",
+      "编程"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_126",
+    "name": "李·娟",
+    "alias": "冰雪铁匠",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "铁匠",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "善良",
+      "热情",
+      "冷静"
+    ],
+    "backgroundStory": "李·娟是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "绘画",
+      "编程",
+      "园艺"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_127",
+    "name": "褚·燕",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "矿工",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "乐观",
+      "悲观"
+    ],
+    "backgroundStory": "褚·燕是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "旅行",
+      "钓鱼",
+      "烹饪"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_128",
+    "name": "韩·丽",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "矿工",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "智慧",
+      "狡猾",
+      "悲观"
+    ],
+    "backgroundStory": "韩·丽是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "园艺",
+      "音乐",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_129",
+    "name": "陈·伟",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "探险家",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "热情",
+      "热情",
+      "狡猾"
+    ],
+    "backgroundStory": "陈·伟是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "音乐",
+      "绘画",
+      "编程"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_130",
+    "name": "杨·敏",
+    "alias": "冰雪学者",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "学者",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "智慧",
+      "勇敢",
+      "忠诚"
+    ],
+    "backgroundStory": "杨·敏是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "音乐",
+      "园艺"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_131",
+    "name": "李·燕",
+    "alias": "冰雪药剂师",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "药剂师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "忠诚",
+      "悲观",
+      "乐观"
+    ],
+    "backgroundStory": "李·燕是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "园艺",
+      "钓鱼",
+      "烹饪"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_132",
+    "name": "卫·刚",
+    "alias": "冰雪裁缝",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "裁缝",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "悲观",
+      "冷静",
+      "智慧"
+    ],
+    "backgroundStory": "卫·刚是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "绘画",
+      "阅读",
+      "写作"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_133",
+    "name": "韩·杰",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "铁匠",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "热情",
+      "善良",
+      "忠诚"
+    ],
+    "backgroundStory": "韩·杰是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "绘画",
+      "钓鱼",
+      "编程"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_134",
+    "name": "王·波",
+    "alias": "冰雪牧师",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "牧师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "勤劳",
+      "热情"
+    ],
+    "backgroundStory": "王·波是 Ice Snow City 的一名牧师，致力于治疗伤病、提供祝福。",
+    "economicRole": "治疗伤病、提供祝福",
+    "skills": [
+      "治疗",
+      "神学"
+    ],
+    "hobbies": [
+      "写作",
+      "绘画",
+      "园艺"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪教堂",
+    "dailyRoutine": "白天在冰雪教堂工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性牧师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 牧师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_135",
+    "name": "赵·娜",
+    "alias": "冰雪商人",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "商人",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "善良",
+      "乐观",
+      "勇敢"
+    ],
+    "backgroundStory": "赵·娜是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "阅读",
+      "绘画",
+      "钓鱼"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_136",
+    "name": "赵·伟",
+    "alias": "冰雪商人",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "商人",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "善良",
+      "冷静",
+      "乐观"
+    ],
+    "backgroundStory": "赵·伟是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "阅读",
+      "旅行"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_137",
+    "name": "李·丽",
+    "alias": "冰雪学者",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "学者",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "智慧",
+      "乐观",
+      "悲观"
+    ],
+    "backgroundStory": "李·丽是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "烹饪",
+      "写作",
+      "阅读"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_138",
+    "name": "卫·娟",
+    "alias": "冰雪学者",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "学者",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "智慧",
+      "悲观",
+      "善良"
+    ],
+    "backgroundStory": "卫·娟是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "绘画",
+      "编程",
+      "写作"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_139",
+    "name": "郑·芳",
+    "alias": "冰雪探险家",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "探险家",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "冷静",
+      "热情",
+      "勤劳"
+    ],
+    "backgroundStory": "郑·芳是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "烹饪",
+      "钓鱼",
+      "阅读"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_140",
+    "name": "吴·娟",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "矿工",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "冷静",
+      "勤劳",
+      "乐观"
+    ],
+    "backgroundStory": "吴·娟是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "绘画",
+      "绘画",
+      "旅行"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_141",
+    "name": "钱·燕",
+    "alias": "冰雪卫兵",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "卫兵",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "智慧",
+      "悲观",
+      "智慧"
+    ],
+    "backgroundStory": "钱·燕是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "写作",
+      "运动",
+      "烹饪"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_142",
+    "name": "韩·萍",
+    "alias": "冰雪卫兵",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "卫兵",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "狡猾",
+      "善良",
+      "冷静"
+    ],
+    "backgroundStory": "韩·萍是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "园艺",
+      "烹饪",
+      "编程"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_143",
+    "name": "褚·军",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "铁匠",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "狡猾",
+      "勤劳",
+      "忠诚"
+    ],
+    "backgroundStory": "褚·军是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "编程",
+      "旅行",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_144",
+    "name": "钱·丽",
+    "alias": "冰雪药剂师",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "药剂师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "勇敢",
+      "冷静",
+      "忠诚"
+    ],
+    "backgroundStory": "钱·丽是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "烹饪",
+      "写作",
+      "写作"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_145",
+    "name": "钱·娟",
+    "alias": "冰雪药剂师",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "药剂师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "悲观",
+      "悲观"
+    ],
+    "backgroundStory": "钱·娟是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "音乐",
+      "钓鱼",
+      "钓鱼"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_146",
+    "name": "吴·红",
+    "alias": "冰雪学者",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "学者",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "智慧",
+      "热情",
+      "善良"
+    ],
+    "backgroundStory": "吴·红是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "绘画",
+      "运动",
+      "阅读"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_147",
+    "name": "孙·军",
+    "alias": "冰雪矿工",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "矿工",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "智慧",
+      "智慧",
+      "智慧"
+    ],
+    "backgroundStory": "孙·军是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "阅读",
+      "阅读",
+      "园艺"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_148",
+    "name": "冯·涛",
+    "alias": "冰雪牧师",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "牧师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "狡猾",
+      "冷静",
+      "勤劳"
+    ],
+    "backgroundStory": "冯·涛是 Ice Snow City 的一名牧师，致力于治疗伤病、提供祝福。",
+    "economicRole": "治疗伤病、提供祝福",
+    "skills": [
+      "治疗",
+      "神学"
+    ],
+    "hobbies": [
+      "旅行",
+      "钓鱼",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪教堂",
+    "dailyRoutine": "白天在冰雪教堂工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性牧师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 牧师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_149",
+    "name": "韩·涛",
+    "alias": "冰雪药剂师",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "药剂师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "乐观",
+      "冷静",
+      "冷静"
+    ],
+    "backgroundStory": "韩·涛是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "烹饪",
+      "钓鱼",
+      "绘画"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_150",
+    "name": "褚·萍",
+    "alias": "冰雪厨师",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "厨师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "乐观",
+      "智慧",
+      "善良"
+    ],
+    "backgroundStory": "褚·萍是 Ice Snow City 的一名厨师，致力于烹饪食物、销售菜肴。",
+    "economicRole": "烹饪食物、销售菜肴",
+    "skills": [
+      "烹饪",
+      "食材搭配"
+    ],
+    "hobbies": [
+      "旅行",
+      "音乐",
+      "烹饪"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪餐厅",
+    "dailyRoutine": "白天在冰雪餐厅工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性厨师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 厨师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_151",
+    "name": "褚·丽",
+    "alias": "冰雪卫兵",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "卫兵",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "忠诚",
+      "忠诚",
+      "忠诚"
+    ],
+    "backgroundStory": "褚·丽是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "写作",
+      "烹饪",
+      "烹饪"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_152",
+    "name": "赵·静",
+    "alias": "冰雪商人",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "商人",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "悲观",
+      "忠诚",
+      "狡猾"
+    ],
+    "backgroundStory": "赵·静是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "园艺",
+      "烹饪",
+      "阅读"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_153",
+    "name": "沈·明",
+    "alias": "冰雪裁缝",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "裁缝",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "乐观",
+      "勇敢",
+      "忠诚"
+    ],
+    "backgroundStory": "沈·明是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "烹饪",
+      "绘画"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_154",
+    "name": "李·萍",
+    "alias": "冰雪牧师",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "牧师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "狡猾",
+      "忠诚",
+      "勇敢"
+    ],
+    "backgroundStory": "李·萍是 Ice Snow City 的一名牧师，致力于治疗伤病、提供祝福。",
+    "economicRole": "治疗伤病、提供祝福",
+    "skills": [
+      "治疗",
+      "神学"
+    ],
+    "hobbies": [
+      "写作",
+      "编程",
+      "阅读"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪教堂",
+    "dailyRoutine": "白天在冰雪教堂工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性牧师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 牧师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_155",
+    "name": "郑·涛",
+    "alias": "冰雪药剂师",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "药剂师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "勤劳",
+      "乐观",
+      "善良"
+    ],
+    "backgroundStory": "郑·涛是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "运动",
+      "阅读",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_156",
+    "name": "蒋·刚",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "铁匠",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "热情",
+      "智慧",
+      "善良"
+    ],
+    "backgroundStory": "蒋·刚是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "旅行",
+      "阅读",
+      "运动"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_157",
+    "name": "李·涛",
+    "alias": "冰雪商人",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "商人",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "智慧",
+      "勇敢"
+    ],
+    "backgroundStory": "李·涛是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "阅读",
+      "运动"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_158",
+    "name": "郑·敏",
+    "alias": "冰雪学者",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "学者",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "善良",
+      "智慧",
+      "狡猾"
+    ],
+    "backgroundStory": "郑·敏是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "绘画",
+      "钓鱼",
+      "运动"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_159",
+    "name": "周·军",
+    "alias": "冰雪裁缝",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "裁缝",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "狡猾",
+      "冷静",
+      "忠诚"
+    ],
+    "backgroundStory": "周·军是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "编程",
+      "运动",
+      "音乐"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_160",
+    "name": "钱·杰",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "铁匠",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "狡猾",
+      "善良",
+      "勇敢"
+    ],
+    "backgroundStory": "钱·杰是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "旅行",
+      "运动",
+      "写作"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_161",
+    "name": "钱·娜",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "矿工",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "智慧",
+      "勇敢",
+      "智慧"
+    ],
+    "backgroundStory": "钱·娜是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "阅读",
+      "绘画",
+      "钓鱼"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_162",
+    "name": "赵·波",
+    "alias": "冰雪药剂师",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "药剂师",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "善良",
+      "忠诚",
+      "忠诚"
+    ],
+    "backgroundStory": "赵·波是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "写作",
+      "阅读"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_163",
+    "name": "韩·芳",
+    "alias": "冰雪探险家",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "探险家",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "勇敢",
+      "智慧",
+      "狡猾"
+    ],
+    "backgroundStory": "韩·芳是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "园艺",
+      "阅读",
+      "烹饪"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_164",
+    "name": "陈·勇",
+    "alias": "冰雪药剂师",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "药剂师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "狡猾",
+      "忠诚",
+      "勤劳"
+    ],
+    "backgroundStory": "陈·勇是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "绘画",
+      "钓鱼",
+      "运动"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_165",
+    "name": "李·萍",
+    "alias": "冰雪探险家",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "探险家",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "乐观",
+      "乐观"
+    ],
+    "backgroundStory": "李·萍是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "绘画",
+      "烹饪",
+      "运动"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_166",
+    "name": "蒋·刚",
+    "alias": "冰雪裁缝",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "裁缝",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "善良",
+      "狡猾",
+      "智慧"
+    ],
+    "backgroundStory": "蒋·刚是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "烹饪",
+      "钓鱼",
+      "写作"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_167",
+    "name": "沈·波",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "探险家",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "狡猾",
+      "智慧",
+      "善良"
+    ],
+    "backgroundStory": "沈·波是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "烹饪",
+      "烹饪",
+      "园艺"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_168",
+    "name": "冯·强",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "探险家",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "乐观",
+      "善良"
+    ],
+    "backgroundStory": "冯·强是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "编程",
+      "烹饪",
+      "写作"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_169",
+    "name": "蒋·萍",
+    "alias": "冰雪矿工",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "矿工",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "悲观",
+      "乐观",
+      "忠诚"
+    ],
+    "backgroundStory": "蒋·萍是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "烹饪",
+      "运动",
+      "音乐"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_170",
+    "name": "杨·伟",
+    "alias": "冰雪学者",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "学者",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "勇敢",
+      "善良",
+      "智慧"
+    ],
+    "backgroundStory": "杨·伟是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "编程",
+      "绘画",
+      "音乐"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_171",
+    "name": "吴·明",
+    "alias": "冰雪商人",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "商人",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "悲观",
+      "乐观",
+      "善良"
+    ],
+    "backgroundStory": "吴·明是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "园艺",
+      "绘画",
+      "运动"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_172",
+    "name": "钱·娜",
+    "alias": "冰雪卫兵",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "卫兵",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "狡猾",
+      "热情",
+      "善良"
+    ],
+    "backgroundStory": "钱·娜是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "烹饪",
+      "阅读",
+      "运动"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_173",
+    "name": "沈·玲",
+    "alias": "冰雪裁缝",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "裁缝",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "勤劳",
+      "热情",
+      "悲观"
+    ],
+    "backgroundStory": "沈·玲是 Ice Snow City 的一名裁缝，致力于制作服装、修补衣物。",
+    "economicRole": "制作服装、修补衣物",
+    "skills": [
+      "缝纫",
+      "设计"
+    ],
+    "hobbies": [
+      "阅读",
+      "钓鱼",
+      "编程"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪裁缝铺",
+    "dailyRoutine": "白天在冰雪裁缝铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性裁缝，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 裁缝, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_174",
+    "name": "郑·涛",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "铁匠",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "勤劳",
+      "善良",
+      "冷静"
+    ],
+    "backgroundStory": "郑·涛是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "园艺",
+      "运动",
+      "编程"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_175",
+    "name": "郑·敏",
+    "alias": "冰雪卫兵",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "卫兵",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "热情",
+      "狡猾",
+      "热情"
+    ],
+    "backgroundStory": "郑·敏是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "旅行",
+      "音乐"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_176",
+    "name": "吴·红",
+    "alias": "冰雪厨师",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "厨师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "热情",
+      "勤劳",
+      "悲观"
+    ],
+    "backgroundStory": "吴·红是 Ice Snow City 的一名厨师，致力于烹饪食物、销售菜肴。",
+    "economicRole": "烹饪食物、销售菜肴",
+    "skills": [
+      "烹饪",
+      "食材搭配"
+    ],
+    "hobbies": [
+      "阅读",
+      "绘画",
+      "园艺"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪餐厅",
+    "dailyRoutine": "白天在冰雪餐厅工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性厨师，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 厨师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_177",
+    "name": "孙·勇",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "铁匠",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "狡猾",
+      "善良",
+      "忠诚"
+    ],
+    "backgroundStory": "孙·勇是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "绘画",
+      "烹饪",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_178",
+    "name": "韩·伟",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "探险家",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "智慧",
+      "智慧",
+      "狡猾"
+    ],
+    "backgroundStory": "韩·伟是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "园艺",
+      "园艺",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_179",
+    "name": "钱·勇",
+    "alias": "冰雪商人",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "商人",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "善良",
+      "勇敢",
+      "善良"
+    ],
+    "backgroundStory": "钱·勇是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "烹饪",
+      "阅读",
+      "钓鱼"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_180",
+    "name": "钱·勇",
+    "alias": "冰雪矿工",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "矿工",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "勤劳",
+      "狡猾",
+      "悲观"
+    ],
+    "backgroundStory": "钱·勇是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "编程",
+      "烹饪",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_181",
+    "name": "陈·燕",
+    "alias": "冰雪卫兵",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "卫兵",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "忠诚",
+      "勇敢",
+      "智慧"
+    ],
+    "backgroundStory": "陈·燕是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "绘画",
+      "绘画"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_182",
+    "name": "杨·静",
+    "alias": "冰雪商人",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "商人",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "勇敢",
+      "善良",
+      "热情"
+    ],
+    "backgroundStory": "杨·静是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "阅读",
+      "音乐",
+      "音乐"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_183",
+    "name": "钱·杰",
+    "alias": "冰雪厨师",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "厨师",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "乐观",
+      "善良",
+      "热情"
+    ],
+    "backgroundStory": "钱·杰是 Ice Snow City 的一名厨师，致力于烹饪食物、销售菜肴。",
+    "economicRole": "烹饪食物、销售菜肴",
+    "skills": [
+      "烹饪",
+      "食材搭配"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "写作",
+      "绘画"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪餐厅",
+    "dailyRoutine": "白天在冰雪餐厅工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性厨师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 厨师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_184",
+    "name": "吴·刚",
+    "alias": "冰雪学者",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "学者",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "悲观",
+      "狡猾",
+      "悲观"
+    ],
+    "backgroundStory": "吴·刚是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "写作",
+      "写作",
+      "钓鱼"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_185",
+    "name": "李·军",
+    "alias": "冰雪矿工",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "矿工",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "勇敢",
+      "冷静",
+      "善良"
+    ],
+    "backgroundStory": "李·军是 Ice Snow City 的一名矿工，致力于开采矿石、销售矿石。",
+    "economicRole": "开采矿石、销售矿石",
+    "skills": [
+      "采矿",
+      "地质学"
+    ],
+    "hobbies": [
+      "绘画",
+      "音乐",
+      "绘画"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪矿场",
+    "dailyRoutine": "白天在冰雪矿场工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性矿工，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 矿工, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_186",
+    "name": "钱·娜",
+    "alias": "冰雪药剂师",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "药剂师",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "冷静",
+      "乐观",
+      "善良"
+    ],
+    "backgroundStory": "钱·娜是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "烹饪",
+      "编程",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_187",
+    "name": "赵·磊",
+    "alias": "冰雪卫兵",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "卫兵",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "勤劳",
+      "乐观",
+      "热情"
+    ],
+    "backgroundStory": "赵·磊是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "阅读",
+      "烹饪",
+      "阅读"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_188",
+    "name": "褚·燕",
+    "alias": "冰雪牧师",
+    "gender": "女",
+    "ageRange": "青年",
+    "profession": "牧师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "冷静",
+      "乐观",
+      "乐观"
+    ],
+    "backgroundStory": "褚·燕是 Ice Snow City 的一名牧师，致力于治疗伤病、提供祝福。",
+    "economicRole": "治疗伤病、提供祝福",
+    "skills": [
+      "治疗",
+      "神学"
+    ],
+    "hobbies": [
+      "编程",
+      "园艺",
+      "园艺"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪教堂",
+    "dailyRoutine": "白天在冰雪教堂工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的女性牧师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young female 牧师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_189",
+    "name": "蒋·玲",
+    "alias": "冰雪学者",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "学者",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "忠诚",
+      "乐观",
+      "热情"
+    ],
+    "backgroundStory": "蒋·玲是 Ice Snow City 的一名学者，致力于研究历史、提供咨询。",
+    "economicRole": "研究历史、提供咨询",
+    "skills": [
+      "历史学",
+      "文献研究"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "绘画",
+      "绘画"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪图书馆",
+    "dailyRoutine": "白天在冰雪图书馆工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性学者，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 学者, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_190",
+    "name": "陈·燕",
+    "alias": "冰雪卫兵",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "卫兵",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "乐观",
+      "勇敢"
+    ],
+    "backgroundStory": "陈·燕是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "编程",
+      "运动"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_191",
+    "name": "韩·强",
+    "alias": "冰雪药剂师",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "药剂师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "智慧",
+      "勇敢",
+      "乐观"
+    ],
+    "backgroundStory": "韩·强是 Ice Snow City 的一名药剂师，致力于制作药剂、销售药水。",
+    "economicRole": "制作药剂、销售药水",
+    "skills": [
+      "炼金术",
+      "草药学"
+    ],
+    "hobbies": [
+      "编程",
+      "园艺",
+      "运动"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪药剂店",
+    "dailyRoutine": "白天在冰雪药剂店工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性药剂师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 药剂师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_192",
+    "name": "钱·军",
+    "alias": "冰雪商人",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "商人",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "勇敢",
+      "悲观",
+      "热情"
+    ],
+    "backgroundStory": "钱·军是 Ice Snow City 的一名商人，致力于买卖商品、倒卖物资。",
+    "economicRole": "买卖商品、倒卖物资",
+    "skills": [
+      "交易",
+      "谈判"
+    ],
+    "hobbies": [
+      "绘画",
+      "烹饪",
+      "钓鱼"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪集市",
+    "dailyRoutine": "白天在冰雪集市工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性商人，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 商人, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_193",
+    "name": "杨·伟",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "探险家",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "乐观",
+      "悲观",
+      "悲观"
+    ],
+    "backgroundStory": "杨·伟是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "音乐",
+      "烹饪",
+      "旅行"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_194",
+    "name": "赵·玲",
+    "alias": "冰雪牧师",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "牧师",
+    "socialClass": "上层",
+    "personalityTraits": [
+      "乐观",
+      "乐观",
+      "善良"
+    ],
+    "backgroundStory": "赵·玲是 Ice Snow City 的一名牧师，致力于治疗伤病、提供祝福。",
+    "economicRole": "治疗伤病、提供祝福",
+    "skills": [
+      "治疗",
+      "神学"
+    ],
+    "hobbies": [
+      "阅读",
+      "旅行",
+      "绘画"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪教堂",
+    "dailyRoutine": "白天在冰雪教堂工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性牧师，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 牧师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_195",
+    "name": "赵·波",
+    "alias": "冰雪探险家",
+    "gender": "男",
+    "ageRange": "中年",
+    "profession": "探险家",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "善良",
+      "狡猾",
+      "热情"
+    ],
+    "backgroundStory": "赵·波是 Ice Snow City 的一名探险家，致力于探索未知、寻找宝藏。",
+    "economicRole": "探索未知、寻找宝藏",
+    "skills": [
+      "野外生存",
+      "寻宝"
+    ],
+    "hobbies": [
+      "旅行",
+      "钓鱼",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "探险者公会",
+    "dailyRoutine": "白天在探险者公会工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的男性探险家，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged male 探险家, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_196",
+    "name": "吴·强",
+    "alias": "冰雪铁匠",
+    "gender": "男",
+    "ageRange": "老年",
+    "profession": "铁匠",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "善良",
+      "狡猾",
+      "善良"
+    ],
+    "backgroundStory": "吴·强是 Ice Snow City 的一名铁匠，致力于打造工具、修理装备。",
+    "economicRole": "打造工具、修理装备",
+    "skills": [
+      "锻造",
+      "金属学"
+    ],
+    "hobbies": [
+      "钓鱼",
+      "烹饪",
+      "绘画"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪铁匠铺",
+    "dailyRoutine": "白天在冰雪铁匠铺工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的男性铁匠，穿着符合职业的服装。",
+    "aiImagePrompt": "A old male 铁匠, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_197",
+    "name": "郑·萍",
+    "alias": "冰雪卫兵",
+    "gender": "女",
+    "ageRange": "中年",
+    "profession": "卫兵",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "勇敢",
+      "悲观",
+      "悲观"
+    ],
+    "backgroundStory": "郑·萍是 Ice Snow City 的一名卫兵，致力于维护治安、巡逻城市。",
+    "economicRole": "维护治安、巡逻城市",
+    "skills": [
+      "战斗",
+      "侦查"
+    ],
+    "hobbies": [
+      "运动",
+      "钓鱼",
+      "烹饪"
+    ],
+    "relationshipStatus": "已婚",
+    "currentLocation": "冰雪城门",
+    "dailyRoutine": "白天在冰雪城门工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位中年的女性卫兵，穿着符合职业的服装。",
+    "aiImagePrompt": "A middle-aged female 卫兵, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_198",
+    "name": "郑·明",
+    "alias": "冰雪厨师",
+    "gender": "男",
+    "ageRange": "青年",
+    "profession": "厨师",
+    "socialClass": "下层",
+    "personalityTraits": [
+      "智慧",
+      "悲观",
+      "狡猾"
+    ],
+    "backgroundStory": "郑·明是 Ice Snow City 的一名厨师，致力于烹饪食物、销售菜肴。",
+    "economicRole": "烹饪食物、销售菜肴",
+    "skills": [
+      "烹饪",
+      "食材搭配"
+    ],
+    "hobbies": [
+      "旅行",
+      "绘画",
+      "阅读"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪餐厅",
+    "dailyRoutine": "白天在冰雪餐厅工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位青年的男性厨师，穿着符合职业的服装。",
+    "aiImagePrompt": "A young male 厨师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  },
+  {
+    "npcId": "NPC_199",
+    "name": "韩·红",
+    "alias": "冰雪厨师",
+    "gender": "女",
+    "ageRange": "老年",
+    "profession": "厨师",
+    "socialClass": "中层",
+    "personalityTraits": [
+      "悲观",
+      "狡猾",
+      "狡猾"
+    ],
+    "backgroundStory": "韩·红是 Ice Snow City 的一名厨师，致力于烹饪食物、销售菜肴。",
+    "economicRole": "烹饪食物、销售菜肴",
+    "skills": [
+      "烹饪",
+      "食材搭配"
+    ],
+    "hobbies": [
+      "旅行",
+      "运动",
+      "编程"
+    ],
+    "relationshipStatus": "单身",
+    "currentLocation": "冰雪餐厅",
+    "dailyRoutine": "白天在冰雪餐厅工作，晚上休息。",
+    "dialogueStyle": "热情、专业",
+    "visualDescription": "一位老年的女性厨师，穿着符合职业的服装。",
+    "aiImagePrompt": "A old female 厨师, wearing professional attire. Semi-realistic 3D cartoon style, Asian aesthetic, high-quality rendering, modern fashion. Ice Snow City background."
+  }
+]
