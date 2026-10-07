@@ -1,0 +1,63 @@
+{
+  "total": 11,
+  "created": 11,
+  "failed": 0,
+  "created_issues": [
+    {
+      "number": 1,
+      "title": "TC-1.1 创建频道",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/1"
+    },
+    {
+      "number": 2,
+      "title": "TC-1.2 发送消息",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/2"
+    },
+    {
+      "number": 3,
+      "title": "TC-1.3 订阅频道消息",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/3"
+    },
+    {
+      "number": 4,
+      "title": "TC-2.1 添加好友",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/4"
+    },
+    {
+      "number": 5,
+      "title": "TC-3.1 创建队伍",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/5"
+    },
+    {
+      "number": 6,
+      "title": "TC-4.1 ChatPanel 渲染",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/6"
+    },
+    {
+      "number": 7,
+      "title": "TC-4.2 频道切换",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/7"
+    },
+    {
+      "number": 8,
+      "title": "PT-1 消息发送延迟",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/8"
+    },
+    {
+      "number": 9,
+      "title": "浏览器兼容性 - Chrome 120+",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/9"
+    },
+    {
+      "number": 10,
+      "title": "响应式设计 - 移动端 (< 600px)",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/10"
+    },
+    {
+      "number": 11,
+      "title": "完整功能回归测试",
+      "url": "https://github.com/Icesnowcoin/ice-snow-city-gamefi/issues/11"
+    }
+  ],
+  "failed_issues": []
+}

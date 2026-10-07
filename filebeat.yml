@@ -1,0 +1,92 @@
+filebeat.inputs:
+  # 应用日志
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/ice-snow-city/app.log
+    fields:
+      service: ice-snow-city
+      log_type: application
+    multiline.pattern: '^\['
+    multiline.negate: true
+    multiline.match: after
+    json.message_key: message
+    json.keys_under_root: true
+
+  # 系统日志
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/syslog
+    fields:
+      service: system
+      log_type: syslog
+
+  # 数据库日志
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/mysql/error.log
+    fields:
+      service: mysql
+      log_type: database
+
+  # Nginx 访问日志
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/access.log
+    fields:
+      service: nginx
+      log_type: access
+    processors:
+      - add_locale: ~
+
+  # Nginx 错误日志
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/error.log
+    fields:
+      service: nginx
+      log_type: error
+
+processors:
+  - add_host_metadata:
+      when.not.regexp.re: '\.yml$'
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+  - add_fields:
+      target: ''
+      fields:
+        environment: production
+        datacenter: us-east-1
+
+output.elasticsearch:
+  enabled: true
+  hosts: ["${ELASTICSEARCH_HOST:localhost:9200}"]
+  protocol: "https"
+  username: "${ELASTICSEARCH_USER:elastic}"
+  password: "${ELASTICSEARCH_PASSWORD:changeme}"
+  ssl.verification_mode: "none"
+  index: "filebeat-ice-snow-city-%{+yyyy.MM.dd}"
+
+output.logstash:
+  enabled: false
+  hosts: ["localhost:5000"]
+
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+
+# 监控 Filebeat 自身
+monitoring.enabled: true
+monitoring.cluster_uuid: ""
+xpack.monitoring.elasticsearch:
+  hosts: ["${ELASTICSEARCH_HOST:localhost:9200}"]
+  username: "${ELASTICSEARCH_USER:elastic}"
+  password: "${ELASTICSEARCH_PASSWORD:changeme}"

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-16T00:00:00.000Z",
+  "source": "ci-software",
+  "device": {
+    "platform": "ci-linux",
+    "browser": "chromium-fixture",
+    "renderer": "software-fixture",
+    "devicePixelRatio": 1,
+    "model": "ice-snow-city-development-substitute"
+  },
+  "samples": [
+    {
+      "mode": "baseline",
+      "quality": "medium",
+      "engineFps": 58,
+      "averageFrameMs": 17.24,
+      "p95FrameMs": 22.5,
+      "droppedFrameRatio": 0.01,
+      "frames": 2900,
+      "durationMs": 50000,
+      "peakObservedMb": null,
+      "drawCalls": null
+    },
+    {
+      "mode": "snow",
+      "quality": "medium",
+      "engineFps": 52,
+      "averageFrameMs": 19.23,
+      "p95FrameMs": 28.0,
+      "droppedFrameRatio": 0.02,
+      "frames": 2600,
+      "durationMs": 50000,
+      "peakObservedMb": null,
+      "drawCalls": null
+    }
+  ],
+  "comparison": {
+    "averageFrameDeltaMs": 1.99,
+    "p95FrameDeltaMs": 5.5,
+    "droppedFrameRatioDelta": 0.01,
+    "snowFps": 52
+  },
+  "validation": {
+    "status": "software-baseline",
+    "realDeviceEvidenceRequired": true
+  },
+  "provenance": {
+    "kind": "simulated-development-substitute",
+    "notRealDeviceEvidence": true,
+    "notForReleaseGate": true
+  }
+}
