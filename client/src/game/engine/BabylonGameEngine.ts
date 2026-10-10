@@ -1,16 +1,32 @@
 import * as BABYLON from '@babylonjs/core';
-import '@babylonjs/loaders/glTF';
-import '@babylonjs/materials';
+import { ensureGltfLoader } from '../loaders/ensureGltfLoader';
+import { RoamingCameraController } from '../camera/RoamingCameraController';
+import { IceSnowRenderingProfile } from '../rendering/IceSnowRenderingProfile';
+import { getPreferredRenderQuality } from '../rendering/renderQuality';
 
 /**
  * Babylon.js 3D 游戏引擎
  * 负责场景管理、相机控制、光照、物理等核心功能
  */
+export interface LoadModelProgress {
+  loaded: number;
+  total: number;
+  lengthComputable: boolean;
+  percent: number | null;
+}
+
+export interface LoadModelOptions {
+  onProgress?: (progress: LoadModelProgress) => void;
+  signal?: AbortSignal;
+}
+
 export class BabylonGameEngine {
   private engine: BABYLON.Engine | null = null;
   private scene: BABYLON.Scene | null = null;
   private canvas: HTMLCanvasElement | null = null;
   private camera: BABYLON.UniversalCamera | null = null;
+  private roamingCamera: RoamingCameraController | null = null;
+  private iceSnowRendering: IceSnowRenderingProfile | null = null;
   private isRunning = false;
 
   /**
@@ -54,24 +70,35 @@ export class BabylonGameEngine {
     if (!this.scene || !this.canvas) return;
 
     // 创建通用相机
-    this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 50, -100));
+    this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(42, 34, -58));
+    this.camera.setTarget(new BABYLON.Vector3(0, 12, 0));
     this.camera.attachControl(this.canvas, true);
 
     // 相机速度和惯性
-    this.camera.speed = 0;
+    this.camera.speed = 0.45;
     this.camera.angularSensibility = 1000;
     this.camera.inertia = 0.7;
 
-    // 相机碰撞检测
+    // 相机碰撞检测与移动端椭球体
     this.camera.checkCollisions = true;
-    (this.camera as any).collisionRadius = new BABYLON.Vector3(2, 2, 2);
+    this.camera.ellipsoid = new BABYLON.Vector3(1.2, 2, 1.2);
+    this.camera.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
 
     // 设置相机范围
     this.camera.minZ = 0.1;
     this.camera.maxZ = 10000;
 
-    // 设置视角
-    this.camera.attachControl(this.canvas, true);
+    // 启用拖拽、触控和 WASD/方向键漫游，并在场景边界内限制相机。
+    this.roamingCamera = new RoamingCameraController(this.scene, this.camera, {
+      minHeight: 4,
+      maxHeight: 140,
+      minX: -220,
+      maxX: 220,
+      minZ: -220,
+      maxZ: 220,
+      speed: 0.45,
+    });
+    this.roamingCamera.enable();
   }
 
   /**
@@ -79,25 +106,21 @@ export class BabylonGameEngine {
    */
   private setupLighting(): void {
     if (!this.scene) return;
+    this.iceSnowRendering = new IceSnowRenderingProfile(this.scene, { quality: getPreferredRenderQuality() });
+    this.iceSnowRendering.setupLighting();
+  }
 
-    // 环境光
-    const ambientLight = new BABYLON.HemisphericLight('ambient', new BABYLON.Vector3(0, 1, 0), this.scene);
-    ambientLight.intensity = 0.6;
+  /** 应用画质菜单选择，并重新配置现有场景的光照、阴影和 PBR 雪层。 */
+  public setRenderQuality(quality: 'low' | 'medium' | 'high'): void {
+    if (!this.scene) return;
+    this.iceSnowRendering?.dispose();
+    this.iceSnowRendering = new IceSnowRenderingProfile(this.scene, { quality });
+    this.iceSnowRendering.setupLighting();
+    this.iceSnowRendering.applyToSceneMeshes();
+  }
 
-    // 主光源（太阳光）
-    const sunLight = new BABYLON.DirectionalLight('sun', new BABYLON.Vector3(-1, 1, -1), this.scene);
-    sunLight.intensity = 0.8;
-    sunLight.position = new BABYLON.Vector3(100, 100, -100);
-
-    // 阴影贴图
-    const shadowGenerator = new BABYLON.ShadowGenerator(2048, sunLight);
-    shadowGenerator.useBlurExponentialShadowMap = true;
-    shadowGenerator.blurKernel = 32;
-
-    // 点光源（用于建筑和环境）
-    const pointLight = new BABYLON.PointLight('point', new BABYLON.Vector3(0, 20, 0), this.scene);
-    pointLight.intensity = 0.3;
-    pointLight.range = 100;
+  public getRenderQuality(): 'low' | 'medium' | 'high' {
+    return this.iceSnowRendering?.getQuality() ?? getPreferredRenderQuality();
   }
 
   /**
@@ -108,7 +131,7 @@ export class BabylonGameEngine {
 
     // 创建天空盒材质
     const skyboxMaterial = new BABYLON.StandardMaterial('skyBox', this.scene);
-    skyboxMaterial.emissiveColor = new BABYLON.Color3(0.8, 0.9, 1);
+    skyboxMaterial.emissiveColor = new BABYLON.Color3(0.18, 0.28, 0.5);
     skyboxMaterial.backFaceCulling = false;
 
     // 创建天空盒网格
@@ -131,9 +154,10 @@ export class BabylonGameEngine {
     }, this.scene);
 
     // 地面材质
-    const groundMaterial = new BABYLON.StandardMaterial('groundMat', this.scene);
-    (groundMaterial as any).diffuse = new BABYLON.Color3(0.4, 0.6, 0.3);
-    (groundMaterial as any).specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+    const groundMaterial = new BABYLON.PBRMaterial('groundMat', this.scene);
+    groundMaterial.albedoColor = new BABYLON.Color3(0.32, 0.46, 0.58);
+    groundMaterial.metallic = 0.02;
+    groundMaterial.roughness = 0.82;
     ground.material = groundMaterial;
 
     return ground;
@@ -163,9 +187,10 @@ export class BabylonGameEngine {
     building.position = position;
 
     // 建筑材质
-    const material = new BABYLON.StandardMaterial(`${name}Mat`, this.scene);
-    (material as any).diffuse = color;
-    (material as any).specularColor = new BABYLON.Color3(0.3, 0.3, 0.3);
+    const material = new BABYLON.PBRMaterial(`${name}Mat`, this.scene);
+    material.albedoColor = color;
+    material.metallic = 0.08;
+    material.roughness = 0.52;
     building.material = material;
 
     return building;
@@ -197,9 +222,10 @@ export class BabylonGameEngine {
     cylinder.position = position;
 
     // 材质
-    const material = new BABYLON.StandardMaterial(`${name}Mat`, this.scene);
-    (material as any).diffuse = color;
-    (material as any).specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+    const material = new BABYLON.PBRMaterial(`${name}Mat`, this.scene);
+    material.albedoColor = color;
+    material.metallic = 0.04;
+    material.roughness = 0.62;
     cylinder.material = material;
 
     return cylinder;
@@ -228,9 +254,10 @@ export class BabylonGameEngine {
     sphere.position = position;
 
     // 材质
-    const material = new BABYLON.StandardMaterial(`${name}Mat`, this.scene);
-    (material as any).diffuse = color;
-    (material as any).specularColor = new BABYLON.Color3(0.3, 0.3, 0.3);
+    const material = new BABYLON.PBRMaterial(`${name}Mat`, this.scene);
+    material.albedoColor = color;
+    material.metallic = 0.04;
+    material.roughness = 0.58;
     sphere.material = material;
 
     return sphere;
@@ -245,16 +272,50 @@ export class BabylonGameEngine {
   public async loadModel(
     url: string,
     name: string,
-    position: BABYLON.Vector3
+    position: BABYLON.Vector3,
+    options: LoadModelOptions = {},
   ): Promise<BABYLON.AbstractMesh> {
     if (!this.scene) throw new Error('Scene not initialized');
+    if (options.signal?.aborted) throw new DOMException('Model loading was aborted', 'AbortError');
 
-    const result = await BABYLON.SceneLoader.ImportMeshAsync('', '', url, this.scene);
-    const mesh = result.meshes[0];
+    // The procedural map does not need the GLTF loader. Load it only when a
+    // real GLB/GLTF asset is requested so the first map chunk stays smaller.
+    await ensureGltfLoader();
+
+    const result = await BABYLON.SceneLoader.ImportMeshAsync(
+      '',
+      '',
+      url,
+      this.scene,
+      (event) => {
+        const total = event.lengthComputable ? event.total : 0;
+        const loaded = event.loaded;
+        options.onProgress?.({
+          loaded,
+          total,
+          lengthComputable: event.lengthComputable,
+          percent: event.lengthComputable && total > 0 ? Math.min(100, (loaded / total) * 100) : null,
+        });
+      },
+    );
+
+    if (options.signal?.aborted) {
+      result.meshes.forEach((mesh) => mesh.dispose(false, true));
+      throw new DOMException('Model loading was aborted', 'AbortError');
+    }
+
+    const mesh = result.meshes.find((candidate) => !candidate.parent) ?? result.meshes[0];
+    if (!mesh) throw new Error(`No renderable meshes found in model: ${url}`);
+
     mesh.name = name;
-    mesh.position = position;
-
+    mesh.position = position.clone();
+    options.onProgress?.({ loaded: 1, total: 1, lengthComputable: true, percent: 100 });
     return mesh;
+  }
+
+  /** Dispose a loaded GLB root and its owned materials/textures. */
+  public disposeLoadedModel(mesh: BABYLON.AbstractMesh): void {
+    mesh.dispose(false, true);
   }
 
   /**
@@ -267,6 +328,27 @@ export class BabylonGameEngine {
 
     this.camera.position = position;
     this.camera.setTarget(target);
+  }
+
+  /**
+   * 将相机切换为 2.5D 等距视角；默认自由相机行为保持不变。
+   */
+  public setIsometricView(center: BABYLON.Vector3 = BABYLON.Vector3.Zero(), distance = 42): void {
+    const safeDistance = Math.max(1, distance);
+    this.setCameraView(
+      new BABYLON.Vector3(center.x + safeDistance, center.y + safeDistance, center.z - safeDistance),
+      center.clone(),
+    );
+  }
+
+  /** Restore the default city-core inspection view after free roaming. */
+  public resetRoamingCamera(): void {
+    this.roamingCamera?.reset();
+  }
+
+  /** Expose concise controls for the in-game help HUD. */
+  public getRoamingCameraInstructions(): string[] {
+    return this.roamingCamera?.getInstructions() ?? [];
   }
 
   /**
@@ -291,6 +373,11 @@ export class BabylonGameEngine {
   public getEngine(): BABYLON.Engine {
     if (!this.engine) throw new Error('Engine not initialized');
     return this.engine;
+  }
+
+  /** Apply the winter material profile to meshes created after engine startup. */
+  public applyIceSnowRendering(): void {
+    this.iceSnowRendering?.applyToSceneMeshes();
   }
 
   /**
@@ -330,6 +417,10 @@ export class BabylonGameEngine {
    */
   public dispose(): void {
     this.stopRenderLoop();
+    this.roamingCamera?.dispose();
+    this.roamingCamera = null;
+    this.iceSnowRendering?.dispose();
+    this.iceSnowRendering = null;
     if (this.scene) {
       this.scene.dispose();
     }

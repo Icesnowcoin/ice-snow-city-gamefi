@@ -61,26 +61,29 @@ export class DayNightCycleSystem {
    */
   private initializeLights(): void {
     // 移除现有光源
-    this.scene.lights.forEach((light) => {
-      if (light.name !== 'default light') {
+    this.scene.lights.slice().forEach((light) => {
+      if (light.name !== 'default light' && !light.name.startsWith('isc-')) {
         light.dispose();
       }
     });
 
     // 创建太阳光
-    this.sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0, -1, 1), this.scene);
+    this.sunLight = this.scene.getLightByName('isc-sun-light')
+      ?? new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0, -1, 1), this.scene);
     this.sunLight.intensity = 1;
     this.sunLight.range = 500;
     (this.sunLight as BABYLON.DirectionalLight).shadowMinZ = 0;
     (this.sunLight as BABYLON.DirectionalLight).shadowMaxZ = 1000;
 
     // 创建月光
-    this.moonLight = new BABYLON.DirectionalLight('moonLight', new BABYLON.Vector3(0, -1, -1), this.scene);
+    this.moonLight = this.scene.getLightByName('isc-moon-light')
+      ?? new BABYLON.DirectionalLight('moonLight', new BABYLON.Vector3(0, -1, -1), this.scene);
     this.moonLight.intensity = 0;
     this.moonLight.range = 500;
 
     // 创建环境光
-    this.ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, 0), this.scene);
+    this.ambientLight = this.scene.getLightByName('isc-sky-ambient')
+      ?? new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, 0), this.scene);
     this.ambientLight.intensity = 0.5;
     (this.ambientLight as BABYLON.HemisphericLight).groundColor = new BABYLON.Color3(0.2, 0.2, 0.3);
 

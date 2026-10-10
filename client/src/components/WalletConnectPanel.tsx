@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { BrowserProvider } from 'ethers';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { connectWallet as connectWalletEthers, isWalletAvailable, formatAddress as formatAddressEthers, getNetworkName } from '@/lib/web3';
 import { useWalletPersistence, type WalletConnectionState } from '@/hooks/useWalletPersistence';
@@ -35,6 +36,7 @@ export interface WalletInfo {
 export interface ConnectedWallet {
   type: WalletType;
   address: string;
+  provider?: BrowserProvider;
   chainId: number;
   balance: string;
   isConnected: boolean;
@@ -121,7 +123,7 @@ export const WalletConnectPanel: React.FC<WalletConnectPanelProps> = ({
 
   // Save connected wallets to localStorage
   useEffect(() => {
-    const obj = Object.fromEntries(connectedWallets.entries());
+    const obj = Object.fromEntries(Array.from(connectedWallets.entries()).map(([type, wallet]) => [type, { ...wallet, provider: undefined }]));
     localStorage.setItem('connectedWallets', JSON.stringify(obj));
   }, [connectedWallets]);
 
@@ -139,6 +141,7 @@ export const WalletConnectPanel: React.FC<WalletConnectPanelProps> = ({
       const wallet: ConnectedWallet = {
         type: walletType,
         address: connection.address,
+        provider: connection.provider,
         chainId: connection.chainId,
         balance: connection.balance,
         isConnected: true,

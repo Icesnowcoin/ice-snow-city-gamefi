@@ -1,102 +1,71 @@
 .minimap-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: rgba(26, 26, 46, 0.95);
-  border: 2px solid #4a9d6f;
-  border-radius: 8px;
-  padding: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  z-index: 100;
-  font-family: 'Arial', sans-serif;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 25;
+  width: 220px;
+  overflow: hidden;
+  border: 1px solid rgb(125 211 252 / 0.48);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgb(7 25 52 / 0.96), rgb(5 14 32 / 0.94));
+  box-shadow: 0 14px 30px rgb(0 0 0 / 0.35), 0 0 22px rgb(34 211 238 / 0.16);
+  backdrop-filter: blur(14px);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.minimap-container::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  border: 1px solid rgb(186 230 253 / 0.18);
+  border-radius: inherit;
 }
 
 .minimap-header {
-  background: linear-gradient(135deg, #4a9d6f 0%, #2d6a4f 100%);
-  padding: 10px 15px;
-  border-bottom: 1px solid #3a7d5f;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 6px 6px 0 0;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid rgb(125 211 252 / 0.2);
+  background: linear-gradient(90deg, rgb(14 116 144 / 0.4), rgb(49 46 129 / 0.36));
+  color: #e0f7ff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.minimap-header h3 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
+.minimap-header h3 { margin: 0; font-size: inherit; }
+.minimap-header span { color: rgb(165 243 252 / 0.9); font-size: 0.68rem; }
 
 .minimap-canvas {
   display: block;
-  background: #1a1a2e;
+  width: 100%;
+  height: auto;
+  background: #07152d;
   cursor: crosshair;
-  border-radius: 0 0 6px 6px;
-  transition: filter 0.2s ease;
+  image-rendering: auto;
 }
 
-.minimap-canvas:hover {
-  filter: brightness(1.1);
+.minimap-canvas:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: -2px;
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .minimap-container {
-    bottom: 10px;
-    right: 10px;
+    top: max(0.65rem, env(safe-area-inset-top));
+    right: max(0.65rem, env(safe-area-inset-right));
+    width: 164px;
+    border-radius: 0.75rem;
   }
 
-  .minimap-header h3 {
-    font-size: 12px;
-  }
+  .minimap-header { padding: 0.42rem 0.55rem; font-size: 0.62rem; }
+  .minimap-header span { font-size: 0.58rem; }
 }
 
-/* 暗色主题支持 */
-@media (prefers-color-scheme: dark) {
-  .minimap-container {
-    background: rgba(26, 26, 46, 0.98);
-    border-color: #4a9d6f;
-  }
-
-  .minimap-header {
-    background: linear-gradient(135deg, #4a9d6f 0%, #2d6a4f 100%);
-  }
-}
-
-/* 亮色主题支持 */
-@media (prefers-color-scheme: light) {
-  .minimap-container {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: #4a9d6f;
-  }
-
-  .minimap-header {
-    background: linear-gradient(135deg, #4a9d6f 0%, #2d6a4f 100%);
-    color: #ffffff;
-  }
-
-  .minimap-canvas {
-    background: #f5f5f5;
-  }
-}
-
-/* 动画效果 */
-@keyframes minimapPulse {
-  0% {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  }
-  50% {
-    box-shadow: 0 4px 20px rgba(74, 157, 111, 0.4);
-  }
-  100% {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  }
-}
-
-.minimap-container.active {
-  animation: minimapPulse 2s ease-in-out infinite;
+@media (prefers-reduced-motion: reduce) {
+  .minimap-container,
+  .minimap-canvas { transition: none; }
 }

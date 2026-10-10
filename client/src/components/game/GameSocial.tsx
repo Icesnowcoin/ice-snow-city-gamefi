@@ -3,6 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Loader2, Heart, MessageCircle, Gift, Users } from "lucide-react";
+import SocialChatPanel from "./SocialChatPanel";
 
 export const GameSocial: React.FC = () => {
   const [selectedNpc, setSelectedNpc] = useState<string | null>(null);
@@ -48,6 +49,8 @@ export const GameSocial: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-900 to-pink-800 p-4 pb-20">
       <h1 className="text-3xl font-bold text-white mb-6">社交系统</h1>
+
+      <SocialChatPanel />
 
       {/* NPC 列表 */}
       <div className="space-y-3 mb-6">

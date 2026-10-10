@@ -7,6 +7,7 @@ import { trpc } from "@/lib/trpc";
 import { Spinner } from "@/components/ui/spinner";
 import { Home, Building2, Hotel, Plus, Wrench, Users } from "lucide-react";
 import { toast } from "sonner";
+import { ISCAmount } from "@/components/ISCLogo";
 
 export default function ResidentialPage() {
   const [selectedPropertyType, setSelectedPropertyType] = useState<"apartment" | "villa" | "hotel" | null>(null);
@@ -103,7 +104,7 @@ export default function ResidentialPage() {
               <CardTitle className="text-sm font-medium">总资产价值</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{propertiesData.totalValue.toLocaleString()} ISC</div>
+              <ISCAmount amount={propertiesData.totalValue.toLocaleString()} size="lg" className="font-bold" />
             </CardContent>
           </Card>
           <Card>
@@ -111,9 +112,7 @@ export default function ResidentialPage() {
               <CardTitle className="text-sm font-medium">月收入</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                +{propertiesData.totalMonthlyIncome.toLocaleString()} ISC
-              </div>
+              <ISCAmount amount={`+${propertiesData.totalMonthlyIncome.toLocaleString()}`} size="lg" className="font-bold text-green-600" />
             </CardContent>
           </Card>
         </div>
@@ -219,7 +218,7 @@ export default function ResidentialPage() {
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">月收入:</span>
                         <span className="text-green-600 font-semibold">
-                          {property.monthlyRevenue.toLocaleString()} ISC
+                          <ISCAmount amount={property.monthlyRevenue.toLocaleString()} size="sm" className="font-semibold text-green-600" />
                         </span>
                       </div>
 
@@ -311,7 +310,7 @@ export default function ResidentialPage() {
                     <CardContent className="space-y-4">
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">购买价格:</span>
-                        <span className="font-semibold">{property.purchasePrice.toLocaleString()} ISC</span>
+                        <ISCAmount amount={property.purchasePrice.toLocaleString()} size="sm" className="font-semibold" />
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">容量:</span>
@@ -319,7 +318,7 @@ export default function ResidentialPage() {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">月收入:</span>
-                        <span className="text-green-600">{property.monthlyRevenue.toLocaleString()} ISC</span>
+                        <ISCAmount amount={property.monthlyRevenue.toLocaleString()} size="sm" className="text-green-600" />
                       </div>
                       <Button
                         className="w-full"

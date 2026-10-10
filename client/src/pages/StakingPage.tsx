@@ -12,19 +12,19 @@ export default function StakingPage() {
     ? [
         {
           title: t("staking.currentAPY"),
-          value: stakingQuery.data.currentAPY,
+          value: stakingQuery.data.currentAPY ?? (lang === "zh" ? "暂不可用" : "Unavailable"),
           icon: Percent,
           color: "text-chart-1",
         },
         {
           title: t("staking.pendingRewards"),
-          value: `${stakingQuery.data.pendingRewards} ISC`,
+          value: stakingQuery.data.pendingRewards ? `${stakingQuery.data.pendingRewards} ISC` : (lang === "zh" ? "暂不可用" : "Unavailable"),
           icon: Wallet,
           color: "text-chart-2",
         },
         {
           title: t("staking.totalStaked"),
-          value: `${stakingQuery.data.totalStaked} ISC`,
+          value: stakingQuery.data.totalStaked ? `${stakingQuery.data.totalStaked} ISC` : (lang === "zh" ? "暂不可用" : "Unavailable"),
           icon: Zap,
           color: "text-chart-4",
         },
@@ -78,8 +78,8 @@ export default function StakingPage() {
             </p>
             <p>
               {lang === "zh"
-                ? "当前质押池 ID 为 {poolId}，APY 为 {apy}，所有质押者共享收益池。"
-                : "The current staking pool ID is {poolId} with an APY of {apy}. All stakers share the rewards pool."}
+                ? `当前质押池 ID 为 ${stakingQuery.data?.poolId ?? "—"}，APY 为 ${stakingQuery.data?.currentAPY ?? "暂不可用"}。所有质押者共享收益池。`
+                : `The current staking pool ID is ${stakingQuery.data?.poolId ?? "—"} with an APY of ${stakingQuery.data?.currentAPY ?? "unavailable"}. All stakers share the rewards pool.`}
             </p>
             <div className="pt-2 border-t border-border">
               <p className="font-semibold text-foreground">
@@ -102,6 +102,11 @@ export default function StakingPage() {
                 </li>
               </ul>
             </div>
+            {stakingQuery.data?.source !== "chain" && (
+              <p className="text-xs text-amber-400">
+                {lang === "zh" ? "当前仅展示真实链上读取结果；合约未配置或 RPC 不可用时不会显示估算收益。" : "Only verified read-only chain data is shown; no estimated yield is displayed when the contract or RPC is unavailable."}
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>

@@ -47,9 +47,17 @@ const DEFAULT_ANIMATION_CONFIG: ToastAnimationConfig = {
  */
 export const AnimatedToastContainer: React.FC<{
   config?: Partial<ToastAnimationConfig>;
-}> = ({ config = {} }) => {
+  initialToasts?: ToastItem[];
+}> = ({ config = {}, initialToasts = [] }) => {
   const finalConfig = { ...DEFAULT_ANIMATION_CONFIG, ...config };
-  const [toasts, setToasts] = useState<ToastState[]>([]);
+  const [toasts, setToasts] = useState<ToastState[]>(() =>
+    initialToasts.slice(0, finalConfig.maxToasts).map((item) => ({
+      ...item,
+      id: item.id || `toast-${Date.now()}-${Math.random()}`,
+      isExiting: false,
+      createdAt: Date.now(),
+    }))
+  );
   const toastRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const autoCloseTimers = useRef<Map<string, NodeJS.Timeout>>(new Map());
 

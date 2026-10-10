@@ -102,7 +102,7 @@ describe('profilePoster generator', () => {
       assetSummary: { landCount: 2, buildingCount: 4, totalAssets: 6 },
     });
     expect(defaultText).toContain('冰雪城市');
-    expect(defaultText).toContain('2 宗土地');
+    expect(defaultText).toContain('2 宗游戏内地块');
     expect(defaultText).toContain('4 栋建筑');
     expect(defaultText).toContain('/profile/user_123');
 
@@ -123,7 +123,7 @@ describe('profilePoster generator', () => {
       assetSummary: { landCount: 5, buildingCount: 3, totalAssets: 8 },
     });
     expect(randomText.length).toBeGreaterThan(10);
-    expect(randomText).toMatch(/5 .*土地/);
+    expect(randomText).toMatch(/5 .*地块/);
     expect(randomText).toMatch(/3 .*建筑/);
     expect(randomText).toContain('/profile/user_123');
   });
@@ -184,7 +184,6 @@ describe('profilePoster generator', () => {
     clickSpy.mockRestore();
   });
 });
-
 
 
 

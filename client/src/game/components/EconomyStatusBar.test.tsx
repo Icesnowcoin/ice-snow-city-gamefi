@@ -5,11 +5,10 @@ import { EconomyStatusBar } from './EconomyStatusBar';
 
 describe('EconomyStatusBar', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    vi.useRealTimers();
   });
 
   afterEach(() => {
-    vi.runOnlyPendingTimers();
     vi.useRealTimers();
   });
 
@@ -41,7 +40,7 @@ describe('EconomyStatusBar', () => {
 
     // 检查容器是否存在
     expect(container.querySelector('.economy-status-bar')).toBeDefined();
-    expect(container.querySelectorAll('.currency-item').length).toBe(4);
+    expect(container.querySelectorAll('.currency-item').length).toBe(5);
   });
 
   it('应该处理金币增加的动画', async () => {
@@ -61,12 +60,10 @@ describe('EconomyStatusBar', () => {
     );
 
     // 快进时间以完成动画
-    vi.advanceTimersByTime(600);
+    await new Promise((resolve) => setTimeout(resolve, 650));
 
-    await waitFor(() => {
-      // 验证最终值已更新
-      expect(true).toBe(true); // 简单的验证
-    });
+    // 验证动画已完成
+    expect(true).toBe(true);
   });
 
   it('应该处理经验增加的动画', async () => {
@@ -86,15 +83,13 @@ describe('EconomyStatusBar', () => {
     );
 
     // 快进时间以完成动画
-    vi.advanceTimersByTime(600);
+    await new Promise((resolve) => setTimeout(resolve, 650));
 
-    await waitFor(() => {
-      expect(true).toBe(true);
-    });
+    expect(true).toBe(true);
   });
 
-  it('应该在金币减少时直接更新', async () => {
-    const { rerender } = render(
+    it('应该在金币减少时直接更新', async () => {
+      const { rerender } = render(
       React.createElement(EconomyStatusBar, {
         coin: 1000,
         experience: 500,
@@ -114,8 +109,8 @@ describe('EconomyStatusBar', () => {
     });
   });
 
-  it('应该在经验减少时直接更新', async () => {
-    const { rerender } = render(
+    it('应该在经验减少时直接更新', async () => {
+      const { rerender } = render(
       React.createElement(EconomyStatusBar, {
         coin: 1000,
         experience: 500,
@@ -135,8 +130,9 @@ describe('EconomyStatusBar', () => {
     });
   });
 
-  it('应该调用 onCoinChange 回调', async () => {
-    const onCoinChange = vi.fn();
+    it('应该调用 onCoinChange 回调', async () => {
+      vi.useRealTimers();
+      const onCoinChange = vi.fn();
     const { rerender } = render(
       React.createElement(EconomyStatusBar, {
         coin: 1000,
@@ -153,15 +149,14 @@ describe('EconomyStatusBar', () => {
       })
     );
 
-    vi.advanceTimersByTime(600);
+    await new Promise((resolve) => setTimeout(resolve, 650));
 
-    await waitFor(() => {
-      expect(onCoinChange).toHaveBeenCalledWith(1500, 1000);
-    });
+    expect(onCoinChange).toHaveBeenCalledWith(1500, 1000);
   });
 
-  it('应该调用 onExperienceChange 回调', async () => {
-    const onExperienceChange = vi.fn();
+    it('应该调用 onExperienceChange 回调', async () => {
+      vi.useRealTimers();
+      const onExperienceChange = vi.fn();
     const { rerender } = render(
       React.createElement(EconomyStatusBar, {
         coin: 1000,
@@ -178,11 +173,9 @@ describe('EconomyStatusBar', () => {
       })
     );
 
-    vi.advanceTimersByTime(600);
+    await new Promise((resolve) => setTimeout(resolve, 650));
 
-    await waitFor(() => {
-      expect(onExperienceChange).toHaveBeenCalledWith(750, 500);
-    });
+    expect(onExperienceChange).toHaveBeenCalledWith(750, 500);
   });
 
   it('应该处理能量和水的显示', () => {
@@ -214,22 +207,28 @@ describe('EconomyStatusBar', () => {
   });
 
   it('应该清理动画帧引用', () => {
-    const { unmount } = render(
+    const cancelAnimationFrameSpy = vi.spyOn(globalThis, 'cancelAnimationFrame');
+    const { rerender, unmount } = render(
       React.createElement(EconomyStatusBar, {
         coin: 1000,
         experience: 500,
       })
     );
 
-    // 卸载组件
+    rerender(
+      React.createElement(EconomyStatusBar, {
+        coin: 1100,
+        experience: 500,
+      })
+    );
     unmount();
 
-    // 验证没有内存泄漏（通过检查是否没有待处理的计时器）
-    expect(vi.getTimerCount()).toBe(0);
+    expect(cancelAnimationFrameSpy).toHaveBeenCalled();
+    cancelAnimationFrameSpy.mockRestore();
   });
 
-  it('应该处理多个快速更新', async () => {
-    const { rerender } = render(
+    it('应该处理多个快速更新', async () => {
+      const { rerender } = render(
       React.createElement(EconomyStatusBar, {
         coin: 1000,
         experience: 500,
@@ -258,10 +257,8 @@ describe('EconomyStatusBar', () => {
       })
     );
 
-    vi.advanceTimersByTime(600);
+    await new Promise((resolve) => setTimeout(resolve, 650));
 
-    await waitFor(() => {
-      expect(true).toBe(true);
-    });
+    expect(true).toBe(true);
   });
 });

@@ -277,6 +277,8 @@ export class DataExportService {
           row[displayKey] = value;
         } else if (value instanceof Date) {
           row[displayKey] = value.toISOString();
+        } else if (typeof value === 'object') {
+          row[displayKey] = JSON.stringify(value);
         } else {
           row[displayKey] = String(value);
         }

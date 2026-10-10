@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { WalletConnectPanel, type ConnectedWallet, type WalletType } from '@/components/WalletConnectPanel';
+import { WalletBindingPanel } from '@/components/social/WalletBindingPanel';
 import { DepositFlow } from '@/components/DepositFlow';
 import { WithdrawalFlow } from '@/components/WithdrawalFlow';
 import {
@@ -26,6 +27,7 @@ export default function WalletAuthorizationPage() {
     setConnectedWallets(prev => {
       const filtered = prev.filter(w => w.type !== wallet.type);
       const updated = [...filtered, wallet];
+      setSelectedWallet(wallet);
       
       // Calculate total balance
       const total = updated.reduce((sum, w) => sum + parseFloat(w.balance || '0'), 0);
@@ -141,6 +143,13 @@ export default function WalletAuthorizationPage() {
                   onWalletConnect={handleWalletConnect}
                   onWalletDisconnect={handleWalletDisconnect}
                 />
+                {selectedWallet?.provider && selectedWallet.address && selectedWallet.chainId > 0 && (
+                  <WalletBindingPanel
+                    provider={selectedWallet.provider}
+                    address={selectedWallet.address}
+                    chainId={selectedWallet.chainId}
+                  />
+                )}
               </CardContent>
             </Card>
 

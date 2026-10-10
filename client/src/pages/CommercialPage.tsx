@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, TrendingUp, Users, Home } from "lucide-react";
 import { toast } from "sonner";
+import { ISCAmount } from "@/components/ISCLogo";
 
 export default function CommercialPage() {
   const [selectedCategory, setSelectedCategory] = useState<"production" | "service" | "rental">(
@@ -162,13 +163,13 @@ export default function CommercialPage() {
                           <div className="flex justify-between">
                             <span className="text-sm font-medium">收入:</span>
                             <span className="font-bold text-green-600">
-                              {financials.revenue} ISC
+                              <ISCAmount amount={String(financials.revenue)} size="sm" className="font-bold text-green-600" />
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-sm font-medium">支出:</span>
                             <span className="font-bold text-red-600">
-                              {financials.expense} ISC
+                              <ISCAmount amount={String(financials.expense)} size="sm" className="font-bold text-red-600" />
                             </span>
                           </div>
                           <div className="border-t pt-2 flex justify-between">
@@ -178,7 +179,7 @@ export default function CommercialPage() {
                                 financials.profit >= 0 ? "text-green-600" : "text-red-600"
                               }`}
                             >
-                              {financials.profit} ISC
+                              <ISCAmount amount={String(financials.profit)} size="sm" className={`font-bold ${financials.profit >= 0 ? "text-green-600" : "text-red-600"}`} />
                             </span>
                           </div>
                         </div>
@@ -213,14 +214,14 @@ export default function CommercialPage() {
                       <div>
                         <p className="text-xs text-muted-foreground mb-2">基础收入</p>
                         <p className="text-lg font-bold">
-                          {selectedFacilityData.config.baseRevenue} ISC
+                          <ISCAmount amount={String(selectedFacilityData.config.baseRevenue)} size="sm" className="text-lg font-bold" />
                         </p>
                       </div>
 
                       <div>
                         <p className="text-xs text-muted-foreground mb-2">基础支出</p>
                         <p className="text-lg font-bold">
-                          {selectedFacilityData.config.baseExpense} ISC
+                          <ISCAmount amount={String(selectedFacilityData.config.baseExpense)} size="sm" className="text-lg font-bold" />
                         </p>
                       </div>
 
@@ -234,7 +235,7 @@ export default function CommercialPage() {
                       <div className="pt-4 border-t space-y-2">
                         <p className="text-xs text-muted-foreground">升级成本</p>
                         <p className="text-sm font-medium">
-                          {1000 * facilityLevel} ISC
+                          <ISCAmount amount={String(1000 * facilityLevel)} size="sm" className="font-medium" />
                         </p>
                       </div>
                     </CardContent>

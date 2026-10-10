@@ -10,14 +10,12 @@ describe('Tour System', () => {
   let tourController: AutoTourController;
 
   beforeEach(() => {
-    // 创建测试场景
-    const canvas = document.createElement('canvas');
-    const engine = new BABYLON.Engine(canvas, true);
+    // 使用 NullEngine 隔离真实 WebGL 硬件，保持路线与控制器逻辑测试稳定
+    const engine = new BABYLON.NullEngine();
     scene = new BABYLON.Scene(engine);
 
-    // 创建相机
+    // 创建相机；路线控制器测试不依赖 DOM 输入绑定
     camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 10, -20));
-    camera.attachControl(canvas, true);
 
     // 创建路线管理器和导覍控制器
     routeManager = new TourRouteManager();
@@ -55,7 +53,7 @@ describe('Tour System', () => {
     it('应该返回下一个景点', () => {
       const route = routeManager.getRoute('agricultural-complete-tour');
       if (route && route.points.length > 0) {
-        const nextPoint = routeManager.getNextPoint(route, 0);
+        const nextPoint = routeManager.getNextPoint(route.id, 0);
         expect(nextPoint).toBeDefined();
       }
     });
@@ -63,7 +61,7 @@ describe('Tour System', () => {
     it('应该返回上一个景点', () => {
       const route = routeManager.getRoute('agricultural-complete-tour');
       if (route && route.points.length > 1) {
-        const prevPoint = routeManager.getPreviousPoint(route, 1);
+        const prevPoint = routeManager.getPreviousPoint(route.id, 1);
         expect(prevPoint).toBeDefined();
       }
     });

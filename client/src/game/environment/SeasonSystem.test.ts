@@ -22,7 +22,11 @@ describe('Season System Tests', () => {
     document.body.appendChild(canvas);
 
     // 创建 Babylon.js 引擎和场景
-    engine = new BABYLON.Engine(canvas, true);
+    engine = new BABYLON.NullEngine({
+      renderWidth: 800,
+      renderHeight: 600,
+      deterministicLockstep: true,
+    });
     scene = new BABYLON.Scene(engine);
 
     // 创建季节系统

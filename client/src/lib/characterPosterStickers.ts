@@ -6,6 +6,8 @@ export interface CharacterPosterStickerDefinition {
   glyph: string;
   category: CharacterPosterStickerCategory;
   tint: string;
+  /** Optional official image asset used instead of a text glyph in branded stickers. */
+  assetUrl?: string;
 }
 
 export interface CharacterPosterStickerPlacement {
@@ -19,7 +21,7 @@ export interface CharacterPosterStickerPlacement {
 
 export const CHARACTER_POSTER_STICKERS: CharacterPosterStickerDefinition[] = [
   { id: "city-builder", label: "城市建设者", glyph: "🏙️", category: "badge", tint: "#22d3ee" },
-  { id: "winter-pioneer", label: "冰雪先锋", glyph: "❄️", category: "badge", tint: "#93c5fd" },
+  { id: "winter-pioneer", label: "冰雪先锋", glyph: "ISC", category: "badge", tint: "#93c5fd", assetUrl: "/manus-storage/isc_token_icon_256_ed4ff47d.png" },
   { id: "isc-holder", label: "ISC 持有者", glyph: "💎", category: "badge", tint: "#fbbf24" },
   { id: "snowy-heart", label: "雪城心情", glyph: "💙", category: "emoji", tint: "#60a5fa" },
   { id: "rocket", label: "城市起飞", glyph: "🚀", category: "emoji", tint: "#fb7185" },

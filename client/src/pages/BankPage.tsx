@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { ISCAmount, ISCLogo } from "@/components/ISCLogo";
 import {
   Building2,
   TrendingUp,
@@ -132,14 +133,12 @@ export default function BankPage() {
                 <Building2 className="w-4 h-4" />
                 {lang === "zh" ? "冰雪城银行" : "Ice Snow City Bank"}
               </p>
-              <p className="text-4xl font-bold mt-2">
-                {bankInfo?.balance?.toLocaleString() || "0"} <span className="text-xl">ISC</span>
-              </p>
+              <ISCAmount amount={bankInfo?.balance?.toLocaleString() || "0"} size="xl" className="mt-2 font-bold text-white" />
               <p className="text-emerald-200 text-sm mt-1">
                 {lang === "zh" ? `年化利率: ${bankInfo?.interestRate || 5}% APY` : `Annual Rate: ${bankInfo?.interestRate || 5}% APY`}
               </p>
             </div>
-            <PiggyBank className="w-14 h-14 opacity-50" />
+            <ISCLogo size="xl" className="opacity-80 drop-shadow-[0_0_14px_rgba(103,232,249,0.85)]" />
           </div>
           
           {/* Pending Interest */}
@@ -147,7 +146,7 @@ export default function BankPage() {
             <div className="mt-4 p-3 bg-emerald-700/50 rounded-lg flex items-center justify-between">
               <div>
                 <p className="text-emerald-100 text-xs">{lang === "zh" ? "待领取利息" : "Pending Interest"}</p>
-                <p className="text-lg font-bold text-yellow-300">+{bankInfo?.pendingInterest} ISC</p>
+                <ISCAmount amount={`+${bankInfo?.pendingInterest ?? 0}`} size="sm" className="font-bold text-yellow-300" />
               </div>
               <Button
                 size="sm"
@@ -174,7 +173,7 @@ export default function BankPage() {
               <TrendingUp className="w-5 h-5 text-green-500" />
               <div>
                 <p className="text-xs text-muted-foreground">{lang === "zh" ? "日收益" : "Daily"}</p>
-                <p className="font-bold text-green-600">+{bankInfo?.dailyInterest || 0} ISC</p>
+                <ISCAmount amount={`+${bankInfo?.dailyInterest || 0}`} size="sm" className="font-bold text-green-600" />
               </div>
             </div>
           </CardContent>
@@ -185,7 +184,7 @@ export default function BankPage() {
               <CalendarDays className="w-5 h-5 text-blue-500" />
               <div>
                 <p className="text-xs text-muted-foreground">{lang === "zh" ? "月收益" : "Monthly"}</p>
-                <p className="font-bold text-blue-600">+{bankInfo?.monthlyInterest || 0} ISC</p>
+                <ISCAmount amount={`+${bankInfo?.monthlyInterest || 0}`} size="sm" className="font-bold text-blue-600" />
               </div>
             </div>
           </CardContent>
@@ -196,7 +195,7 @@ export default function BankPage() {
               <Percent className="w-5 h-5 text-purple-500" />
               <div>
                 <p className="text-xs text-muted-foreground">{lang === "zh" ? "年收益" : "Yearly"}</p>
-                <p className="font-bold text-purple-600">+{bankInfo?.yearlyInterest || 0} ISC</p>
+                <ISCAmount amount={`+${bankInfo?.yearlyInterest || 0}`} size="sm" className="font-bold text-purple-600" />
               </div>
             </div>
           </CardContent>
@@ -207,7 +206,7 @@ export default function BankPage() {
               <ArrowDownLeft className="w-5 h-5 text-cyan-500" />
               <div>
                 <p className="text-xs text-muted-foreground">{lang === "zh" ? "总存入" : "Total In"}</p>
-                <p className="font-bold">{bankInfo?.totalDeposited?.toLocaleString() || 0}</p>
+                <ISCAmount amount={bankInfo?.totalDeposited?.toLocaleString() || "0"} size="sm" className="font-bold" />
               </div>
             </div>
           </CardContent>
@@ -263,15 +262,11 @@ export default function BankPage() {
                 <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg text-sm space-y-1">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{lang === "zh" ? "预计日收益" : "Est. Daily"}</span>
-                    <span className="text-green-600 font-medium">
-                      +{Math.floor(parseInt(depositAmount) * (bankInfo?.interestRate || 5) / 365 / 100)} ISC
-                    </span>
+                    <ISCAmount amount={`+${Math.floor(parseInt(depositAmount) * (bankInfo?.interestRate || 5) / 365 / 100)}`} size="xs" className="font-medium text-green-600" />
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{lang === "zh" ? "预计月收益" : "Est. Monthly"}</span>
-                    <span className="text-green-600 font-medium">
-                      +{Math.floor(parseInt(depositAmount) * (bankInfo?.interestRate || 5) / 12 / 100)} ISC
-                    </span>
+                    <ISCAmount amount={`+${Math.floor(parseInt(depositAmount) * (bankInfo?.interestRate || 5) / 12 / 100)}`} size="xs" className="font-medium text-green-600" />
                   </div>
                 </div>
               )}
@@ -343,14 +338,13 @@ export default function BankPage() {
                 <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm space-y-1">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{lang === "zh" ? "取款后余额" : "After Withdrawal"}</span>
-                    <span className="font-medium">
-                      {((bankInfo?.balance || 0) - parseInt(withdrawAmount)).toLocaleString()} ISC
-                    </span>
+                    <ISCAmount amount={((bankInfo?.balance || 0) - parseInt(withdrawAmount)).toLocaleString()} size="xs" className="font-medium" />
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{lang === "zh" ? "日收益减少" : "Daily Loss"}</span>
-                    <span className="text-red-600 font-medium">
-                      -{Math.floor(parseInt(withdrawAmount) * (bankInfo?.interestRate || 5) / 365 / 100)} ISC/day
+                    <span className="inline-flex items-center gap-1 text-red-600 font-medium">
+                      <ISCAmount amount={`-${Math.floor(parseInt(withdrawAmount) * (bankInfo?.interestRate || 5) / 365 / 100)}`} size="xs" />
+                      <span>/day</span>
                     </span>
                   </div>
                 </div>
@@ -426,16 +420,16 @@ export default function BankPage() {
               <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg space-y-3">
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">{lang === "zh" ? "预计总收益" : "Estimated Total Interest"}</p>
-                  <p className="text-3xl font-bold text-purple-600">{calculatedInterest.interest.toLocaleString()} ISC</p>
+                  <ISCAmount amount={calculatedInterest.interest.toLocaleString()} size="xl" className="font-bold text-purple-600" />
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="text-center p-2 bg-white/50 dark:bg-black/20 rounded">
                     <p className="text-xs text-muted-foreground">{lang === "zh" ? "日收益" : "Daily"}</p>
-                    <p className="font-bold text-green-600">+{calculatedInterest.dailyEarning}</p>
+                    <ISCAmount amount={`+${calculatedInterest.dailyEarning}`} size="sm" className="font-bold text-green-600" />
                   </div>
                   <div className="text-center p-2 bg-white/50 dark:bg-black/20 rounded">
                     <p className="text-xs text-muted-foreground">{lang === "zh" ? "到期总额" : "Total"}</p>
-                    <p className="font-bold">{calculatedInterest.total.toLocaleString()}</p>
+                    <ISCAmount amount={calculatedInterest.total.toLocaleString()} size="sm" className="font-bold" />
                   </div>
                 </div>
                 <div className="text-center">
@@ -473,7 +467,7 @@ export default function BankPage() {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">{lang === "zh" ? "累计存入" : "Total Deposited"}</span>
-              <span className="font-medium">{bankInfo?.totalDeposited?.toLocaleString() || 0} ISC</span>
+              <ISCAmount amount={bankInfo?.totalDeposited?.toLocaleString() || "0"} size="xs" className="font-medium" />
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">{lang === "zh" ? "上次领息" : "Last Interest"}</span>

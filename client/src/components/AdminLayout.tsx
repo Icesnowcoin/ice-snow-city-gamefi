@@ -16,6 +16,7 @@ import {
   Loader2,
   ShieldAlert,
   Activity,
+  ScanSearch,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -85,6 +86,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { path: "/treasury", icon: Landmark, label: t("nav.treasury") },
     { path: "/staking", icon: PiggyBank, label: t("nav.staking") },
     { path: "/monitoring", icon: Activity, label: t("nav.monitoring") },
+    { path: "/admin/ai-baseline", icon: ScanSearch, label: lang === "zh" ? "AI 基线质量" : "AI Baseline QA" },
   ];
 
   return (

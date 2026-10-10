@@ -5,6 +5,7 @@ import '../styles/minimap.css';
 interface MinimapProps {
   minimapManager: MinimapManager;
   onLocationClick?: (worldX: number, worldZ: number) => void;
+  onMarkerClick?: (marker: MinimapMarker) => void;
   showLegend?: boolean;
   showGrid?: boolean;
 }
@@ -16,6 +17,7 @@ interface MinimapProps {
 export const Minimap: React.FC<MinimapProps> = ({
   minimapManager,
   onLocationClick,
+  onMarkerClick,
   showLegend = true,
   showGrid = true,
 }) => {
@@ -36,6 +38,8 @@ export const Minimap: React.FC<MinimapProps> = ({
     // 清空画布
     ctx.fillStyle = '#1a1a2e';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    drawCompass(ctx, canvas.width);
 
     // 绘制网格
     if (showGrid) {
@@ -123,6 +127,10 @@ export const Minimap: React.FC<MinimapProps> = ({
         color = '#4ecdc4';
         shape = 'triangle';
         break;
+      case 'npc':
+        color = '#fbbf24';
+        shape = 'star';
+        break;
     }
 
     ctx.fillStyle = color;
@@ -149,6 +157,17 @@ export const Minimap: React.FC<MinimapProps> = ({
       ctx.stroke();
     } else if (shape === 'star') {
       drawStar(ctx, pos.x, pos.y, 5, radius, radius * 0.5);
+    }
+
+    if (marker.landmark && marker.label) {
+      ctx.font = '600 10px Inter, Arial, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#dff8ff';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      ctx.shadowBlur = 3;
+      ctx.fillText(marker.label, pos.x + radius + 4, pos.y);
+      ctx.shadowBlur = 0;
     }
   };
 
@@ -267,6 +286,7 @@ export const Minimap: React.FC<MinimapProps> = ({
       { label: '植被', color: '#51cf66' },
       { label: 'POI', color: '#ffd93d' },
       { label: '玩家', color: '#4ecdc4' },
+      { label: 'NPC', color: '#fbbf24' },
     ];
 
     items.forEach((item, index) => {
@@ -282,17 +302,41 @@ export const Minimap: React.FC<MinimapProps> = ({
     });
   };
 
-  // 处理画布点击
+  const drawCompass = (ctx: CanvasRenderingContext2D, width: number) => {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '700 10px Inter, Arial, sans-serif';
+    ctx.fillStyle = 'rgba(224, 247, 255, 0.92)';
+    ctx.fillText('N', width / 2, 11);
+    ctx.fillStyle = 'rgba(103, 232, 249, 0.45)';
+    ctx.fillRect(width / 2 - 1, 16, 2, 7);
+    ctx.restore();
+  };
+
+  // 处理画布点击：优先命中地标，否则执行地图跳转
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas || !onLocationClick) return;
+    if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+    const hitMarker = markers.find((marker) => {
+      const pos = minimapManager.worldToMinimap(marker.x, marker.z);
+      const hitRadius = Math.max(marker.radius + 7, 10);
+      return Math.hypot(pos.x - x, pos.y - y) <= hitRadius;
+    });
 
-    const worldPos = minimapManager.minimapToWorld(x, y);
-    onLocationClick(worldPos.x, worldPos.z);
+    if (hitMarker && onMarkerClick) {
+      onMarkerClick(hitMarker);
+      return;
+    }
+
+    if (onLocationClick) {
+      const worldPos = minimapManager.minimapToWorld(x, y);
+      onLocationClick(worldPos.x, worldPos.z);
+    }
   };
 
   // 更新标记和相机位置
@@ -308,7 +352,8 @@ export const Minimap: React.FC<MinimapProps> = ({
   return (
     <div className="minimap-container">
       <div className="minimap-header">
-        <h3>小地图</h3>
+        <h3>城市导航</h3>
+        <span aria-hidden="true">N ↑</span>
       </div>
       <canvas
         ref={canvasRef}
@@ -316,7 +361,8 @@ export const Minimap: React.FC<MinimapProps> = ({
         height={config.height}
         className="minimap-canvas"
         onClick={handleCanvasClick}
-        title="点击快速跳转到该位置"
+        title="点击地标查看详情，点击空白区域快速跳转"
+        aria-label="城市小地图，显示玩家朝向和地标位置"
       />
     </div>
   );

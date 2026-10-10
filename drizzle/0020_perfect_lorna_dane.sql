@@ -1,0 +1,1 @@
+ALTER TABLE `signed_nft_orders` ADD `orderType` int DEFAULT 0 NOT NULL;

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Spinner } from '@/components/ui/spinner';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
+import { ISCAmount } from '@/components/ISCLogo';
 
 export const BankingPage: React.FC = () => {
   const { lang } = useLanguage();
@@ -128,9 +129,7 @@ export const BankingPage: React.FC = () => {
             <p className="text-sm text-muted-foreground">
               {lang === 'zh' ? '账户余额' : 'Account Balance'}
             </p>
-            <p className="text-2xl font-bold text-cyan-400">
-              {account?.balance.toFixed(3) || '0.000'} ISC
-            </p>
+            <ISCAmount amount={account?.balance.toFixed(3) || '0.000'} size="lg" className="font-bold text-cyan-400" />
             <p className="text-xs text-muted-foreground">
               {lang === 'zh' ? '可用余额' : 'Available Balance'}
             </p>
@@ -143,9 +142,7 @@ export const BankingPage: React.FC = () => {
             <p className="text-sm text-muted-foreground">
               {lang === 'zh' ? '总存入' : 'Total Deposited'}
             </p>
-            <p className="text-2xl font-bold text-green-400">
-              {account?.totalDeposited.toFixed(3) || '0.000'} ISC
-            </p>
+            <ISCAmount amount={account?.totalDeposited.toFixed(3) || '0.000'} size="lg" className="font-bold text-green-400" />
             <p className="text-xs text-muted-foreground">
               {lang === 'zh' ? '历史累计' : 'Cumulative'}
             </p>
@@ -158,9 +155,7 @@ export const BankingPage: React.FC = () => {
             <p className="text-sm text-muted-foreground">
               {lang === 'zh' ? '已赚利息' : 'Interest Earned'}
             </p>
-            <p className="text-2xl font-bold text-yellow-400">
-              {account?.interestEarned.toFixed(3) || '0.000'} ISC
-            </p>
+            <ISCAmount amount={account?.interestEarned.toFixed(3) || '0.000'} size="lg" className="font-bold text-yellow-400" />
             <p className="text-xs text-muted-foreground">
               {lang === 'zh' ? '累计收益' : 'Total Earnings'}
             </p>
@@ -220,8 +215,8 @@ export const BankingPage: React.FC = () => {
                   />
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  <p>{lang === 'zh' ? '最小存款额：' : 'Minimum Deposit: '} {apyConfig?.minDeposit} ISC</p>
-                  <p>{lang === 'zh' ? '最大存款额：' : 'Maximum Deposit: '} {apyConfig?.maxDeposit} ISC</p>
+                  <p className="flex items-center gap-1"><span>{lang === 'zh' ? '最小存款额：' : 'Minimum Deposit: '}</span><ISCAmount amount={String(apyConfig?.minDeposit ?? 0)} size="xs" /></p>
+                  <p className="flex items-center gap-1"><span>{lang === 'zh' ? '最大存款额：' : 'Maximum Deposit: '}</span><ISCAmount amount={String(apyConfig?.maxDeposit ?? 0)} size="xs" /></p>
                 </div>
                 <Button
                   onClick={handleDeposit}
@@ -254,7 +249,7 @@ export const BankingPage: React.FC = () => {
                   />
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  <p>{lang === 'zh' ? '可用余额：' : 'Available: '} {account?.balance.toFixed(3)} ISC</p>
+                  <p className="flex items-center gap-1"><span>{lang === 'zh' ? '可用余额：' : 'Available: '}</span><ISCAmount amount={account?.balance?.toFixed(3) || '0.000'} size="xs" /></p>
                 </div>
                 <Button
                   onClick={handleWithdraw}
@@ -281,17 +276,13 @@ export const BankingPage: React.FC = () => {
                 <p className="text-sm text-muted-foreground">
                   {lang === 'zh' ? '总利息' : 'Total Interest'}
                 </p>
-                <p className="text-2xl font-bold text-yellow-400">
-                  {interestStats?.totalInterest.toFixed(3) || '0.000'} ISC
-                </p>
+                <ISCAmount amount={interestStats?.totalInterest?.toFixed(3) || '0.000'} size="lg" className="font-bold text-yellow-400" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">
                   {lang === 'zh' ? '平均日利息' : 'Average Daily Interest'}
                 </p>
-                <p className="text-2xl font-bold text-green-400">
-                  {interestStats?.averageDailyInterest.toFixed(6) || '0.000000'} ISC
-                </p>
+                <ISCAmount amount={interestStats?.averageDailyInterest?.toFixed(6) || '0.000000'} size="lg" className="font-bold text-green-400" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">
@@ -325,9 +316,7 @@ export const BankingPage: React.FC = () => {
                 {interestRecords.map((record) => (
                   <div key={record.id} className="flex justify-between items-center p-3 bg-muted rounded">
                     <div>
-                      <p className="font-medium">
-                        +{record.amount.toFixed(6)} ISC
-                      </p>
+                      <ISCAmount amount={`+${record.amount.toFixed(6)}`} size="sm" className="font-medium" />
                       <p className="text-sm text-muted-foreground">
                         {lang === 'zh' ? `${record.period}天 @ ${record.rate}% APY` : `${record.period} days @ ${record.rate}% APY`}
                       </p>
