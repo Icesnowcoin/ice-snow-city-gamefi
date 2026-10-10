@@ -1,57 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/_core/hooks/useAuth';
+import { useEffect, useRef, useState } from 'react';
 
-interface SplashScreenProps {
-  onComplete?: () => void;
-}
+export const OPENING_HERO_IMAGE = '/manus-storage/ice-snow-city-opening-hero_9b970867.jpg';
 
-export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
+interface SplashScreenProps { onComplete?: () => void }
 
-  useEffect(() => {
-    // 当用户数据准备好时完成加载
-    if (user) {
-      // 最少显示 1 秒的加载屏幕
-      setTimeout(() => {
-        setIsLoading(false);
-        onComplete?.();
-        console.log('[SplashScreen] Splash screen hidden, user authenticated');
-      }, 1000);
-    }
-  }, [user, onComplete]);
+/** A small visual doorway to the playable districts; no pre-game currency, login or wallet gate. */
+export function SplashScreen({ onComplete }: SplashScreenProps) {
+  const [entering, setEntering] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const timerRef = useRef<number | null>(null);
+  useEffect(() => () => { if (timerRef.current !== null) window.clearTimeout(timerRef.current); }, []);
 
-  if (!isLoading) return null;
+  const enter = () => {
+    if (entering) return;
+    setEntering(true);
+    timerRef.current = window.setTimeout(() => { setVisible(false); onComplete?.(); }, 520);
+  };
+
+  if (!visible) return null;
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-    >
-      {/* 简单的加载指示器 */}
-      <div className="flex flex-col items-center space-y-6">
-        {/* 加载动画 */}
-        <div className="relative w-16 h-16">
-          <div className="absolute inset-0 rounded-full border-4 border-cyan-400/20" />
-          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-cyan-400 animate-spin" />
-        </div>
-        
-        {/* 加载文本 */}
-        <div className="text-center space-y-2">
-          <h2 className="text-xl font-semibold text-cyan-300">Ice Snow City</h2>
-          <p className="text-sm text-cyan-200/70">Initializing...</p>
-        </div>
+    <div className={`isc-opening-splash${entering ? ' isc-opening-splash--entering' : ''}`} data-transitioning={entering || undefined}>
+      <div className="isc-opening-landscape-guard" role="status">
+        <strong>请将设备旋转至横屏</strong>
+        <span>冰雪城市适合 16:9 横屏游玩</span>
       </div>
-
-      {/* 可选：背景图片预加载（不阻塞 UI） */}
-      <img
-        src="/manus-storage/IMG_8183_0ee665da.PNG"
-        alt=""
-        style={{ display: 'none' }}
-        onLoad={() => console.log('[SplashScreen] Background image preloaded')}
-        onError={() => console.warn('[SplashScreen] Background image failed to load')}
-      />
+      <main className="isc-opening-hero-frame" aria-label="冰雪城市游戏入口">
+        <img className="isc-opening-hero-image" data-testid="opening-hero-image" src={OPENING_HERO_IMAGE} alt="Ice Snow City 冰雪城市夜景与城市团队宣传画面" loading="eager" decoding="async" />
+        <div className="isc-opening-hero-shade" aria-hidden="true" />
+        <section className="isc-opening-controls">
+          <span className="isc-opening-kicker">ICE SNOW CITY · 城市经营</span>
+          <h1 className="isc-opening-title">建设冰雪城市</h1>
+          <p className="isc-opening-description">从城市街区开始，走访生活场所，经营水电、生产与商业。</p>
+          <button type="button" className="isc-opening-enter" onClick={enter} disabled={entering} aria-label={entering ? '正在进入…' : '进入游戏'}>
+            {entering ? '正在进入…' : '进入游戏'}
+          </button>
+          <small className="isc-opening-footnote">支持手机横屏 · 游玩进度保存在当前浏览器</small>
+        </section>
+      </main>
     </div>
   );
-};
+}
 
 export default SplashScreen;

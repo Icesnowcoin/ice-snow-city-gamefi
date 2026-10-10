@@ -46,8 +46,13 @@ export class BatchNPCDataFetcher {
 
     try {
       const data = await this.deduplicationCache.get(npcId, async () => {
-        // Simulate batch fetch (in real implementation, this would call tRPC)
-        const response = await fetch(`/api/npc/${npcId}`);
+        // Browser requests remain same-origin; Node/Vitest needs an absolute URL.
+        const path = `/api/npc/${encodeURIComponent(npcId)}`;
+        const origin = typeof window !== 'undefined' && window.location.origin
+          ? window.location.origin
+          : 'http://localhost';
+        const requestUrl = new URL(path, origin).toString();
+        const response = await fetch(requestUrl);
         return response.json();
       });
 

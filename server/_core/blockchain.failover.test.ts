@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { BlockchainService } from "./blockchain";
+import { describe, expect, it, vi } from 'vitest';
+import { BlockchainService, type BlockchainProviderFactory } from "./blockchain";
 import { rpcFailoverManager } from "./blockchain.rpc";
 
 describe("BlockchainService RPC Failover Integration", () => {
@@ -55,14 +55,12 @@ describe("BlockchainService RPC Failover Integration", () => {
 
   describe("Error Handling", () => {
     it("should handle initialization errors gracefully", async () => {
-      try {
-        await blockchainService.initialize();
-        // If we reach here, RPC connection was successful
-        expect(true).toBe(true);
-      } catch (error) {
-        // Expected: error thrown when RPC connection fails
-        expect(error).toBeDefined();
-      }
+      const providerFactory: BlockchainProviderFactory = () => ({
+        getNetwork: vi.fn().mockRejectedValue(new Error("simulated RPC failure")),
+      } as unknown as ReturnType<BlockchainProviderFactory>);
+      const failingService = new BlockchainService(providerFactory);
+
+      await expect(failingService.initialize()).rejects.toThrow("simulated RPC failure");
     });
   });
 

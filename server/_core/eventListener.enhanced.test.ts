@@ -25,6 +25,20 @@ describe("EnhancedEventListener", () => {
     enhancedListener.stopHealthChecks();
   });
 
+  describe("Lifecycle Delegation", () => {
+    it("starts health supervision without restarting an already running base listener", async () => {
+      await enhancedListener.start({ intervalMs: 100 });
+      expect(mockBaseListener.start).not.toHaveBeenCalled();
+      enhancedListener.stopHealthChecks();
+    });
+
+    it("stops health supervision and delegates shutdown to the base listener", async () => {
+      await enhancedListener.start({ intervalMs: 100 });
+      await enhancedListener.stop();
+      expect(mockBaseListener.stop).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe("Health Checks", () => {
     it("should initialize health checks", async () => {
       await enhancedListener.startHealthChecks({ intervalMs: 100 });

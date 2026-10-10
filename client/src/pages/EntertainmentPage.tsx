@@ -7,6 +7,7 @@ import { trpc } from "@/lib/trpc";
 import { Spinner } from "@/components/ui/spinner";
 import { Sparkles, Music, Users, Plus, TrendingUp, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { ISCAmount } from "@/components/ISCLogo";
 
 export default function EntertainmentPage() {
   const [selectedFacilityType, setSelectedFacilityType] = useState<
@@ -115,7 +116,7 @@ export default function EntertainmentPage() {
               <CardTitle className="text-sm font-medium">总资产价值</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{facilitiesData.totalValue.toLocaleString()} ISC</div>
+              <ISCAmount amount={facilitiesData.totalValue.toLocaleString()} size="lg" className="font-bold" />
             </CardContent>
           </Card>
           <Card>
@@ -123,9 +124,7 @@ export default function EntertainmentPage() {
               <CardTitle className="text-sm font-medium">日收入</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                +{facilitiesData.totalDailyRevenue.toLocaleString()} ISC
-              </div>
+              <ISCAmount amount={`+${facilitiesData.totalDailyRevenue.toLocaleString()}`} size="lg" className="font-bold text-green-600" />
             </CardContent>
           </Card>
         </div>
@@ -241,7 +240,7 @@ export default function EntertainmentPage() {
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">日收入:</span>
                         <span className="text-green-600 font-semibold">
-                          {facility.dailyRevenue.toLocaleString()} ISC
+                          <ISCAmount amount={facility.dailyRevenue.toLocaleString()} size="sm" className="font-semibold text-green-600" />
                         </span>
                       </div>
 
@@ -339,7 +338,7 @@ export default function EntertainmentPage() {
                     <CardContent className="space-y-4">
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">建造价格:</span>
-                        <span className="font-semibold">{facility.purchasePrice.toLocaleString()} ISC</span>
+                        <ISCAmount amount={facility.purchasePrice.toLocaleString()} size="sm" className="font-semibold" />
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">容量:</span>
@@ -347,7 +346,7 @@ export default function EntertainmentPage() {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">日收入:</span>
-                        <span className="text-green-600">{facility.dailyRevenue.toLocaleString()} ISC</span>
+                        <ISCAmount amount={facility.dailyRevenue.toLocaleString()} size="sm" className="text-green-600" />
                       </div>
                       <Button
                         className="w-full"

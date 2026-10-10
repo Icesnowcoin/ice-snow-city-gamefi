@@ -67,6 +67,26 @@ export class EnhancedEventListener {
   }
 
   /**
+   * Start the enhanced listener lifecycle. The base listener is initialized and
+   * started by the server bootstrap, so this wrapper owns health checks and
+   * recovery supervision while remaining compatible with the app lifecycle API.
+   */
+  async start(config: HealthCheckConfig = {}): Promise<void> {
+    if (!this.baseListener.getStatus().isRunning) {
+      await this.baseListener.start();
+    }
+    await this.startHealthChecks(config);
+  }
+
+  /**
+   * Stop the enhanced listener lifecycle.
+   */
+  async stop(): Promise<void> {
+    this.stopHealthChecks();
+    await this.baseListener.stop();
+  }
+
+  /**
    * Start health checks
    */
   async startHealthChecks(config: HealthCheckConfig = {}): Promise<void> {

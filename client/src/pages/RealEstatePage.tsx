@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ISCAmount, ISCLogo } from "@/components/ISCLogo";
 import {
   Home,
   MapPin,
@@ -31,73 +32,6 @@ interface Property {
   description: string;
 }
 
-const mockProperties: Property[] = [
-  {
-    id: "1",
-    name: "豪华公寓",
-    location: "商业广场附近",
-    type: "residential",
-    price: 5000,
-    area: 120,
-    income: 200,
-    occupancy: 100,
-    status: "owned",
-    image: "🏢",
-    description: "高档住宅，位置优越，交通便利",
-  },
-  {
-    id: "2",
-    name: "商业店铺",
-    location: "中心街道",
-    type: "commercial",
-    price: 8000,
-    area: 80,
-    income: 400,
-    occupancy: 85,
-    status: "owned",
-    image: "🏪",
-    description: "繁华商业区店铺，客流量大",
-  },
-  {
-    id: "3",
-    name: "工业厂房",
-    location: "工业区",
-    type: "industrial",
-    price: 12000,
-    area: 500,
-    income: 600,
-    occupancy: 70,
-    status: "available",
-    image: "🏭",
-    description: "大型工业厂房，生产能力强",
-  },
-  {
-    id: "4",
-    name: "办公楼",
-    location: "金融区",
-    type: "commercial",
-    price: 10000,
-    area: 200,
-    income: 500,
-    occupancy: 90,
-    status: "available",
-    image: "🏢",
-    description: "现代化办公楼，设施完善",
-  },
-  {
-    id: "5",
-    name: "住宅小区",
-    location: "郊区",
-    type: "residential",
-    price: 15000,
-    area: 1000,
-    income: 800,
-    occupancy: 95,
-    status: "available",
-    image: "🏘️",
-    description: "大型住宅社区，配套完整",
-  },
-];
 
 export default function RealEstatePage() {
   const { lang } = useLanguage();
@@ -108,14 +42,35 @@ export default function RealEstatePage() {
     retry: false,
     refetchInterval: 30_000,
   });
+  const ownedQuery = trpc.residential.getProperties.useQuery(undefined, { retry: false });
+  const availableQuery = trpc.residential.getAvailableProperties.useQuery({}, { retry: false });
 
-  const filteredProperties = mockProperties.filter((prop) => {
+  const properties = useMemo<Property[]>(() => {
+    const owned = ownedQuery.data?.properties ?? [];
+    const available = availableQuery.data ?? [];
+    const mapProperty = (property: any, status: Property["status"]): Property => ({
+      id: String(property.id ?? `${property.propertyType}-${property.locationX}-${property.locationY}`),
+      name: property.propertyType === "apartment" ? "现代公寓" : property.propertyType === "villa" ? "都市别墅" : "商业酒店",
+      location: `${property.locationX ?? 0}, ${property.locationY ?? 0}`,
+      type: property.propertyType === "hotel" ? "commercial" : "residential",
+      price: Number(property.currentValue ?? property.purchasePrice ?? 0),
+      area: Number(property.capacity ?? 0),
+      income: Number(property.monthlyRevenue ?? 0),
+      occupancy: property.capacity ? Math.round((Number(property.occupancy ?? 0) / Number(property.capacity)) * 100) : 0,
+      status,
+      image: property.propertyType === "hotel" ? "🏨" : property.propertyType === "villa" ? "🏡" : "🏢",
+      description: "来自 residential 服务的真实物业数据。",
+    });
+    return [...owned.map((property: any) => mapProperty(property, "owned")), ...available.map((property: any) => mapProperty(property, "available"))];
+  }, [availableQuery.data, ownedQuery.data]);
+
+  const filteredProperties = properties.filter((prop) => {
     const matchesType = filterType === "all" || prop.type === filterType;
     const matchesStatus = filterStatus === "all" || prop.status === filterStatus;
     return matchesType && matchesStatus;
   });
 
-  const ownedProperties = mockProperties.filter((p) => p.status === "owned");
+  const ownedProperties = properties.filter((p) => p.status === "owned");
   const totalValue = ownedProperties.reduce((sum, p) => sum + p.price, 0);
   const totalIncome = ownedProperties.reduce((sum, p) => sum + p.income, 0);
   const placementLandPlots = useMemo(() => ownedProperties.map((property) => ({
@@ -159,7 +114,7 @@ export default function RealEstatePage() {
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">{lang === "zh" ? "拥有房产数" : "Properties Owned"}</p>
               <p className="text-3xl font-bold">{ownedProperties.length}</p>
-              <p className="text-xs text-muted-foreground">{lang === "zh" ? "总价值" : "Total Value"}: {totalValue} ISC</p>
+              <ISCAmount amount={totalValue.toLocaleString()} size="xs" className="text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -167,8 +122,8 @@ export default function RealEstatePage() {
           <CardContent className="pt-6">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">{lang === "zh" ? "月度收入" : "Monthly Income"}</p>
-              <p className="text-3xl font-bold text-green-600">{totalIncome}</p>
-              <p className="text-xs text-muted-foreground">ISC/month</p>
+              <ISCAmount amount={totalIncome.toLocaleString()} size="lg" className="font-bold text-green-600" />
+              <span className="text-xs text-muted-foreground">/month</span>
             </div>
           </CardContent>
         </Card>
@@ -277,11 +232,11 @@ export default function RealEstatePage() {
                 <div className="grid grid-cols-2 gap-2">
                   <div className="bg-blue-50 p-2 rounded">
                     <p className="text-xs text-muted-foreground">{lang === "zh" ? "价格" : "Price"}</p>
-                    <p className="font-bold text-blue-600">{property.price} ISC</p>
+                    <ISCAmount amount={String(property.price)} size="sm" className="font-bold text-blue-600" />
                   </div>
                   <div className="bg-green-50 p-2 rounded">
                     <p className="text-xs text-muted-foreground">{lang === "zh" ? "月收入" : "Monthly"}</p>
-                    <p className="font-bold text-green-600">{property.income} ISC</p>
+                    <ISCAmount amount={String(property.income)} size="sm" className="font-bold text-green-600" />
                   </div>
                 </div>
 
@@ -334,11 +289,11 @@ export default function RealEstatePage() {
                         </div>
                         <div>
                           <p className="text-xs text-muted-foreground">{lang === "zh" ? "价格" : "Price"}</p>
-                          <p className="font-bold text-blue-600">{selectedProperty?.price} ISC</p>
+                          <ISCAmount amount={String(selectedProperty?.price ?? 0)} size="sm" className="font-bold text-blue-600" />
                         </div>
                         <div>
                           <p className="text-xs text-muted-foreground">{lang === "zh" ? "月收入" : "Monthly Income"}</p>
-                          <p className="font-bold text-green-600">{selectedProperty?.income} ISC</p>
+                          <ISCAmount amount={String(selectedProperty?.income ?? 0)} size="sm" className="font-bold text-green-600" />
                         </div>
                       </div>
 
@@ -365,7 +320,11 @@ export default function RealEstatePage() {
       </div>
 
       {/* Empty State */}
-      {filteredProperties.length === 0 && (
+        {(ownedQuery.isError || availableQuery.isError) && (
+          <Card><CardContent className="pt-6 text-center py-12"><p className="text-muted-foreground">暂时无法加载真实房产数据，请稍后重试。</p></CardContent></Card>
+        )}
+
+      {filteredProperties.length === 0 && !ownedQuery.isError && !availableQuery.isError && (
         <Card>
           <CardContent className="pt-6 text-center py-12">
             <Home className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />

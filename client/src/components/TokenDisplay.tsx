@@ -7,7 +7,8 @@ import React from "react";
 import { useISCToken } from "@/hooks/useISCToken";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Coins } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import { ISCLogo } from "@/components/ISCLogo";
 
 export interface TokenDisplayProps {
   className?: string;
@@ -46,7 +47,7 @@ export function TokenDisplay({ className = "", showDetails = false }: TokenDispl
   return (
     <div className={`space-y-2 ${className}`}>
       <div className="flex items-center gap-2">
-        <Coins className="h-5 w-5 text-cyan-500" />
+        <ISCLogo size="md" className="drop-shadow-[0_0_8px_rgba(103,232,249,0.7)]" />
         <span className="text-lg font-semibold">
           {formattedBalance} {tokenInfo?.symbol || "ISC"}
         </span>

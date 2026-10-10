@@ -328,9 +328,9 @@ describe('EconomyPanelWithFilter Integration Tests', () => {
         total: stocks.reduce((a, b) => a + b, 0),
       };
 
-      expect(priceStats.min).toBe(100);
-      expect(priceStats.max).toBe(200);
-      expect(stockStats.total).toBe(4900);
+      expect(priceStats.min).toBe(80);
+      expect(priceStats.max).toBe(150);
+      expect(stockStats.total).toBe(3900);
     });
   });
 

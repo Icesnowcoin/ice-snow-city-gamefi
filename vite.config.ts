@@ -167,6 +167,23 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+
+          if (id.includes("@babylonjs/loaders")) {
+            return "vendor-babylon-loaders";
+          }
+
+          if (id.includes("@babylonjs/inspector")) {
+            return "vendor-babylon-inspector";
+          }
+
+          return undefined;
+        },
+      },
+    },
   },
   server: {
     host: true,

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Coins, Zap, Droplet, RefreshCw } from 'lucide-react';
 import '../styles/economy-status-bar.css';
+import { ISCLogo } from '@/components/ISCLogo';
 import { BlockchainBalanceService } from '../economy/BlockchainBalanceService';
 
 interface CurrencyDisplay {
@@ -237,7 +238,7 @@ export const EconomyStatusBar: React.FC<EconomyStatusBarProps> = ({
       {/* ISC 代币显示和刷新按钮 */}
       <div className="currency-item isc-container">
         <div className="isc-display">
-          <Coins className="currency-icon isc-icon" size={20} />
+          <ISCLogo size="md" className="currency-icon isc-icon drop-shadow-[0_0_8px_rgba(103,232,249,0.8)]" aria-label="Official ISC token" />
           <span className="currency-label">ISC</span>
           <span className="currency-value isc-value">{displayISC.toLocaleString()}</span>
         </div>

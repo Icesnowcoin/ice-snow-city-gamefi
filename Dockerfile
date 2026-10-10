@@ -5,7 +5,7 @@ WORKDIR /app
 
 # 安装依赖
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+RUN npm install -g pnpm@9.15.9 && pnpm install --frozen-lockfile
 
 # 复制源代码
 COPY . .
@@ -19,7 +19,7 @@ FROM node:22-alpine
 WORKDIR /app
 
 # 安装运行时依赖
-RUN npm install -g pnpm
+RUN npm install -g pnpm@9.15.9
 
 # 从构建阶段复制
 COPY --from=builder /app/node_modules ./node_modules
@@ -40,5 +40,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 # 暴露端口
 EXPOSE 3000
 
-# 启动应用
-CMD ["node", "dist/server/_core/index.js"]
+# 启动应用：package.json 的 build 脚本将服务 bundle 输出为 dist/index.js
+CMD ["node", "dist/index.js"]

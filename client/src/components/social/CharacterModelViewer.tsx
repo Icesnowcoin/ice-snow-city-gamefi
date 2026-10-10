@@ -1,21 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  AbstractMesh,
-  ArcRotateCamera,
-  Color3,
-  Color4,
-  DirectionalLight,
-  Engine,
-  HemisphericLight,
-  MeshBuilder,
-  Scene,
-  SceneLoader,
-  StandardMaterial,
-  TransformNode,
-  Vector3,
-} from "@babylonjs/core";
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
+import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
+import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
+import { Engine } from "@babylonjs/core/Engines/engine";
+import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
+import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
+import { Scene } from "@babylonjs/core/scene";
+import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
+import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import "@babylonjs/loaders/glTF";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ISCLogo } from "@/components/ISCLogo";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
@@ -649,7 +647,11 @@ export default function CharacterModelViewer({
                 onClick={() => handleAddSticker(sticker.id)}
                 aria-label={`添加贴纸：${sticker.label}`}
               >
-                <span aria-hidden="true">{sticker.glyph}</span>
+                {sticker.id === "winter-pioneer" ? (
+                  <ISCLogo size="sm" aria-hidden="true" className="drop-shadow-[0_0_6px_rgba(103,232,249,0.8)]" />
+                ) : (
+                  <span aria-hidden="true">{sticker.glyph}</span>
+                )}
                 <span className="ml-1">{sticker.label}</span>
               </Button>
             ))}
@@ -661,7 +663,11 @@ export default function CharacterModelViewer({
                 const sticker = getCharacterPosterSticker(placement.stickerId);
                 return (
                   <div key={placement.id} className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-1.5 py-0.5">
-                    <span className="text-xs" aria-label={sticker.label}>{sticker.glyph}</span>
+                    {sticker.id === "winter-pioneer" ? (
+                      <ISCLogo size="xs" aria-label={sticker.label} className="drop-shadow-[0_0_5px_rgba(103,232,249,0.8)]" />
+                    ) : (
+                      <span className="text-xs" aria-label={sticker.label}>{sticker.glyph}</span>
+                    )}
                     <Button
                       type="button"
                       variant="ghost"

@@ -18,11 +18,11 @@ import {
   Search,
   Settings,
   Megaphone,
-  Coins,
   TrendingUp,
 } from 'lucide-react';
 import { Guild, GuildMember, GuildInvitation, GuildApplication } from '@/game/social/GuildManager';
 import './guild-panel.css';
+import { ISCAmount } from '@/components/ISCLogo';
 
 interface GuildPanelProps {
   currentGuild?: Guild;
@@ -130,8 +130,7 @@ export const GuildPanel: React.FC<GuildPanelProps> = ({
                 等级 {currentGuild.level}
               </span>
               <span className="stat">
-                <Coins className="icon" />
-                {currentGuild.funds.toLocaleString()}
+                <ISCAmount amount={currentGuild.funds.toLocaleString()} size="sm" className="stat-value" />
               </span>
             </div>
           </div>

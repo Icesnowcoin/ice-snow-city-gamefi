@@ -32,7 +32,7 @@ export class BuildingSeasonManager {
     roofMeshes.forEach((roofMesh) => {
       const material = (roofMesh as BABYLON.Mesh).material as BABYLON.StandardMaterial;
       if (material) {
-        material.emissiveColor = appearance.roofColor;
+        material.diffuseColor = appearance.roofColor;
       }
     });
 
@@ -41,7 +41,7 @@ export class BuildingSeasonManager {
     wallMeshes.forEach((wallMesh) => {
       const material = (wallMesh as BABYLON.Mesh).material as BABYLON.StandardMaterial;
       if (material) {
-        material.emissiveColor = appearance.wallColor;
+        material.diffuseColor = appearance.wallColor;
       }
     });
 

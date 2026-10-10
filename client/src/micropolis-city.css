@@ -1,0 +1,6 @@
+
+.isc-micropolis-city__lighting-canvas { position: absolute; inset: 0; z-index: 3; display: block; width: 100%; height: 100%; pointer-events: none; mix-blend-mode: screen; transition: opacity 900ms cubic-bezier(.23, 1, .32, 1); }
+@media (prefers-reduced-motion: reduce) { .isc-micropolis-city__lighting-canvas { transition: none; } }
+
+.isc-micropolis-city__road-upgrade { border-color: rgba(255, 146, 96, .72); background: rgba(116, 46, 37, .34); }
+.isc-micropolis-city__road-upgrade.is-active { color: #fff1df; border-color: #ffb27e; background: rgba(177, 67, 48, .72); box-shadow: 0 0 18px rgba(255, 106, 70, .32); }

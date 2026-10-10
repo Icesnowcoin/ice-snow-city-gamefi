@@ -10,7 +10,7 @@ export type GameObjectType = 'building' | 'vegetation' | 'terrain';
 /**
  * 建筑类型
  */
-export type BuildingType = 'farmhouse' | 'greenhouse' | 'grain_dryer' | 'storage' | 'windmill' | 'tool_shed';
+export type BuildingType = 'farmhouse' | 'greenhouse' | 'grain_dryer' | 'storage' | 'windmill' | 'tool_shed' | 'city_core' | 'bank' | 'commercial_center' | 'residential_service' | 'production_hub' | 'quest_hall' | 'guild_hall' | 'logistics_terminal';
 
 /**
  * 植被类型
@@ -231,6 +231,70 @@ export const BUILDING_CONFIGS: Record<BuildingType, {
     color: '深棕色',
     defaultCapacity: 50,
     defaultCost: 500,
+  },
+  city_core: {
+    name: '城市核心广场',
+    description: '冰雪都市的出生点、主线任务与全局导航中心',
+    icon: '❄️',
+    color: '冰蓝色',
+    defaultCapacity: 1000,
+    defaultCost: 0,
+  },
+  bank: {
+    name: 'ISC 银行总部',
+    description: '提供余额、存取款、利息与资产管理服务',
+    icon: '🏦',
+    color: '深蓝金色',
+    defaultCapacity: 500,
+    defaultCost: 250000,
+  },
+  commercial_center: {
+    name: '鸿运商都',
+    description: '商品交易、订单撮合与 NFT 市场的城市商业中心',
+    icon: '🏬',
+    color: '冰晶紫色',
+    defaultCapacity: 800,
+    defaultCost: 180000,
+  },
+  residential_service: {
+    name: '瑞景华府服务中心',
+    description: '管理玩家住宅、房产升级与城市居住服务',
+    icon: '🏘️',
+    color: '雪白暖金',
+    defaultCapacity: 300,
+    defaultCost: 120000,
+  },
+  production_hub: {
+    name: '丰盈智造园',
+    description: '连接建设、生产、加工与收益产出的现代园区',
+    icon: '🏭',
+    color: '生产青绿',
+    defaultCapacity: 600,
+    defaultCost: 200000,
+  },
+  quest_hall: {
+    name: '荣耀任务大厅',
+    description: '承接主线任务、每日任务与城市事件',
+    icon: '🏛️',
+    color: '任务金色',
+    defaultCapacity: 250,
+    defaultCost: 80000,
+  },
+  guild_hall: {
+    name: '同心会馆',
+    description: '提供工会、组队、好友与公共社交服务',
+    icon: '🤝',
+    color: '社交蓝紫',
+    defaultCapacity: 400,
+    defaultCost: 100000,
+  },
+  logistics_terminal: {
+    name: '鸿运物流枢纽',
+    description: '管理仓储、运输、冷链与城市供应链',
+    icon: '🚚',
+    color: '物流橙色',
+    defaultCapacity: 900,
+    defaultCost: 150000,
   },
 };
 

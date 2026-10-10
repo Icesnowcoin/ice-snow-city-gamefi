@@ -123,7 +123,9 @@ describe("RecoveryService", () => {
         initialize: vi.fn().mockResolvedValue(undefined),
         getTreasuryBalance: vi.fn().mockResolvedValue("1000000"),
       };
-      vi.mocked(BlockchainService).mockImplementation(() => mockBlockchain as any);
+      vi.mocked(BlockchainService).mockImplementation(function () {
+        return mockBlockchain as any;
+      } as any);
 
       await recoveryService.start();
       await new Promise((resolve) => setTimeout(resolve, 150));
@@ -215,7 +217,9 @@ describe("RecoveryService", () => {
         initialize: vi.fn().mockRejectedValue(new Error("RPC connection failed")),
         getTreasuryBalance: vi.fn(),
       };
-      vi.mocked(BlockchainService).mockImplementation(() => mockBlockchain as any);
+      vi.mocked(BlockchainService).mockImplementation(function () {
+        return mockBlockchain as any;
+      } as any);
 
       await recoveryService.start();
       await new Promise((resolve) => setTimeout(resolve, 150));
@@ -307,7 +311,9 @@ describe("RecoveryService", () => {
       };
 
       vi.mocked(getDb).mockResolvedValue(mockDb as any);
-      vi.mocked(BlockchainService).mockImplementation(() => mockBlockchain as any);
+      vi.mocked(BlockchainService).mockImplementation(function () {
+        return mockBlockchain as any;
+      } as any);
 
       await recoveryService.start();
       await new Promise((resolve) => setTimeout(resolve, 250));

@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "date": "2026-10-01",
+  "worldUnitMeters": 1,
+  "primaryGridMeters": 2,
+  "smallGridMeters": 0.5,
+  "standardFloorHeightMeters": 3,
+  "buildingBudget": {
+    "lod0Triangles": [5000, 15000],
+    "lod1Triangles": [2500, 7000],
+    "lod2Triangles": [800, 2500],
+    "collisionTrianglesMax": 255,
+    "materialSlotsMax": 6,
+    "nearbyHighDetailBuildingsMax": 3
+  },
+  "lots": {
+    "cityCore": {"lot": [48, 48], "levels": [[32,32,22],[40,40,28],[48,48,34]]},
+    "bank": {"lot": [32, 28], "levels": [[24,18,16],[28,22,20],[32,26,24]]},
+    "commercial": {"lot": [40, 32], "levels": [[28,22,10],[34,26,13],[38,30,16]]},
+    "production": {"lot": [40, 32], "levels": [[28,20,12],[34,26,16],[38,30,20]]},
+    "residential": {"lot": [24, 20], "levels": [[18,14,9],[22,18,12],[24,20,15]]}
+  },
+  "modules": [
+    {"id":"bld_wall_2x3","size":[2,0.3,3],"lod0Triangles":80},
+    {"id":"bld_wall_4x3","size":[4,0.3,3],"lod0Triangles":120},
+    {"id":"bld_wall_window_4x3","size":[4,0.3,3],"lod0Triangles":180},
+    {"id":"bld_corner_2x2x3","size":[2,2,3],"lod0Triangles":160},
+    {"id":"bld_roof_snow_4x4","size":[4,0.6,4],"lod0Triangles":140},
+    {"id":"bld_door_double_4x2_4","size":[4,0.2,2.4],"lod0Triangles":260},
+    {"id":"bld_bank_portal_6x5","size":[6,0.4,5],"lod0Triangles":480},
+    {"id":"bld_factory_gate_6x5","size":[6,0.3,5],"lod0Triangles":360},
+    {"id":"ice_crystal_pylon_2x2x8","size":[2,2,8],"lod0Triangles":320},
+    {"id":"ice_energy_ring_d18","diameter":18,"lod0Triangles":640},
+    {"id":"ice_light_strip_4x0_2","size":[4,0.08,0.2],"lod0Triangles":40},
+    {"id":"street_lamp_1x1x5","size":[1,1,5],"lod0Triangles":180}
+  ],
+  "materials": [
+    {"id":"mat_snow_white","baseColor":"#F8F9FA","metallic":[0,0.05],"roughness":[0.65,0.85]},
+    {"id":"mat_ice_blue","baseColor":"#8CEBFF","metallic":[0.25,0.55],"roughness":[0.18,0.35]},
+    {"id":"mat_deep_blue","baseColor":"#0F3460","metallic":[0.15,0.35],"roughness":[0.4,0.6]},
+    {"id":"mat_gold_accent","baseColor":"#FFD700","metallic":[0.7,0.9],"roughness":[0.2,0.35]},
+    {"id":"mat_dark_metal","baseColor":"#26384A","metallic":[0.65,0.9],"roughness":[0.25,0.45]},
+    {"id":"mat_emissive_energy","baseColor":"#38D9FF","emissive":true}
+  ]
+}

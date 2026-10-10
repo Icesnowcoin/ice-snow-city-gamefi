@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -53,6 +54,27 @@ export default function AchievementsPage() {
   
   // Fetch achievement progress
   const { data: progress } = trpc.game.achievement.checkProgress.useQuery();
+
+  const announcedUnlockIdsRef = useRef<Set<string> | null>(null);
+
+  // Only announce achievements that appear after the initial server snapshot.
+  // This avoids noisy toasts on page load while still surfacing real unlock events.
+  useEffect(() => {
+    if (isLoadingUnlocked) return;
+
+    const currentUnlocks = new Set((unlockedAchievements ?? []).map((achievement: any) => achievement.id));
+    const previousUnlocks = announcedUnlockIdsRef.current;
+    if (previousUnlocks) {
+      (unlockedAchievements ?? [])
+        .filter((achievement: any) => !previousUnlocks.has(achievement.id))
+        .forEach((achievement: any) => {
+          toast.success(`成就已解锁：${achievement.name}`, {
+            description: achievement.description,
+          });
+        });
+    }
+    announcedUnlockIdsRef.current = currentUnlocks;
+  }, [isLoadingUnlocked, unlockedAchievements]);
 
   // Combine achievements data
   const achievements: AchievementDisplay[] = useMemo(() => {

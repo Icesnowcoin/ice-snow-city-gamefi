@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,6 +24,7 @@ import AdvancedErrorBoundary from "@/components/AdvancedErrorBoundary";
 import { useRetry } from "@/hooks/useRetry";
 import { RefreshControl, useRefreshControl } from "@/components/RefreshControl";
 import MacroEconomyDashboard from "@/components/economy/MacroEconomyDashboard";
+import { ISCLogo } from "@/components/ISCLogo";
 
 const ITEM_NAMES: Record<string, string> = {
   wheat: "小麦",
@@ -99,7 +100,7 @@ export default function EconomyPanel() {
     return () => clearInterval(interval);
   }, []);
 
-  const getSeasonEmoji = (season: string | undefined) => {
+  const getSeasonEmoji = (season: string | undefined): ReactNode => {
     switch (season) {
       case "spring":
         return "🌸";
@@ -108,7 +109,7 @@ export default function EconomyPanel() {
       case "autumn":
         return "🍂";
       case "winter":
-        return "❄️";
+        return <ISCLogo size="lg" className="inline-block align-middle drop-shadow-[0_0_8px_rgba(103,232,249,0.75)]" aria-label="ISC winter mark" />;
       default:
         return "📅";
     }

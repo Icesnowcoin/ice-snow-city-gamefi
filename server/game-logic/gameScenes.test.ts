@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   GameSceneManager,
   SCENE_CONFIGS,
@@ -137,7 +137,7 @@ describe('GameSceneManager', () => {
 
       const rewards = manager.completeScene(playerId, 'mining');
 
-      expect(rewards.some((r) => r.resourceType === 'ore' || r.resourceType === 'gold')).toBe(true);
+      expect(rewards.some((r) => r.resourceType === 'gold' || r.resourceType === 'energy' || r.resourceType === 'isc')).toBe(true);
     });
 
     it('should complete lumberjacking scene with correct reward types', () => {
@@ -154,6 +154,7 @@ describe('GameSceneManager', () => {
     });
 
     it('should apply difficulty multiplier to rewards', () => {
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0);
       // Easy difficulty
       manager.startScene(playerId, 'fishing', 'easy');
       manager.processAction(playerId, 'fishing', 'cast', { success: true });
@@ -169,6 +170,7 @@ describe('GameSceneManager', () => {
       const hardTotal = hardRewards.reduce((sum, r) => sum + r.amount, 0);
 
       expect(hardTotal).toBeGreaterThanOrEqual(easyTotal);
+      randomSpy.mockRestore();
     });
 
     it('should throw error if no active scene', () => {
@@ -183,6 +185,33 @@ describe('GameSceneManager', () => {
 
       const progress = manager.getActiveScene(playerId, 'fishing');
       expect(progress).toBeUndefined();
+    });
+
+    it('applies a penalty when completion exceeds the target duration and keeps a fallback reward', () => {
+      const now = vi.spyOn(Date, 'now')
+        .mockReturnValueOnce(1_000)
+        .mockReturnValueOnce(1_000)
+        .mockReturnValueOnce(200_000)
+        .mockReturnValue(200_000);
+      const random = vi.spyOn(Math, 'random').mockReturnValue(1);
+
+      manager.startScene(playerId, 'fishing', 'medium');
+      const rewards = manager.completeScene(playerId, 'fishing');
+
+      expect(rewards).toHaveLength(1);
+      expect(rewards[0]).toMatchObject({ resourceType: 'food', probability: 1 });
+      expect(now).toHaveBeenCalled();
+      random.mockRestore();
+      now.mockRestore();
+    });
+
+    it('returns the current statistics placeholder without leaking mutable state', () => {
+      expect(manager.getSceneStats(playerId, 'mining')).toEqual({
+        totalAttempts: 0,
+        successfulAttempts: 0,
+        totalRewards: {},
+        averageScore: 0,
+      });
     });
   });
 
@@ -311,6 +340,7 @@ describe('GameSceneManager', () => {
     });
 
     it('should apply higher multiplier for hard difficulty', () => {
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0);
       const difficulties: DifficultyLevel[] = ['easy', 'medium', 'hard'];
       const rewardTotals: number[] = [];
 
@@ -324,6 +354,7 @@ describe('GameSceneManager', () => {
 
       // Hard should be higher than easy on average
       expect(rewardTotals[2]).toBeGreaterThanOrEqual(rewardTotals[0]);
+      randomSpy.mockRestore();
     });
   });
 

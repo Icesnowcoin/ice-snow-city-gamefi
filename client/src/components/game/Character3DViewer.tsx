@@ -6,7 +6,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 // Type definitions
-interface PlayerCharacter {
+export interface PlayerCharacter {
   id: number;
   userId: number;
   gender: 'male' | 'female';
@@ -22,6 +22,7 @@ interface PlayerCharacter {
   height: number;
   createdAt: Date;
   updatedAt: Date;
+  imageUrl?: string;
 }
 
 interface ShopItem {

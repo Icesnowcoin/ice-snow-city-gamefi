@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ISCAmount } from "@/components/ISCLogo";
 import { usePlayerProfile, useUpdateProfile } from "@/hooks/useGameData";
 import { trpc } from "@/lib/trpc";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,8 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import ShareLeaderboard from "@/components/social/ShareLeaderboard";
-import CharacterModelViewer from "@/components/social/CharacterModelViewer";
+const ShareLeaderboard = lazy(() => import("@/components/social/ShareLeaderboard"));
+const CharacterModelViewer = lazy(() => import("@/components/social/CharacterModelViewer"));
 import {
   User,
   Award,
@@ -146,14 +147,18 @@ export default function PlayerProfile() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ShareLeaderboard />
-        <CharacterModelViewer
-          playerName={p?.username || "冰雪冒险者"}
-          userId={String(p?.id || p?.userId || "player")}
-          characterGender="female"
-          equippedOutfit="冬日高级潮流风衣"
-        />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Suspense fallback={<Skeleton className="h-72 w-full" />}>
+          <ShareLeaderboard />
+        </Suspense>
+        <Suspense fallback={<Skeleton className="h-[32rem] w-full" />}>
+          <CharacterModelViewer
+            playerName={p?.username || "冰雪冒险者"}
+            userId={String(p?.id || p?.userId || "player")}
+            characterGender="female"
+            equippedOutfit="冬日高级潮流风衣"
+          />
+        </Suspense>
       </div>
 
       {/* Status Bars */}
@@ -237,17 +242,15 @@ export default function PlayerProfile() {
               <div className="mt-4 space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{lang === "zh" ? "钱包余额" : "Wallet"}</span>
-                  <span className="font-medium">{p?.money?.toLocaleString() || 0} ISC</span>
+                  <ISCAmount amount={`${p?.money?.toLocaleString() || 0}`} size="sm" className="font-medium" />
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{lang === "zh" ? "银行存款" : "Bank"}</span>
-                  <span className="font-medium">{p?.bankBalance?.toLocaleString() || 0} ISC</span>
+                  <ISCAmount amount={`${p?.bankBalance?.toLocaleString() || 0}`} size="sm" className="font-medium" />
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{lang === "zh" ? "总资产" : "Total Assets"}</span>
-                  <span className="font-bold text-green-600">
-                    {((p?.money || 0) + (p?.isc || 0) + (p?.bankBalance || 0)).toLocaleString()} ISC
-                  </span>
+                  <ISCAmount amount={`${((p?.money || 0) + (p?.isc || 0) + (p?.bankBalance || 0)).toLocaleString()}`} size="sm" className="font-bold text-green-600" />
                 </div>
               </div>
             </CardContent>

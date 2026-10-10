@@ -2,8 +2,9 @@ import AdminLayout from "@/components/AdminLayout";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Key, Settings, ScrollText, Terminal, Landmark, PiggyBank } from "lucide-react";
+import { Key, Settings, ScrollText, Terminal, Landmark, PiggyBank, ScanSearch } from "lucide-react";
 import { Link } from "wouter";
+import { ISCAmount, ISCLogo } from "@/components/ISCLogo";
 
 export default function Dashboard() {
   const { t, lang } = useLanguage();
@@ -21,9 +22,9 @@ export default function Dashboard() {
     },
     {
       title: t("nav.treasury"),
-      icon: Landmark,
+      icon: ISCLogo,
       path: "/treasury",
-      value: treasuryQuery.data ? `${treasuryQuery.data.balance} ISC` : "0 ISC",
+      value: <ISCAmount amount={treasuryQuery.data ? String(treasuryQuery.data.balance) : "0"} size="sm" />,
       color: "text-chart-1",
     },
     {
@@ -53,6 +54,13 @@ export default function Dashboard() {
       path: "/agent-console",
       value: lang === "zh" ? "操作面板" : "Operations",
       color: "text-primary",
+    },
+    {
+      title: lang === "zh" ? "AI 基线质量" : "AI Baseline QA",
+      icon: ScanSearch,
+      path: "/admin/ai-baseline",
+      value: lang === "zh" ? "8 个资产" : "8 Assets",
+      color: "text-cyan-400",
     },
   ];
 

@@ -7,11 +7,8 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { EventListenerService } from "./eventListener";
-import { EnhancedEventListener } from "./eventListener.enhanced";
 import { RecoveryService } from "./recovery";
 import { getMonitoringService } from "./monitoring";
-import { BlockchainService } from "./blockchain";
 import { createGlobalRateLimiter, createIpRateLimiter, createUserRateLimiter, createApiRateLimiter, closeRedisClient } from "./rateLimiter";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -36,6 +33,10 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // The managed WebDev ingress adds one X-Forwarded-* hop. Trust only that
+  // single proxy so express-rate-limit can safely resolve the client IP.
+  app.set("trust proxy", 1);
   
   // Initialize rate limiters
   console.log("[Startup] Initializing rate limiters...");
@@ -57,53 +58,7 @@ async function startServer() {
   registerStorageProxy(app);
   registerOAuthRoutes(app);
 
-  // Initialize blockchain service
-  console.log("[Startup] Initializing blockchain service...");
-  const blockchainService = new BlockchainService();
-  try {
-    await blockchainService.initialize();
-    console.log("[Startup] Blockchain service initialized successfully");
-  } catch (error) {
-    console.error("[Startup] Failed to initialize blockchain service:", error);
-  }
-
-  // Initialize event listener service with EnhancedEventListener
-  console.log("[Startup] Initializing enhanced event listener service...");
-  let eventListenerService: any;
-  try {
-    // First initialize base EventListenerService
-    const baseListener = new EventListenerService();
-    // Initialize with contract addresses before starting
-    await baseListener.initialize({
-      iscManagerAddress: process.env.ISC_MANAGER_ADDRESS || "",
-      cityTreasuryAddress: process.env.CITY_TREASURY_ADDRESS || "",
-      iscStakingAddress: process.env.ISC_STAKING_ADDRESS || "",
-      startBlock: parseInt(process.env.START_BLOCK || "0"),
-    });
-    await baseListener.start();
-    
-    // Wrap with EnhancedEventListener for health checks and recovery
-    eventListenerService = new EnhancedEventListener(baseListener);
-    await eventListenerService.start();
-    console.log("[Startup] Enhanced event listener service started successfully");
-  } catch (error) {
-    console.error("[Startup] Failed to start enhanced event listener service:", error);
-    // Initialize fallback service
-    try {
-      eventListenerService = new EventListenerService();
-      // Initialize with contract addresses
-      await eventListenerService.initialize({
-        iscManagerAddress: process.env.ISC_MANAGER_ADDRESS || "",
-        cityTreasuryAddress: process.env.CITY_TREASURY_ADDRESS || "",
-        iscStakingAddress: process.env.ISC_STAKING_ADDRESS || "",
-        startBlock: parseInt(process.env.START_BLOCK || "0"),
-      });
-      await eventListenerService.start();
-      console.log("[Startup] Event listener service started successfully (error recovery)");
-    } catch (fallbackError) {
-      console.error("[Startup] Failed to start fallback event listener service:", fallbackError);
-    }
-  }
+  // Gameplay-only release: do not initialize legacy blockchain services or event pollers.
 
   // Initialize monitoring service
   console.log("[Startup] Initializing monitoring service...");
@@ -116,8 +71,8 @@ async function startServer() {
   console.log("[Startup] Recovery service initialized successfully");
 
   // Store services in app locals for access in routes
-  app.locals.blockchainService = blockchainService;
-  app.locals.eventListenerService = eventListenerService;
+  app.locals.blockchainService = null;
+  app.locals.eventListenerService = null;
   app.locals.monitoringService = monitoringService;
   app.locals.recoveryService = recoveryService;
 
@@ -151,12 +106,6 @@ async function startServer() {
   // Graceful shutdown
   process.on("SIGTERM", async () => {
     console.log("[Shutdown] Received SIGTERM, shutting down gracefully...");
-    try {
-      await eventListenerService.stop();
-      console.log("[Shutdown] Event listener stopped");
-    } catch (error) {
-      console.error("[Shutdown] Error stopping event listener:", error);
-    }
     server.close(() => {
       console.log("[Shutdown] Server closed");
       process.exit(0);

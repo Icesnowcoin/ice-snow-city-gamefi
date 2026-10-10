@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { useRetry, useQueryRetry, useMultipleRetries, useCircuitBreaker } from './useRetry';
 
 describe('useRetry Hook', () => {
@@ -29,9 +29,11 @@ describe('useRetry Hook', () => {
       .mockRejectedValueOnce(new Error('Fail 2'))
       .mockResolvedValueOnce('success');
 
-    const { result } = renderHook(() => useRetry(asyncFn, { maxAttempts: 3 }));
+    const { result } = renderHook(() =>
+      useRetry(asyncFn, { maxAttempts: 3, initialDelayMs: 0 })
+    );
 
-    const data = await result.current.execute();
+    const data = await act(async () => result.current.execute());
 
     expect(data).toBe('success');
     expect(asyncFn).toHaveBeenCalledTimes(3);
@@ -39,9 +41,13 @@ describe('useRetry Hook', () => {
 
   it('should throw after max attempts', async () => {
     const asyncFn = vi.fn().mockRejectedValue(new Error('Always fails'));
-    const { result } = renderHook(() => useRetry(asyncFn, { maxAttempts: 2 }));
+    const { result } = renderHook(() =>
+      useRetry(asyncFn, { maxAttempts: 2, initialDelayMs: 0 })
+    );
 
-    await expect(result.current.execute()).rejects.toThrow('Always fails');
+    await act(async () => {
+      await expect(result.current.execute()).rejects.toThrow('Always fails');
+    });
     expect(asyncFn).toHaveBeenCalledTimes(2);
   });
 
@@ -59,10 +65,11 @@ describe('useRetry Hook', () => {
       })
     );
 
-    const promise = result.current.execute();
-
-    // First attempt fails immediately
-    await vi.advanceTimersByTimeAsync(0);
+    let promise: Promise<string>;
+    await act(async () => {
+      promise = result.current.execute();
+      await vi.advanceTimersByTimeAsync(0);
+    });
     expect(asyncFn).toHaveBeenCalledTimes(1);
 
     // Wait for retry delay (1000ms)
@@ -81,10 +88,12 @@ describe('useRetry Hook', () => {
     const shouldRetry = (error: Error) => error.message.includes('Network');
 
     const { result } = renderHook(() =>
-      useRetry(asyncFn, { maxAttempts: 3, shouldRetry })
+      useRetry(asyncFn, { maxAttempts: 3, initialDelayMs: 0, shouldRetry })
     );
 
-    await expect(result.current.execute()).rejects.toThrow('Auth error');
+    await act(async () => {
+      await expect(result.current.execute()).rejects.toThrow('Auth error');
+    });
     expect(asyncFn).toHaveBeenCalledTimes(2);
   });
 
@@ -99,13 +108,18 @@ describe('useRetry Hook', () => {
     expect(result.current.attempt).toBe(0);
     expect(result.current.isRetrying).toBe(false);
 
-    const promise = result.current.execute();
-    await vi.advanceTimersByTimeAsync(0);
+    let promise: Promise<string>;
+    await act(async () => {
+      promise = result.current.execute();
+      await vi.advanceTimersByTimeAsync(0);
+    });
 
     expect(result.current.attempt).toBe(1);
 
-    await vi.advanceTimersByTimeAsync(1000);
-    await promise;
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1000);
+    });
+    await promise!;
 
     expect(result.current.attempt).toBe(2);
   });
@@ -197,7 +211,9 @@ describe('useMultipleRetries Hook', () => {
       useMultipleRetries([op1, op2, op3])
     );
 
-    await result.current.executeAll();
+    await act(async () => {
+      await result.current.executeAll();
+    });
 
     expect(result.current.successCount).toBe(3);
     expect(result.current.failureCount).toBe(0);
@@ -212,7 +228,9 @@ describe('useMultipleRetries Hook', () => {
       useMultipleRetries([op1, op2, op3])
     );
 
-    await result.current.executeAll();
+    await act(async () => {
+      await result.current.executeAll();
+    });
 
     expect(result.current.successCount).toBe(2);
     expect(result.current.failureCount).toBe(1);
@@ -230,7 +248,9 @@ describe('useMultipleRetries Hook', () => {
 
     expect(result.current.completedCount).toBe(0);
 
-    await promise;
+    await act(async () => {
+      await promise;
+    });
 
     expect(result.current.completedCount).toBe(2);
     expect(result.current.progress).toBe(100);
@@ -243,11 +263,15 @@ describe('useMultipleRetries Hook', () => {
       useMultipleRetries([op1])
     );
 
-    await result.current.executeAll();
+    await act(async () => {
+      await result.current.executeAll();
+    });
 
     expect(result.current.results.length).toBe(1);
 
-    result.current.reset();
+    act(() => {
+      result.current.reset();
+    });
 
     expect(result.current.results.length).toBe(0);
     expect(result.current.completedCount).toBe(0);
@@ -267,9 +291,11 @@ describe('useCircuitBreaker Hook', () => {
       useCircuitBreaker({ failureThreshold: 3 })
     );
 
-    result.current.recordFailure();
-    result.current.recordFailure();
-    result.current.recordFailure();
+    act(() => {
+      result.current.recordFailure();
+      result.current.recordFailure();
+      result.current.recordFailure();
+    });
 
     expect(result.current.state).toBe('open');
     expect(result.current.isOpen).toBe(true);
@@ -282,12 +308,16 @@ describe('useCircuitBreaker Hook', () => {
       useCircuitBreaker({ failureThreshold: 2, timeout: 1000 })
     );
 
-    result.current.recordFailure();
-    result.current.recordFailure();
+    act(() => {
+      result.current.recordFailure();
+      result.current.recordFailure();
+    });
 
     expect(result.current.state).toBe('open');
 
-    await vi.advanceTimersByTimeAsync(1000);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1000);
+    });
 
     expect(result.current.state).toBe('half-open');
 
@@ -296,13 +326,15 @@ describe('useCircuitBreaker Hook', () => {
 
   it('should close after success threshold in half-open', () => {
     const { result } = renderHook(() =>
-      useCircuitBreaker({ successThreshold: 2 })
+      useCircuitBreaker({ failureThreshold: 3, successThreshold: 2 })
     );
 
     // First open the circuit
-    result.current.recordFailure();
-    result.current.recordFailure();
-    result.current.recordFailure();
+    act(() => {
+      result.current.recordFailure();
+      result.current.recordFailure();
+      result.current.recordFailure();
+    });
 
     expect(result.current.state).toBe('open');
 
@@ -323,10 +355,14 @@ describe('useCircuitBreaker Hook', () => {
       useCircuitBreaker({ failureThreshold: 1 })
     );
 
-    result.current.recordFailure();
+    act(() => {
+      result.current.recordFailure();
+    });
     expect(result.current.state).toBe('open');
 
-    result.current.reset();
+    act(() => {
+      result.current.reset();
+    });
 
     expect(result.current.state).toBe('closed');
     expect(result.current.failureCount).toBe(0);
@@ -342,7 +378,10 @@ describe('Error Handling Integration', () => {
 
     const { result } = renderHook(() => useRetry(asyncFn));
 
-    const data = await result.current.execute();
+    let data: string | undefined;
+    await act(async () => {
+      data = await result.current.execute();
+    });
 
     expect(data).toBe('success');
     expect(result.current.lastError).toBe(null);
@@ -353,11 +392,13 @@ describe('Error Handling Integration', () => {
 
     const { result } = renderHook(() => useRetry(asyncFn, { maxAttempts: 1 }));
 
-    try {
-      await result.current.execute();
-    } catch (e) {
-      // Expected
-    }
+    await act(async () => {
+      try {
+        await result.current.execute();
+      } catch (e) {
+        // Expected
+      }
+    });
 
     expect(result.current.lastError).toBeTruthy();
     expect(result.current.lastError?.message).toBe('Always fails');

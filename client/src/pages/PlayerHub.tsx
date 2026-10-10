@@ -3,7 +3,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { User, Shirt, Sparkles, Building, Coins, Crown, Shield, TrendingUp } from "lucide-react";
+import { User, Shirt, Sparkles, Building, Crown, Shield, TrendingUp } from "lucide-react";
+import { ISCAmount } from "@/components/ISCLogo";
 import { EquipmentPanelContainer } from "@/components/equipment/EquipmentPanelContainer";
 
 export default function PlayerHub() {
@@ -53,7 +54,7 @@ export default function PlayerHub() {
             <Crown className="w-4 h-4 text-yellow-500" /> {playerStats.title} (Lv.{playerStats.level})
           </Badge>
           <Badge variant="default" className="flex items-center gap-1 text-sm py-1.5 px-3">
-            <Coins className="w-4 h-4" /> {playerStats.iscBalance}
+            <ISCAmount amount={playerStats.iscBalance} size="sm" />
           </Badge>
         </div>
       </div>

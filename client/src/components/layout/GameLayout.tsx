@@ -3,9 +3,12 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { WalletStatusIndicator } from "@/components/WalletStatusIndicator";
 import { TransactionNotificationCenter } from "@/components/TransactionNotificationCenter";
+import { NetworkModeSwitcher } from "@/components/NetworkModeSwitcher";
+import { NetworkModeProvider } from "@/contexts/NetworkModeContext";
+import { PerformanceMonitorPanel } from "@/components/PerformanceMonitorPanel";
 import { useWalletPersistence } from "@/hooks/useWalletPersistence";
 import {
   Menu,
@@ -40,6 +43,7 @@ interface GameLayoutProps {
 }
 
 export default function GameLayout({ children }: GameLayoutProps) {
+  const [location] = useLocation();
   const { user, logout } = useAuth();
   const { t, lang, setLang } = useLanguage();
   const { theme, toggleTheme } = useTheme();
@@ -49,6 +53,11 @@ export default function GameLayout({ children }: GameLayoutProps) {
   const [activeRoute, setActiveRoute] = useState("/");
   const [walletConnection, setWalletConnection] = useState<any>(null);
   const [expiryTime, setExpiryTime] = useState<number | null>(null);
+  const [showPerformanceMonitor, setShowPerformanceMonitor] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).get("perf") === "1";
+  });
+  const immersiveGameRoute = location === "/" || location === "/game" || location === "/world";
 
   // Load wallet connection on mount
   React.useEffect(() => {{
@@ -61,8 +70,8 @@ export default function GameLayout({ children }: GameLayoutProps) {
   }}, [getWalletConnection, getWalletConnectionRemainingTime]);
 
   const navigationItems = [
-    { label: t("nav.dashboard") || "Dashboard", icon: Home, path: "/" },
-    { label: "Game Hub", icon: Gamepad2, path: "/game" },
+    { label: "Game Hub", icon: Gamepad2, path: "/" },
+    { label: t("nav.dashboard") || "Dashboard", icon: Home, path: "/dashboard" },
     { label: t("nav.gameWorld") || "Game World", icon: Gamepad2, path: "/world" },
     { label: t("nav.npc") || "NPC", icon: Users, path: "/npc" },
     { label: t("nav.tasks") || "Tasks", icon: Briefcase, path: "/tasks" },
@@ -92,8 +101,30 @@ export default function GameLayout({ children }: GameLayoutProps) {
     setLang(lang === "zh" ? "en" : "zh");
   };
 
+  if (immersiveGameRoute) {
+    return (
+      <NetworkModeProvider>
+        <div className="game-immersive-shell h-screen w-screen overflow-hidden bg-slate-950 text-slate-100">
+          {showPerformanceMonitor && <PerformanceMonitorPanel onClose={() => setShowPerformanceMonitor(false)} />}
+          <main className="h-full w-full overflow-hidden">{children}</main>
+          <div className="game-portrait-guard" role="status" aria-live="polite">
+            <div className="game-portrait-guard__card">
+              <span className="text-2xl" aria-hidden="true">↔</span>
+              <strong>请将设备旋转至横屏</strong>
+              <span>Ice Snow City 为 16:9 移动横屏体验</span>
+            </div>
+          </div>
+        </div>
+      </NetworkModeProvider>
+    );
+  }
+
   return (
+    <NetworkModeProvider>
     <div className="flex h-screen bg-background text-foreground">
+      {showPerformanceMonitor && (
+        <PerformanceMonitorPanel onClose={() => setShowPerformanceMonitor(false)} />
+      )}
       {/* Desktop Sidebar */}
       <aside
         className={`hidden md:flex flex-col bg-card border-r border-border transition-all duration-300 ${
@@ -175,6 +206,8 @@ export default function GameLayout({ children }: GameLayoutProps) {
 
           {/* Right Controls */}
           <div className="flex items-center gap-2 ml-auto">
+            {/* Network Mode Switcher */}
+            <NetworkModeSwitcher />
             {/* Transaction Notification Center */}
             <TransactionNotificationCenter />
 
@@ -254,5 +287,6 @@ export default function GameLayout({ children }: GameLayoutProps) {
         )}
       </div>
     </div>
+    </NetworkModeProvider>
   );
 }

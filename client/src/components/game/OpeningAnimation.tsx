@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './OpeningAnimation.css';
+import { ISCLogo } from '@/components/ISCLogo';
 
 interface OpeningAnimationProps {
   onComplete?: () => void;
@@ -203,7 +204,9 @@ export const OpeningAnimation: React.FC<OpeningAnimationProps> = ({
                   }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <div className="character-placeholder">❄️</div>
+                  <div className="character-placeholder">
+                    <ISCLogo size="xl" className="drop-shadow-[0_0_18px_rgba(103,232,249,0.9)]" aria-label="Official ISC mark" />
+                  </div>
                 </motion.div>
                 <div className="character-name">Aurora</div>
                 <div className="character-role">The Seer of Ice</div>

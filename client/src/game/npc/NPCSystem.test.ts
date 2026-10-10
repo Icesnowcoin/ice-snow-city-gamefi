@@ -10,10 +10,11 @@ describe('NPC 系统集成测试', () => {
 
   beforeEach(() => {
     // 创建测试场景
-    const engine = new BABYLON.Engine(
-      document.createElement('canvas'),
-      true
-    );
+    const engine = new BABYLON.NullEngine({
+      renderWidth: 800,
+      renderHeight: 600,
+      deterministicLockstep: true,
+    });
     scene = new BABYLON.Scene(engine);
 
     // 创建 NPC 管理器

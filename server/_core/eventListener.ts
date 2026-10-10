@@ -9,7 +9,9 @@
 
 import { ethers } from "ethers";
 import type { EventLog, Contract } from "ethers";
-import { getDb } from "../db";
+import { getDb, findVerifiedWalletBinding, applyPlayerNftHoldingDelta } from "../db";
+import { listVerifiedNftContracts, type NftContractConfig } from "../nftContractRegistry";
+import { reduceTransferToDeltas } from "../nftHoldingsIndexer";
 import { getBlockchainService } from "./blockchain";
 import type { ContractEvent } from "../../drizzle/schema";
 
@@ -50,6 +52,7 @@ export class EventListenerService {
   private reconnectAttempts = 0;
   private lastProcessedBlock = 0;
   private processedEventHashes = new Set<string>();
+  private chainId = 0;
 
   /**
    * Initialize event listener
@@ -62,6 +65,8 @@ export class EventListenerService {
       this.provider = new ethers.JsonRpcProvider(
         process.env.BSC_RPC_URL || "https://bsc-dataseed1.binance.org:443"
       );
+
+      this.chainId = Number((await this.provider.getNetwork()).chainId);
 
       // Initialize contracts
       const ISC_MANAGER_ABI = [
@@ -159,6 +164,7 @@ export class EventListenerService {
             this.processISCManagerEvents(fromBlock, toBlock),
             this.processCityTreasuryEvents(fromBlock, toBlock),
             this.processISCStakingEvents(fromBlock, toBlock),
+            this.processVerifiedNftTransferEvents(fromBlock, toBlock),
           ]);
 
           this.lastProcessedBlock = toBlock;
@@ -286,6 +292,52 @@ export class EventListenerService {
     } catch (error) {
       console.error("[EventListener] Error processing ISCManager events:", error);
       throw error;
+    }
+  }
+
+  /**
+   * Process Transfer events only for explicitly verified NFT contracts.
+   * Unknown contracts, unbound wallets, and unverified events are ignored.
+   */
+  private async processVerifiedNftTransferEvents(fromBlock: number, toBlock: number): Promise<void> {
+    const configs = listVerifiedNftContracts().filter((item) => item.chainId === this.chainId);
+    if (!this.provider || configs.length === 0) return;
+
+    for (const config of configs) {
+      const contract = new ethers.Contract(config.address, [
+        "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
+        "event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value)",
+      ], this.provider);
+      const eventName = config.standard === "erc721" ? "Transfer" : "TransferSingle";
+      const events = await contract.queryFilter(contract.filters[eventName](), fromBlock, toBlock);
+      for (const event of events) {
+        const eventLog = event as EventLog;
+        const args = eventLog.args;
+        if (!args) continue;
+        const transfer = config.standard === "erc721"
+          ? { from: String(args[0]), to: String(args[1]), tokenId: BigInt(args[2].toString()), amount: BigInt(1) }
+          : { from: String(args[1]), to: String(args[2]), tokenId: BigInt(args[3].toString()), amount: BigInt(args[4].toString()) };
+        const deltas = reduceTransferToDeltas({
+          kind: config.standard === "erc721" ? "ERC721" : "ERC1155",
+          chainId: this.chainId,
+          blockNumber: BigInt(event.blockNumber),
+          nftContract: config.address,
+          ...transfer,
+        });
+        for (const delta of deltas) {
+          const binding = await findVerifiedWalletBinding(delta.walletAddress, this.chainId);
+          if (!binding) continue;
+          await applyPlayerNftHoldingDelta({ ...delta, userId: binding.userId, amount: delta.amount.toString(), lastSyncedBlock: delta.lastSyncedBlock.toString() });
+        }
+        await this.processEvent({
+          eventName: `${config.standard}:Transfer`,
+          transactionHash: event.transactionHash,
+          blockNumber: event.blockNumber,
+          logIndex: event.index || 0,
+          data: { contract: config.address, standard: config.standard, from: transfer.from, to: transfer.to, tokenId: transfer.tokenId.toString(), amount: transfer.amount.toString() },
+          timestamp: Date.now(),
+        });
+      }
     }
   }
 
